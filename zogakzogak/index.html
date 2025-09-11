@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>조각조각</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 구글맵 API 스크립트 로딩 -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQm6U7drl1pAuDJFmXxr8HGRG1OvBEKAw&callback=initMap"
+    defer
+  ></script>
+  <script>
+    function initMap() {
+      window.googleMapsApiLoaded = true;
+      const event = new Event('googleMapsApiLoaded');
+      window.dispatchEvent(event);
+    }
+    window.googleMapsApiLoaded = false;
+  </script>
+  <style>
+    /* Prevents pull-to-refresh and other overscroll behaviors on mobile */
+    body {
+      overscroll-behavior: none;
+    }
+  </style>
+
+<link rel="stylesheet" href="/index.css">
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.19.0"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/zogakzogak/assets/index-DZ4oCmJF.js"></script>
+</head>
+<body class="bg-[#f9f8f4]">
+  <div id="root"></div>
+</body>
+</html>
