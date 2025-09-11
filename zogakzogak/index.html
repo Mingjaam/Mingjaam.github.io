@@ -48,11 +48,55 @@
           });
       });
     }
+    
+    // 모바일 화면 높이 동적 설정
+    function setVH() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    
+    // 초기 설정 및 리사이즈 이벤트
+    setVH();
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(setVH, 100);
+    });
   </script>
   <style>
     /* Prevents pull-to-refresh and other overscroll behaviors on mobile */
     body {
       overscroll-behavior: none;
+    }
+    
+    /* 모바일 화면 높이 최적화 */
+    :root {
+      --vh: 1vh;
+    }
+    
+    .h-screen {
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+    }
+    
+    /* 모바일에서 안전 영역 고려 */
+    @supports (padding: max(0px)) {
+      .safe-area-bottom {
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+      }
+    }
+    
+    /* 스크롤바 숨기기 (모바일) */
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* 터치 액션 최적화 */
+    .touch-manipulation {
+      touch-action: manipulation;
     }
   </style>
 
@@ -67,7 +111,7 @@
   }
 }
 </script>
-  <script type="module" crossorigin src="/zogakzogak/assets/index-DZ4oCmJF.js"></script>
+  <script type="module" crossorigin src="/zogakzogak/assets/index-CgURWlLT.js"></script>
 </head>
 <body class="bg-[#f9f8f4]">
   <div id="root"></div>
