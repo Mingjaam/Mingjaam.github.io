@@ -1,0 +1,16 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="64" fill="#70c18c"/>
+  <rect x="64" y="64" width="384" height="384" rx="42" fill="white"/>
+  
+  <!-- 퍼즐 조각들 -->
+  <circle cx="160" cy="160" r="42" fill="#70c18c"/>
+  <circle cx="352" cy="160" r="42" fill="#70c18c"/>
+  <circle cx="160" cy="352" r="42" fill="#70c18c"/>
+  <circle cx="352" cy="352" r="42" fill="#70c18c"/>
+  
+  <!-- 중앙 하트 -->
+  <path d="M256 213C256 213 224 181 192 181C160 181 128 213 128 245C128 277 160 309 192 341C224 373 256 405 256 405C256 405 288 373 320 341C352 309 384 277 384 245C384 213 352 181 320 181C288 181 256 213 256 213Z" fill="#ff6b6b"/>
+  
+  <!-- 텍스트 -->
+  <text x="256" y="450" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#70c18c">조각조각</text>
+</svg>

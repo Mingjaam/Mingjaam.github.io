@@ -4,6 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>조각조각</title>
+  
+  <!-- PWA 관련 메타 태그 -->
+  <meta name="description" content="노인과 보호자를 위한 추억 기록 및 관리 플랫폼">
+  <meta name="theme-color" content="#70c18c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="조각조각">
+  <meta name="msapplication-TileColor" content="#70c18c">
+  <meta name="msapplication-tap-highlight" content="no">
+  
+  <!-- PWA 매니페스트 -->
+  <link rel="manifest" href="/zogakzogak/manifest.json">
+  
+  <!-- PWA 아이콘들 -->
+  <link rel="icon" type="image/svg+xml" href="/zogakzogak/icon-192x192.svg">
+  <link rel="apple-touch-icon" href="/zogakzogak/icon-192x192.svg">
+  <link rel="apple-touch-icon" sizes="192x192" href="/zogakzogak/icon-192x192.svg">
+  <link rel="apple-touch-icon" sizes="512x512" href="/zogakzogak/icon-512x512.svg">
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 구글맵 API 스크립트 로딩 -->
   <script
@@ -17,6 +35,19 @@
       window.dispatchEvent(event);
     }
     window.googleMapsApiLoaded = false;
+    
+    // Service Worker 등록
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/zogakzogak/sw.js')
+          .then((registration) => {
+            console.log('SW registered: ', registration);
+          })
+          .catch((registrationError) => {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
   </script>
   <style>
     /* Prevents pull-to-refresh and other overscroll behaviors on mobile */
