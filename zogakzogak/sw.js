@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zogakzogak-v1';
+const CACHE_NAME = 'zogakzogak-v2';
 const urlsToCache = [
   '/zogakzogak/',
   '/zogakzogak/index.html',
