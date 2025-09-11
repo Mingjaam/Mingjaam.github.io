@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, observerOptions);
 
     // 애니메이션을 적용할 요소들
-    const animateElements = document.querySelectorAll('.skill-category, .project-card, .stat, .contact-item');
+    const animateElements = document.querySelectorAll('.skill-category, .project-card, .stat, .contact-item, .award-item');
     animateElements.forEach(el => {
         observer.observe(el);
     });
