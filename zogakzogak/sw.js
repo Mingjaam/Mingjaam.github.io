@@ -3,7 +3,8 @@ const urlsToCache = [
   '/zogakzogak/',
   '/zogakzogak/index.html',
   '/zogakzogak/assets/',
-  '/zogakzogak/manifest.json'
+  '/zogakzogak/manifest.json',
+  '/zogakzogak/sounds/'
 ];
 
 // Install event
