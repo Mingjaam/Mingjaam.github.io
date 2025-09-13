@@ -20,6 +20,11 @@ self.addEventListener('install', (event) => {
 
 // Fetch event
 self.addEventListener('fetch', (event) => {
+  // 네트워크 요청만 처리 (정적 파일 제외)
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
@@ -27,9 +32,14 @@ self.addEventListener('fetch', (event) => {
         if (response) {
           return response;
         }
-        return fetch(event.request);
-      }
-    )
+        // 네트워크 요청 시 오류 처리
+        return fetch(event.request).catch(() => {
+          // 네트워크 오류 시 기본 응답 반환
+          if (event.request.destination === 'document') {
+            return caches.match('/index.html');
+          }
+        });
+      })
   );
 });
 
