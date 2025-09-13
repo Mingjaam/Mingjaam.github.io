@@ -150,6 +150,30 @@
         border-top: 1px solid #e5e7eb !important;
         flex-shrink: 0 !important;
       }
+      
+      /* PWA에서 파일 입력 최적화 */
+      input[type="file"] {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        cursor: pointer !important;
+      }
+      
+      /* PWA에서 버튼 터치 최적화 */
+      button {
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+      }
+      
+      /* PWA에서 스크롤 최적화 */
+      .overflow-y-auto {
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior: contain !important;
+      }
     }
   </style>
 
@@ -163,7 +187,7 @@
   }
 }
 </script>
-  <script type="module" crossorigin src="/zogakzogak/assets/index-GLSQraca.js"></script>
+  <script type="module" crossorigin src="/zogakzogak/assets/index-BcYFeg4l.js"></script>
   <link rel="stylesheet" crossorigin href="/zogakzogak/assets/index-DrTxcQ62.css">
 </head>
 <body class="bg-white">

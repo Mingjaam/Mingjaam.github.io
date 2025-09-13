@@ -20,6 +20,13 @@ self.addEventListener('install', (event) => {
 
 // Fetch event
 self.addEventListener('fetch', (event) => {
+  // 파일 업로드나 POST 요청은 캐시하지 않음
+  if (event.request.method === 'POST' || 
+      event.request.url.includes('blob:') ||
+      event.request.url.includes('data:')) {
+    return fetch(event.request);
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
