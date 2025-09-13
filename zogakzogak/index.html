@@ -8,7 +8,6 @@
   <!-- PWA 관련 메타 태그 -->
   <meta name="description" content="노인과 보호자를 위한 추억 기록 및 관리 플랫폼">
   <meta name="theme-color" content="#ffffff">
-  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="조각조각">
@@ -40,14 +39,7 @@
     // Service Worker 등록
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        // 개발 환경에서는 Service Worker 등록을 건너뜀
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-          console.log('Service Worker registration skipped in development');
-          return;
-        }
-        
-        const swPath = window.location.pathname.includes('/zogakzogak/') ? '/zogakzogak/sw.js' : '/sw.js';
-        navigator.serviceWorker.register(swPath)
+        navigator.serviceWorker.register('/zogakzogak/sw.js')
           .then((registration) => {
             console.log('SW registered: ', registration);
           })
@@ -171,7 +163,7 @@
   }
 }
 </script>
-  <script type="module" crossorigin src="/zogakzogak/assets/index-BwcEFYT-.js"></script>
+  <script type="module" crossorigin src="/zogakzogak/assets/index-B-txxb6G.js"></script>
   <link rel="stylesheet" crossorigin href="/zogakzogak/assets/index-DrTxcQ62.css">
 </head>
 <body class="bg-white">
