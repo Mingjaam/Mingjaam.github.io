@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang="ko"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Motivation & Contribution</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script><style>
+        body {overflow: hidden; width: 1280px; height: 720px; margin: 0; padding: 0;}
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+        }
+        .liquid-glass {
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        .apple-blue {
+            color: #007AFF;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+        }
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+        .stat-card {
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .problem-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            margin-bottom: 16px;
+        }
+        .solution-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            color: white;
+            margin-bottom: 16px;
+        }
+
+    html {
+        overflow: hidden;
+    }</style>
+    </head>
+    <body>
+    <div class="slide gradient-bg p-6 flex flex-col" style=" overflow: hidden;">
+    <!-- Header -->
+    <div class="mb-4">
+    <h1 class="text-5xl font-bold tracking-tight text-gray-800">Motivation & <span class="apple-blue">Contribution</span></h1>
+    <p class="text-xl text-gray-600 mt-2">왜 필요한가? 그리고 우리가 기여할 수 있는 것</p>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex flex-1 space-x-4">
+    <!-- Left Column: Existing Services Limitations -->
+    <div class="w-1/2 flex flex-col">
+    <!-- Existing Services -->
+    <div class="liquid-glass rounded-2xl p-6 flex-1 flex flex-col">
+    <div class="flex items-start flex-1">
+    <div class="problem-icon mr-4">
+    <i class="fas fa-exclamation-triangle text-3xl"></i>
+    </div>
+    <div class="flex-1">
+    <h3 class="text-3xl font-semibold mb-6 text-gray-700">기존 서비스들의 한계</h3>
+    <div class="space-y-4 text-gray-600 flex-1 flex flex-col justify-center">
+    <!-- Notion -->
+    <div class="bg-white bg-opacity-50 rounded-xl p-4 border-l-4 border-red-400">
+    <div class="flex items-center mb-2">
+    <i class="fas fa-file-alt text-red-500 mr-2 text-lg"></i>
+    <span class="font-semibold text-lg text-gray-800">Notion</span>
+    </div>
+    <p class="text-base text-gray-600">문서 중심 구조로 자유로운 아이디어 배치 제약</p>
+    </div>
+    
+    <!-- Google Docs -->
+    <div class="bg-white bg-opacity-50 rounded-xl p-4 border-l-4 border-red-400">
+    <div class="flex items-center mb-2">
+    <i class="fab fa-google-drive text-red-500 mr-2 text-lg"></i>
+    <span class="font-semibold text-lg text-gray-800">Google Docs</span>
+    </div>
+    <p class="text-base text-gray-600">선형적 텍스트 편집에 최적화되어 비선형적 브레인스토밍에 부적합</p>
+    </div>
+    
+    <!-- Figma -->
+    <div class="bg-white bg-opacity-50 rounded-xl p-4 border-l-4 border-red-400">
+    <div class="flex items-center mb-2">
+    <i class="fas fa-palette text-red-500 mr-2 text-lg"></i>
+    <span class="font-semibold text-lg text-gray-800">Figma</span>
+    </div>
+    <p class="text-base text-gray-600">디자인 도구로 특화되어 텍스트 기반 아이디어 정리에 복잡하고 무거움</p>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    <!-- Right Column: Contribution -->
+    <div class="w-1/2 flex flex-col">
+    <!-- Our Solution -->
+    <div class="liquid-glass rounded-2xl p-6 flex-1 flex flex-col">
+    <div class="flex items-start flex-1">
+    <div class="solution-icon mr-4">
+    <i class="fas fa-lightbulb text-3xl"></i>
+    </div>
+    <div class="flex-1">
+    <h3 class="text-3xl font-semibold mb-6 text-gray-700">ONit의 기여</h3>
+    <ul class="space-y-4 text-gray-600 flex-1 flex flex-col justify-center">
+    <li class="flex items-start text-lg"><i class="fas fa-check-circle text-green-500 mr-3 mt-1 text-xl"></i> <span>무제한 자유 캔버스로 창의적 사고 지원</span></li>
+    <li class="flex items-start text-lg"><i class="fas fa-check-circle text-green-500 mr-3 mt-1 text-xl"></i> <span>WebSocket 기반 저지연 실시간 협업</span></li>
+    <li class="flex items-start text-lg"><i class="fas fa-check-circle text-green-500 mr-3 mt-1 text-xl"></i> <span>AI 클러스터링으로 아이디어 패턴 분석</span></li>
+    <li class="flex items-start text-lg"><i class="fas fa-check-circle text-green-500 mr-3 mt-1 text-xl"></i> <span>실시간 채팅 및 음성 통화로 원활한 소통</span></li>
+    <li class="flex items-start text-lg"><i class="fas fa-check-circle text-green-500 mr-3 mt-1 text-xl"></i> <span>직관적이고 방해받지 않는 UI/UX</span></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    <!-- Bottom Section -->
+    <div class="mt-4">
+    <div class="liquid-glass rounded-2xl p-6">
+    <div class="flex items-center">
+    <div class="mr-6 flex-shrink-0">
+    <i class="fas fa-quote-left apple-blue text-4xl"></i>
+    </div>
+    <div>
+    <p class="text-xl text-gray-700 leading-relaxed">
+    <span class="font-semibold text-2xl">핵심 가치:</span> 
+    "기존 도구들의 한계를 극복하여 진정한 자유형 브레인스토밍 환경을 제공하고, 
+    AI 기술을 활용한 지능형 아이디어 분석으로 창의적 협업의 새로운 패러다임을 제시합니다."
+    </p>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    <!-- Slide Number -->
+    <div class="slide-number">4 / 12</div>
+    </div>
+    
+    </body></html>
