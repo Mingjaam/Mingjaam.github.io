@@ -352,76 +352,7 @@ section {
     background: white;
 }
 
-/* 수상 내역 섹션 */
-.awards {
-    background: #f8fafc;
-}
-
-.awards-timeline {
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
-}
-
-.awards-timeline::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: #fbbf24;
-    transform: translateX(-50%);
-}
-
-.award-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 3rem;
-    position: relative;
-}
-
-.award-item:nth-child(odd) {
-    flex-direction: row;
-}
-
-.award-item:nth-child(even) {
-    flex-direction: row-reverse;
-}
-
-.award-date {
-    flex: 0 0 150px;
-    text-align: center;
-    padding: 1rem;
-    background: #fbbf24;
-    color: #333;
-    border-radius: 8px;
-    font-weight: 600;
-    position: relative;
-    z-index: 2;
-}
-
-.award-content {
-    flex: 1;
-    padding: 2rem;
-    background: white;
-    border-radius: 12px;
-    margin: 0 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
-}
-
-.award-content h3 {
-    font-size: 1.3rem;
-    margin-bottom: 0.5rem;
-    color: #333;
-}
-
-.award-content p {
-    color: #6b7280;
-    margin-bottom: 1rem;
-}
-
+/* 수상 배지 스타일 (경험 섹션 내에서 사용) */
 .award-badge {
     display: inline-flex;
     align-items: center;
@@ -432,6 +363,7 @@ section {
     border-radius: 20px;
     font-weight: 600;
     font-size: 0.9rem;
+    margin-top: 0.5rem;
 }
 
 .award-badge i {
@@ -734,27 +666,23 @@ section {
         gap: 2rem;
     }
 
-    .experience-timeline::before,
-    .awards-timeline::before {
+    .experience-timeline::before {
         left: 20px;
     }
 
-    .experience-item,
-    .award-item {
+    .experience-item {
         flex-direction: column !important;
         align-items: flex-start;
         margin-left: 40px;
     }
 
-    .experience-date,
-    .award-date {
+    .experience-date {
         flex: none;
         width: 120px;
         margin-bottom: 1rem;
     }
 
-    .experience-content,
-    .award-content {
+    .experience-content {
         margin: 0;
         width: 100%;
     }
