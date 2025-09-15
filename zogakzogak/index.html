@@ -7,9 +7,9 @@
   
   <!-- PWA 관련 메타 태그 -->
   <meta name="description" content="노인과 보호자를 위한 추억 기록 및 관리 플랫폼">
-  <meta name="theme-color" content="#70c18c">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="조각조각">
   <meta name="msapplication-TileColor" content="#70c18c">
   <meta name="msapplication-tap-highlight" content="no">
@@ -39,7 +39,7 @@
     // Service Worker 등록
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/zogakzogak/sw.js')
+        navigator.serviceWorker.register('./sw.js')
           .then((registration) => {
             console.log('SW registered: ', registration);
           })
@@ -98,9 +98,61 @@
     .touch-manipulation {
       touch-action: manipulation;
     }
+    
+    /* PWA 모달 최적화 */
+    @media (display-mode: standalone) {
+      .pwa-modal {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        z-index: 9999 !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 4px !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+      }
+      
+      .pwa-modal-content {
+        background-color: white !important;
+        border-radius: 16px !important;
+        width: calc(100vw - 8px) !important;
+        max-width: 480px !important;
+        max-height: calc(100vh - 8px) !important;
+        min-height: 400px !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        margin: 0 !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+      }
+      
+      .pwa-modal-header {
+        padding: 16px !important;
+        border-bottom: 1px solid #e5e7eb !important;
+        flex-shrink: 0 !important;
+      }
+      
+      .pwa-modal-body {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        padding: 16px !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      
+      .pwa-modal-footer {
+        padding: 16px !important;
+        border-top: 1px solid #e5e7eb !important;
+        flex-shrink: 0 !important;
+      }
+    }
   </style>
 
-<link rel="stylesheet" href="/index.css">
   <script type="importmap">
 {
   "imports": {
@@ -111,9 +163,10 @@
   }
 }
 </script>
-  <script type="module" crossorigin src="/zogakzogak/assets/index-Bogibv6J.js"></script>
+  <script type="module" crossorigin src="/zogakzogak/assets/index-jiJMjBXY.js"></script>
+  <link rel="stylesheet" crossorigin href="/zogakzogak/assets/index.DrTxcQ62.css">
 </head>
-<body class="bg-[#f9f8f4]">
+<body class="bg-white">
   <div id="root"></div>
 </body>
 </html>
