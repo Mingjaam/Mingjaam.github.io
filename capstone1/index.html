@@ -1,42 +1,23 @@
-<!DOCTYPE html><html lang="ko"><head>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>1-on-musk 캡스톤 발표</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script><style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
         body {
-            overflow: hidden;
             margin: 0;
             padding: 0;
             font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
             background: #000;
             width: 100vw;
             height: 100vh;
+            overflow: hidden;
         }
-        
-        /* Mobile body adjustments */
-        @media (max-width: 768px) {
-            body {
-                overflow-x: hidden;
-                overflow-y: auto;
-            }
-        }
-        .slide {
-            width: 1280px;
-            height: 720px;
-            position: relative;
-        }
-        .liquid-glass {
-            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-        .main-blue {color: #007AFF;}
-        .apple-blue {color: #007AFF;}
-        .korean-text {font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;}
-        
+
         .slideshow-container {
             position: relative;
             width: 100vw;
@@ -44,113 +25,36 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            box-sizing: border-box;
         }
-        
-        /* Mobile container adjustments */
-        @media (max-width: 768px) {
-            .slideshow-container {
-                height: auto;
-                min-height: 100vh;
-                align-items: flex-start;
-                justify-content: flex-start;
-                padding: 0;
-                overflow-x: hidden;
-                width: 100vw;
-                box-sizing: border-box;
-            }
-        }
-        
+
+        /* 프레임을 화면 너비에 맞추고 16:9 비율 유지 */
         .slide-frame {
-            width: 1280px;
-            height: 720px;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            height: auto;
             border: none;
             background: white;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             border-radius: 8px;
-            transform-origin: center center;
-            transition: transform 0.3s ease;
         }
-        
-        /* Fullscreen mode styles */
+
+        /* Fullscreen 모드 */
         .fullscreen .slide-frame {
             border-radius: 0;
+            width: 100vw;
+            height: 100vh;
+            aspect-ratio: auto; /* 전체화면에서는 꽉 채우기 */
         }
-        
-        .fullscreen .controls {
-            display: none;
-        }
-        
-        .fullscreen .slide-list {
+
+        .fullscreen .controls,
+        .fullscreen .slide-list,
+        .fullscreen .keyboard-hint,
+        .fullscreen .fullscreen-btn,
+        .fullscreen .slide-nav {
             display: none !important;
         }
-        
-        .fullscreen .keyboard-hint {
-            display: none;
-        }
-        
-        .fullscreen .fullscreen-btn {
-            display: none;
-        }
-        
-        .fullscreen .slide-nav {
-            display: none;
-        }
-        
-        /* Mobile optimizations */
-        @media (max-width: 768px) {
-            .slide-frame {
-                position: relative;
-                margin: 0;
-                padding: 0;
-                max-width: 100vw;
-                overflow: hidden;
-                border-radius: 0;
-            }
-            
-            .controls {
-                bottom: 10px;
-                padding: 10px 15px;
-                gap: 10px;
-                position: fixed;
-                z-index: 1000;
-            }
-            
-            .control-btn {
-                padding: 8px 12px;
-                font-size: 12px;
-            }
-            
-            .slide-counter {
-                font-size: 12px;
-            }
-            
-            .slide-list {
-                top: 10px;
-                right: 10px;
-                max-height: 50vh;
-                font-size: 12px;
-                position: fixed;
-                z-index: 1000;
-            }
-            
-            .slide-item {
-                padding: 6px 10px;
-                font-size: 11px;
-            }
-            
-            .keyboard-hint {
-                bottom: 80px;
-                font-size: 10px;
-                position: fixed;
-                z-index: 1000;
-            }
-            
-            .fullscreen-btn {
-                position: fixed;
-                z-index: 1000;
-            }
-        }
-        
+
         .controls {
             position: fixed;
             bottom: 20px;
@@ -164,7 +68,7 @@
             backdrop-filter: blur(10px);
             z-index: 1000;
         }
-        
+
         .control-btn {
             background: rgba(255,255,255,0.2);
             border: none;
@@ -174,14 +78,13 @@
             cursor: pointer;
             font-size: 14px;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
         }
-        
+
         .control-btn:hover {
             background: rgba(255,255,255,0.3);
             transform: translateY(-2px);
         }
-        
+
         .slide-nav {
             position: fixed;
             top: 50%;
@@ -195,23 +98,12 @@
             cursor: pointer;
             font-size: 20px;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
             z-index: 1000;
         }
-        
-        .prev-btn {
-            left: 30px;
-        }
-        
-        .next-btn {
-            right: 30px;
-        }
-        
-        .slide-nav:hover {
-            background: rgba(0,0,0,0.9);
-            transform: translateY(-50%) scale(1.1);
-        }
-        
+
+        .prev-btn { left: 30px; }
+        .next-btn { right: 30px; }
+
         .fullscreen-btn {
             position: fixed;
             top: 20px;
@@ -224,22 +116,15 @@
             border-radius: 50%;
             cursor: pointer;
             font-size: 16px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
             z-index: 1000;
         }
-        
-        .fullscreen-btn:hover {
-            background: rgba(0,0,0,0.9);
-            transform: scale(1.1);
-        }
-        
+
         .slide-counter {
             color: white;
             font-size: 16px;
             font-weight: 500;
         }
-        
+
         .slide-list {
             position: fixed;
             top: 50%;
@@ -255,13 +140,9 @@
             overflow-y: auto;
             min-width: 300px;
         }
-        
-        .slide-list h3 {
-            margin-bottom: 20px;
-            text-align: center;
-            color: #007AFF;
-        }
-        
+
+        .slide-list h3 { margin-bottom: 20px; text-align: center; color: #007AFF; }
+
         .slide-item {
             padding: 10px 15px;
             margin: 5px 0;
@@ -269,16 +150,10 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
-        .slide-item:hover {
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .slide-item.active {
-            background: rgba(0,122,255,0.3);
-            color: #007AFF;
-        }
-        
+
+        .slide-item:hover { background: rgba(255,255,255,0.1); }
+        .slide-item.active { background: rgba(0,122,255,0.3); color: #007AFF; }
+
         .keyboard-hint {
             position: fixed;
             bottom: 80px;
@@ -296,24 +171,17 @@
     </div>
 
     <button class="fullscreen-btn" onclick="toggleFullscreen()" title="전체화면">⛶</button>
-    
-    <button class="slide-nav prev-btn" id="prevBtn" onclick="previousSlide()" title="이전 슬라이드">‹</button>
-    <button class="slide-nav next-btn" id="nextBtn" onclick="nextSlide()" title="다음 슬라이드">›</button>
+    <button class="slide-nav prev-btn" onclick="previousSlide()">‹</button>
+    <button class="slide-nav next-btn" onclick="nextSlide()">›</button>
 
     <div class="controls">
         <button class="control-btn" onclick="previousSlide()">이전</button>
-        <span class="slide-counter">
-            <span id="currentSlide">1</span> / <span id="totalSlides">11</span>
-        </span>
+        <span class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">11</span></span>
         <button class="control-btn" onclick="nextSlide()">다음</button>
-        <button class="control-btn" onclick="toggleSlideList()" title="슬라이드 목록">
-            <i class="fas fa-list"></i>
-        </button>
+        <button class="control-btn" onclick="toggleSlideList()"><i class="fas fa-list"></i></button>
     </div>
 
-    <div class="keyboard-hint">
-        키보드: ← → (이전/다음) | F (전체화면) | ESC (전체화면 해제)
-    </div>
+    <div class="keyboard-hint">키보드: ← → (이전/다음) | F (전체화면) | ESC (해제)</div>
 
     <div class="slide-list" id="slideList" style="display: none;">
         <h3>슬라이드 목록</h3>
@@ -332,190 +200,49 @@
 
     <script>
         const slides = [
-            '1p.html', '2p.html', '3p.html', '4p.html', '5p.html', 
-            '6p.html', '7p.html', '8p.html', '9p.html', '10p.html', '11p.html'
+            '1p.html','2p.html','3p.html','4p.html','5p.html',
+            '6p.html','7p.html','8p.html','9p.html','10p.html','11p.html'
         ];
-        
         let currentSlideIndex = 0;
-        const totalSlides = slides.length;
-        
+
         function updateSlide() {
             const frame = document.getElementById('slideFrame');
             const currentSlideSpan = document.getElementById('currentSlide');
             const slideItems = document.querySelectorAll('.slide-item');
-            
             frame.src = slides[currentSlideIndex];
             currentSlideSpan.textContent = currentSlideIndex + 1;
-            
-            // Update active slide in list
-            slideItems.forEach((item, index) => {
-                item.classList.toggle('active', index === currentSlideIndex);
-            });
+            slideItems.forEach((item, i) => item.classList.toggle('active', i === currentSlideIndex));
         }
-        
+
         function nextSlide() {
-            if (currentSlideIndex < totalSlides - 1) {
-                currentSlideIndex++;
-                updateSlide();
-            }
+            if (currentSlideIndex < slides.length - 1) { currentSlideIndex++; updateSlide(); }
         }
-        
         function previousSlide() {
-            if (currentSlideIndex > 0) {
-                currentSlideIndex--;
-                updateSlide();
-            }
+            if (currentSlideIndex > 0) { currentSlideIndex--; updateSlide(); }
         }
-        
-        function goToSlide(slideNumber) {
-            currentSlideIndex = slideNumber - 1;
-            updateSlide();
-            toggleSlideList();
+        function goToSlide(n) {
+            currentSlideIndex = n - 1; updateSlide(); toggleSlideList();
         }
-        
         function toggleSlideList() {
-            const slideList = document.getElementById('slideList');
-            slideList.style.display = slideList.style.display === 'none' ? 'block' : 'none';
+            const list = document.getElementById('slideList');
+            list.style.display = list.style.display === 'none' ? 'block' : 'none';
         }
-        
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().then(() => {
-                    document.body.classList.add('fullscreen');
-                });
-            } else {
-                document.exitFullscreen().then(() => {
-                    document.body.classList.remove('fullscreen');
-                });
-            }
-        }
-        
-        // Keyboard controls
-        document.addEventListener('keydown', function(e) {
-            switch(e.key) {
-                case 'ArrowLeft':
-                    previousSlide();
-                    break;
-                case 'ArrowRight':
-                    nextSlide();
-                    break;
-                case 'f':
-                case 'F':
-                    toggleFullscreen();
-                    break;
-                case 'Escape':
-                    if (document.fullscreenElement) {
-                        document.exitFullscreen();
-                    }
-                    break;
-            }
-        });
-        
-        // Calculate and apply scaling
-        function updateScaling() {
-            const frame = document.getElementById('slideFrame');
-            const container = document.querySelector('.slideshow-container');
-            
-            // Check if it's mobile device
-            if (window.innerWidth < 768) {
-                // Mobile: ensure 1280px width fits completely, no horizontal cutoff
-                const scaleX = window.innerWidth / 1280;
-                
-                // Apply scaling
-                frame.style.transform = `scale(${scaleX})`;
-                frame.style.transformOrigin = 'top left';
-                frame.style.width = '1280px';
-                frame.style.height = '720px';
-                
-                // Set container styles
-                container.style.width = '100vw';
-                container.style.height = 'auto';
-                container.style.overflowX = 'hidden';
-                container.style.overflowY = 'auto';
-                container.style.alignItems = 'flex-start';
-                container.style.justifyContent = 'flex-start';
-                
-                // Enable scrolling on mobile
-                document.body.style.overflowX = 'hidden';
-                document.body.style.overflowY = 'auto';
-                document.body.style.height = 'auto';
-                
-                console.log('Mobile scaling applied:', scaleX, 'Window width:', window.innerWidth);
-            } else {
-                // Desktop: maintain aspect ratio and fit screen
-                const scaleX = window.innerWidth / 1280;
-                const scaleY = window.innerHeight / 720;
-                const scale = Math.min(scaleX, scaleY);
-                
-                frame.style.transform = `scale(${scale})`;
-                frame.style.transformOrigin = 'center center';
-                frame.style.width = '1280px';
-                frame.style.height = '720px';
-                
-                // Reset container styles for desktop
-                container.style.width = '100vw';
-                container.style.height = '100vh';
-                container.style.overflow = 'hidden';
-                container.style.alignItems = 'center';
-                container.style.justifyContent = 'center';
-                
-                // Disable scrolling on desktop
-                document.body.style.overflow = 'hidden';
-                document.body.style.height = '100vh';
-            }
-        }
-        
-        // Fullscreen change event listener
-        document.addEventListener('fullscreenchange', function() {
-            if (document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
                 document.body.classList.add('fullscreen');
             } else {
+                document.exitFullscreen();
                 document.body.classList.remove('fullscreen');
             }
-            updateScaling();
-        });
-        
-        // Window resize event listener
-        window.addEventListener('resize', updateScaling);
-        
-        // Touch events for mobile swipe navigation
-        let touchStartX = 0;
-        let touchEndX = 0;
-        
-        document.addEventListener('touchstart', function(e) {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-        
-        document.addEventListener('touchend', function(e) {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-        
-        function handleSwipe() {
-            const swipeThreshold = 50; // Minimum distance for a swipe
-            const swipeDistance = touchEndX - touchStartX;
-            
-            if (Math.abs(swipeDistance) > swipeThreshold) {
-                if (swipeDistance > 0) {
-                    // Swipe right - previous slide
-                    previousSlide();
-                } else {
-                    // Swipe left - next slide
-                    nextSlide();
-                }
-            }
         }
-        
-        // Initialize
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') previousSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key.toLowerCase() === 'f') toggleFullscreen();
+            if (e.key === 'Escape') document.exitFullscreen();
+        });
         updateSlide();
-        
-        // Apply scaling immediately and on resize
-        updateScaling();
-        
-        // Force reflow to ensure scaling is applied
-        setTimeout(() => {
-            updateScaling();
-        }, 100);
     </script>
 </body>
 </html>
