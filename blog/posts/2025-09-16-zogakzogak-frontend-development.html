@@ -509,7 +509,27 @@
 &lt;/<span class="keyword">div</span>&gt;
                     </div>
 
-                    <h3>2. 상태 관리</h3>
+                    <h3>2. AI 모듈 통합</h3>
+                    <p>Google Gemini AI를 활용한 감정 분석과 인물 인식 기능을 개발했습니다. AI API 호출 최적화와 사용자 친화적인 인터페이스 설계에 중점을 두었습니다.</p>
+                    
+                    <div class="code-block">
+<span class="comment">// AI 감정 분석 함수 예시</span>
+<span class="keyword">const</span> <span class="keyword">analyzeEmotion</span> = <span class="keyword">async</span> (<span class="keyword">diaryText</span>: <span class="keyword">string</span>) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> <span class="keyword">response</span> = <span class="keyword">await</span> <span class="keyword">fetch</span>(<span class="string">'/api/ai/emotion'</span>, {
+      <span class="keyword">method</span>: <span class="string">'POST'</span>,
+      <span class="keyword">headers</span>: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> },
+      <span class="keyword">body</span>: <span class="keyword">JSON</span>.<span class="keyword">stringify</span>({ <span class="keyword">text</span>: <span class="keyword">diaryText</span> })
+    });
+    <span class="keyword">const</span> <span class="keyword">result</span> = <span class="keyword">await</span> <span class="keyword">response</span>.<span class="keyword">json</span>();
+    <span class="keyword">return</span> <span class="keyword">result</span>.<span class="keyword">emotion</span>;
+  } <span class="keyword">catch</span> (<span class="keyword">error</span>) {
+    <span class="keyword">console</span>.<span class="keyword">error</span>(<span class="string">'감정 분석 오류:'</span>, <span class="keyword">error</span>);
+  }
+};</code></pre>
+                    </div>
+                    
+                    <h3>3. 상태 관리</h3>
                     <p>복잡한 상태 관리를 위해 React의 Context API와 useReducer를 활용했습니다. 전역 상태와 지역 상태를 적절히 분리하여 관리했습니다.</p>
                     
                     <div class="code-block">
@@ -527,19 +547,6 @@
 };
                     </div>
 
-                    <h3>3. 접근성 고려</h3>
-                    <p>노인 사용자들을 위해 접근성을 고려한 UI/UX를 구현했습니다. 큰 버튼, 명확한 색상 대비, 키보드 네비게이션 등을 적용했습니다.</p>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
-                        <div style="text-align: center;">
-                            <img src="../assets/images/accessibility-before.png" alt="접근성 개선 전" style="width: 100%; max-width: 300px; height: auto; border-radius: 8px; border: 2px solid #ef4444;" />
-                            <p style="color: #dc2626; font-size: 0.9rem; margin-top: 0.5rem;">개선 전: 작은 버튼과 낮은 대비</p>
-                        </div>
-                        <div style="text-align: center;">
-                            <img src="../assets/images/accessibility-after.png" alt="접근성 개선 후" style="width: 100%; max-width: 300px; height: auto; border-radius: 8px; border: 2px solid #22c55e;" />
-                            <p style="color: #16a34a; font-size: 0.9rem; margin-top: 0.5rem;">개선 후: 큰 버튼과 높은 대비</p>
-                        </div>
-                    </div>
 
                     <h2 id="learning">📚 학습 포인트</h2>
                     <p>조각조각 프로젝트를 통해 얻은 소중한 경험과 학습 내용을 공유합니다.</p>
@@ -557,8 +564,8 @@
                         <div style="text-align: center; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 2px solid #e5e7eb;">
                             <img src="../assets/images/프톤트_김민재.JPG" alt="김민재" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 1rem; object-fit: cover;" />
                             <h4 style="color: #2563eb; margin-bottom: 0.5rem;">김민재</h4>
-                            <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;"><strong>Frontend Developer</strong></p>
-                            <p style="font-size: 0.8rem; color: #9ca3af;">React, TypeScript, UI/UX</p>
+                            <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;"><strong>Frontend & AI Developer</strong></p>
+                            <p style="font-size: 0.8rem; color: #9ca3af;">React, TypeScript, Google Gemini AI</p>
                         </div>
                         <div style="text-align: center; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 2px solid #e5e7eb;">
                             <img src="../assets/images/프톤트_김영서.JPG" alt="김영서" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 1rem; object-fit: cover;" />
@@ -596,14 +603,6 @@
                         </ul>
                     </div>
                     
-                    <h3>2. 사용자 중심 설계</h3>
-                    <p>노인 사용자들의 특성을 고려한 UI/UX 설계의 중요성을 깨달았습니다. 단순함이 복잡함보다 더 가치 있다는 것을 배웠습니다.</p>
-                    
-                    <h3>3. 최신 기술 스택 활용</h3>
-                    <p>Vite와 Tailwind CSS 같은 최신 도구들을 프로젝트에 적용하면서 개발 생산성이 얼마나 향상되는지 경험했습니다.</p>
-                    
-                    <h3>4. TypeScript의 장점</h3>
-                    <p>대규모 프로젝트에서 TypeScript의 타입 안정성이 얼마나 중요한지 실감했습니다. 특히 팀 프로젝트에서 API 응답 타입을 정의하는 것이 매우 유용했습니다.</p>
 
                     <h2 id="conclusion">🎉 마무리</h2>
                     
@@ -615,8 +614,8 @@
                         <h4 style="color: #374151; margin-top: 1.5rem;">🤝 팀 협업의 가치</h4>
                         <p>프론트엔드, 백엔드, AI 모듈이 함께 작업하는 과정에서 각자의 역할과 책임이 명확해야 한다는 것을 배웠습니다. 특히 API 설계 단계에서 충분한 소통이 얼마나 중요한지 실감했습니다.</p>
                         
-                        <h4 style="color: #374151; margin-top: 1.5rem;">🎨 사용자 경험의 중요성</h4>
-                        <p>노인 사용자들을 대상으로 한 프로젝트에서 접근성과 사용성의 중요성을 깊이 이해했습니다. 큰 버튼, 명확한 색상 대비, 직관적인 네비게이션 등이 사용자 경험에 미치는 영향을 직접 경험했습니다.</p>
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🤖 AI 개발 경험</h4>
+                        <p>Google Gemini AI를 활용한 감정 분석과 인물 인식 기능을 개발하면서 AI 모듈의 통합과 최적화에 대해 배웠습니다. 특히 노인 사용자들을 위한 직관적인 AI 인터페이스 설계의 중요성을 깨달았습니다.</p>
                         
                         <h4 style="color: #374151; margin-top: 1.5rem;">⚡ 최신 기술의 활용</h4>
                         <p>Vite의 빠른 빌드 속도, Tailwind CSS의 효율적인 스타일링, TypeScript의 타입 안정성 등 최신 기술들이 개발 생산성과 코드 품질에 미치는 긍정적인 영향을 체감했습니다.</p>
