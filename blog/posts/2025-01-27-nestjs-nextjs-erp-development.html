@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 NestJS + Next.js ERP 시스템 개발일지: 신청서 관리 시스템 구축 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .post-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+        
+        .post-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .post-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .post-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+        
+        .post-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .post-meta-item i {
+            color: #2563eb;
+        }
+        
+        .post-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .tag {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .post-body {
+            line-height: 1.8;
+            color: #374151;
+        }
+        
+        .post-body h2 {
+            font-size: 1.8rem;
+            color: #333;
+            margin: 2.5rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .post-body h3 {
+            font-size: 1.4rem;
+            color: #333;
+            margin: 2rem 0 1rem 0;
+        }
+        
+        .post-body h4 {
+            font-size: 1.2rem;
+            color: #333;
+            margin: 1.5rem 0 0.5rem 0;
+        }
+        
+        .post-body p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .post-body ul, .post-body ol {
+            margin: 1rem 0 1.5rem 2rem;
+        }
+        
+        .post-body li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .code-block .comment {
+            color: #64748b;
+        }
+        
+        .code-block .keyword {
+            color: #c084fc;
+        }
+        
+        .code-block .string {
+            color: #10b981;
+        }
+        
+        .highlight-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .highlight-box h4 {
+            color: #92400e;
+            margin-top: 0;
+        }
+        
+        .highlight-box p {
+            color: #92400e;
+            margin-bottom: 0;
+        }
+        
+        .problem-solution {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .problem, .solution {
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .problem {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .problem h4 {
+            color: #dc2626;
+            margin-top: 0;
+        }
+        
+        .solution {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+        }
+        
+        .solution h4 {
+            color: #16a34a;
+            margin-top: 0;
+        }
+        
+        .back-to-blog {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-to-blog:hover {
+            gap: 0.75rem;
+        }
+        
+        .toc {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .toc ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc a {
+            color: #2563eb;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .toc a:hover {
+            color: #1d4ed8;
+        }
+        
+        @media (max-width: 768px) {
+            .post-content {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+            
+            .post-title {
+                font-size: 2rem;
+            }
+            
+            .post-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .problem-solution {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">🚀 NestJS + Next.js ERP 시스템 개발일지: 신청서 관리 시스템 구축</h1>
+                    
+                    <div class="post-meta">
+                        <div class="post-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>2025년 1월 27일</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>약 8분 읽기</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>김민재</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post-tags">
+                        <span class="tag">NestJS</span>
+                        <span class="tag">Next.js</span>
+                        <span class="tag">TypeScript</span>
+                        <span class="tag">ERP</span>
+                        <span class="tag">React Hook Form</span>
+                        <span class="tag">개발일지</span>
+                    </div>
+                </header>
+                
+                <div class="post-body">
+                    <div class="toc">
+                        <h3>📋 목차</h3>
+                        <ul>
+                            <li><a href="#goals">오늘의 작업 목표</a></li>
+                            <li><a href="#features">구현한 기능들</a></li>
+                            <li><a href="#problems">해결한 기술적 문제들</a></li>
+                            <li><a href="#learning">주요 학습 포인트</a></li>
+                            <li><a href="#next-steps">다음 단계 계획</a></li>
+                            <li><a href="#tips">개발 팁</a></li>
+                        </ul>
+                    </div>
+
+                    <h2 id="goals">🎯 오늘의 작업 목표</h2>
+                    <ul>
+                        <li>프로그램 신청서 등록 후 라우팅 개선</li>
+                        <li>사용자별 신청 목록 보기 기능 구현</li>
+                        <li>관리자용 프로그램별 신청자 목록 페이지 생성</li>
+                        <li>Admin도 테스트용으로 프로그램 신청 가능하도록 수정</li>
+                    </ul>
+
+                    <h2 id="features">🛠️ 구현한 기능들</h2>
+
+                    <h3>1. 신청서 등록 후 라우팅 수정</h3>
+                    <div class="problem-solution">
+                        <div class="problem">
+                            <h4>❌ 문제</h4>
+                            <p>신청서 등록 후 <code>/applications</code> 페이지로 이동하는데, 사용자가 프로그램 상세 정보를 다시 확인하고 싶어함</p>
+                        </div>
+                        <div class="solution">
+                            <h4>✅ 해결</h4>
+                            <p>신청 완료 후 해당 프로그램 상세 페이지로 리다이렉트하도록 수정</p>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+<span class="comment">// 기존</span>
+<span class="keyword">router</span>.<span class="keyword">push</span>(<span class="string">'/applications'</span>);
+
+<span class="comment">// 수정 후</span>
+<span class="keyword">router</span>.<span class="keyword">push</span>(<span class="string">`/programs/${programId}`</span>);
+                    </div>
+
+                    <h3>2. 사용자별 신청 목록 페이지 생성</h3>
+                    <p><strong>새로 생성한 페이지</strong>: <code>/frontend/src/app/applications/page.tsx</code></p>
+                    <ul>
+                        <li>사용자가 신청한 모든 프로그램 목록 표시</li>
+                        <li>신청 상태별 배지 표시 (제출됨, 심사중, 선정됨, 불합격, 철회됨)</li>
+                        <li>각 신청서별 상세보기 링크 제공</li>
+                    </ul>
+
+                    <h3>3. 신청서 상세 보기 페이지</h3>
+                    <p><strong>새로 생성한 페이지</strong>: <code>/frontend/src/app/applications/[id]/page.tsx</code></p>
+                    <ul>
+                        <li>신청서 내용과 프로그램 정보를 함께 표시</li>
+                        <li>신청자 정보와 신청 상태 표시</li>
+                        <li>프로그램 상세보기로 이동하는 링크 제공</li>
+                    </ul>
+
+                    <h3>4. 관리자용 신청자 목록 페이지</h3>
+                    <p><strong>새로 생성한 페이지</strong>: <code>/frontend/src/app/admin/programs/[id]/applications/page.tsx</code></p>
+                    <ul>
+                        <li>특정 프로그램의 모든 신청자 목록 표시</li>
+                        <li>신청자 검색 기능 (이름, 이메일, 소속)</li>
+                        <li>신청 상태별 통계 표시</li>
+                        <li>각 신청자별 상세보기 및 심사 기능</li>
+                    </ul>
+
+                    <h3>5. Admin 신청 가능 기능 (테스트용)</h3>
+                    <div class="problem-solution">
+                        <div class="problem">
+                            <h4>❌ 문제</h4>
+                            <p>Admin이 프로그램에 신청할 수 없어서 테스트가 어려움</p>
+                        </div>
+                        <div class="solution">
+                            <h4>✅ 해결</h4>
+                            <p>Admin도 신청할 수 있도록 권한 체크 로직 수정</p>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+<span class="comment">// 기존</span>
+<span class="keyword">const</span> canApply = user?.role === <span class="string">'applicant'</span> && program.status === <span class="string">'open'</span>;
+
+<span class="comment">// 수정 후</span>
+<span class="keyword">const</span> canApply = user && program.status === <span class="string">'open'</span>; <span class="comment">// admin도 신청 가능</span>
+                    </div>
+
+                    <h3>6. 프로그램 수정 페이지 상태 표시 문제</h3>
+                    <div class="problem-solution">
+                        <div class="problem">
+                            <h4>❌ 문제</h4>
+                            <p>프로그램 수정 페이지에서 현재 상태가 드롭다운에 표시되지 않음</p>
+                        </div>
+                        <div class="solution">
+                            <h4>✅ 해결</h4>
+                            <p><code>useForm</code>의 <code>watch</code> 함수를 사용하여 실시간으로 현재 값 표시</p>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+&lt;<span class="keyword">Select</span> 
+  value={<span class="keyword">watch</span>(<span class="string">'status'</span>) || <span class="string">''</span>} 
+  onValueChange={(value) => <span class="keyword">setValue</span>(<span class="string">'status'</span>, value)}
+&gt;
+                    </div>
+
+                    <h3>7. 네비게이션 개선</h3>
+                    <ul>
+                        <li>헤더에 "내 신청 목록" 링크 추가</li>
+                        <li>사이드바에 "신청서" 메뉴 추가</li>
+                        <li>어드민 프로그램 목록에 각 프로그램별 "신청자 목록" 버튼 추가</li>
+                    </ul>
+
+                    <h2 id="problems">🔧 해결한 기술적 문제들</h2>
+
+                    <h3>1. organizerId 업데이트 제한 문제</h3>
+                    <div class="highlight-box">
+                        <h4>⚠️ 문제 상황</h4>
+                        <p>프로그램 수정 시 <code>organizerId</code> 속성이 존재하지 않아야 한다는 오류 발생</p>
+                    </div>
+
+                    <p><strong>원인</strong>: 보안상의 이유로 프로그램 생성 후 주최 기관 변경을 제한해야 함</p>
+
+                    <div class="code-block">
+<span class="comment">// 백엔드 서비스에서 organizerId 제외</span>
+<span class="keyword">const</span> { organizerId, ...updateData } = updateProgramDto;
+
+<span class="comment">// 프론트엔드에서도 organizerId 제외</span>
+<span class="keyword">const</span> { organizerId, ...updateData } = data;
+                    </div>
+
+                    <h3>2. TypeScript 린터 오류들</h3>
+                    <ul>
+                        <li><code>any</code> 타입 사용 → <code>unknown</code> 타입으로 변경</li>
+                        <li>사용하지 않는 import 제거</li>
+                        <li>ESLint 경고 무시 주석 추가</li>
+                    </ul>
+
+                    <h3>3. 도커 빌드 실패</h3>
+                    <p><strong>문제</strong>: 프론트엔드 빌드 시 TypeScript 오류로 인한 실패</p>
+                    <p><strong>해결</strong>: 모든 린터 오류 수정 후 재빌드 성공</p>
+
+                    <h2 id="learning">🎯 주요 학습 포인트</h2>
+
+                    <h3>1. Next.js App Router 구조 이해</h3>
+                    <ul>
+                        <li>동적 라우팅 <code>[id]</code> 사용법</li>
+                        <li>클라이언트 컴포넌트와 서버 컴포넌트 구분</li>
+                        <li>API 라우팅과 페이지 라우팅 분리</li>
+                    </ul>
+
+                    <h3>2. React Hook Form 활용</h3>
+                    <ul>
+                        <li><code>useForm</code>의 <code>watch</code>, <code>setValue</code>, <code>reset</code> 함수 활용</li>
+                        <li>Zod 스키마를 통한 폼 검증</li>
+                        <li>실시간 폼 상태 관리</li>
+                    </ul>
+
+                    <h3>3. TypeScript 타입 안정성</h3>
+                    <ul>
+                        <li>인터페이스 정의와 타입 추론</li>
+                        <li><code>unknown</code> vs <code>any</code> 타입의 차이점</li>
+                        <li>제네릭을 활용한 API 응답 타입 정의</li>
+                    </ul>
+
+                    <h3>4. 백엔드-프론트엔드 연동</h3>
+                    <ul>
+                        <li>RESTful API 설계 원칙</li>
+                        <li>에러 핸들링과 사용자 피드백</li>
+                        <li>권한 기반 접근 제어</li>
+                    </ul>
+
+                    <h2 id="next-steps">📋 다음 단계 계획</h2>
+                    <ol>
+                        <li>신청서 심사 기능 구현</li>
+                        <li>이메일 알림 시스템 추가</li>
+                        <li>대시보드 통계 기능 강화</li>
+                        <li>모바일 반응형 디자인 개선</li>
+                    </ol>
+
+                    <h2 id="tips">💡 개발 팁</h2>
+                    <div class="highlight-box">
+                        <h4>🚀 효과적인 개발 방법</h4>
+                        <ul>
+                            <li><strong>점진적 개발</strong>: 한 번에 모든 기능을 구현하지 말고 단계별로 접근</li>
+                            <li><strong>타입 안정성</strong>: TypeScript를 적극 활용하여 런타임 오류 방지</li>
+                            <li><strong>사용자 경험</strong>: 개발자 관점이 아닌 사용자 관점에서 기능 설계</li>
+                            <li><strong>에러 핸들링</strong>: 모든 API 호출에 적절한 에러 처리와 사용자 피드백 제공</li>
+                        </ul>
+                    </div>
+
+                    <p>이번 작업을 통해 전체적인 신청서 관리 시스템의 기반을 마련했고, 사용자와 관리자 모두에게 편리한 인터페이스를 제공할 수 있게 되었습니다! 🎉</p>
+
+                    <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: #f8fafc; border-radius: 8px;">
+                        <h3>📝 마무리</h3>
+                        <p>오늘도 많은 것을 배우고 성장할 수 있었습니다. 다음 포스트에서는 신청서 심사 기능 구현 과정을 공유하겠습니다!</p>
+                        <p style="margin-top: 1rem; font-weight: 600; color: #2563eb;">함께 성장하는 개발자가 되겠습니다! 🚀</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="../index.html">블로그</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>

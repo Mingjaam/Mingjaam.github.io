@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#home" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 헤더 섹션 -->
+    <header class="blog-header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="blog-title">
+                    <i class="fas fa-laptop-code"></i>
+                    김민재의 개발 블로그
+                </h1>
+                <p class="blog-subtitle">
+                    매일 배우고 성장하는 개발자의 기록
+                </p>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>2025년부터</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-file-alt"></i>
+                        <span id="post-count">1</span>개의 포스트
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-tags"></i>
+                        <span>개발, 학습, 성장</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <div class="content-grid">
+                <!-- 블로그 포스트 목록 -->
+                <section class="posts-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-newspaper"></i> 최신 포스트</h2>
+                        <div class="filter-tabs">
+                            <button class="tab-btn active" data-filter="all">전체</button>
+                            <button class="tab-btn" data-filter="development">개발</button>
+                            <button class="tab-btn" data-filter="learning">학습</button>
+                            <button class="tab-btn" data-filter="project">프로젝트</button>
+                        </div>
+                    </div>
+
+                    <div class="posts-grid">
+                        <!-- 포스트 카드 -->
+                        <article class="post-card" data-category="development project">
+                            <div class="post-meta">
+                                <div class="post-date">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>2025년 1월 27일</span>
+                                </div>
+                                <div class="post-categories">
+                                    <span class="category-tag development">개발</span>
+                                    <span class="category-tag project">프로젝트</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <h3 class="post-title">
+                                    <a href="posts/2025-01-27-nestjs-nextjs-erp-development.html">
+                                        🚀 NestJS + Next.js ERP 시스템 개발일지: 신청서 관리 시스템 구축
+                                    </a>
+                                </h3>
+                                <p class="post-excerpt">
+                                    오늘은 ERP 시스템의 신청서 관리 기능을 완성했습니다. 사용자별 신청 목록, 관리자용 심사 시스템, 그리고 다양한 UX 개선사항들을 구현하며 많은 것을 배웠습니다.
+                                </p>
+                                <div class="post-tags">
+                                    <span class="tag">NestJS</span>
+                                    <span class="tag">Next.js</span>
+                                    <span class="tag">TypeScript</span>
+                                    <span class="tag">ERP</span>
+                                    <span class="tag">React Hook Form</span>
+                                </div>
+                            </div>
+                            <div class="post-footer">
+                                <div class="read-time">
+                                    <i class="fas fa-clock"></i>
+                                    <span>약 8분 읽기</span>
+                                </div>
+                                <a href="posts/2025-01-27-nestjs-nextjs-erp-development.html" class="read-more">
+                                    자세히 보기 <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </article>
+
+                        <!-- 더 많은 포스트가 추가될 예정 -->
+                        <div class="coming-soon">
+                            <div class="coming-soon-content">
+                                <i class="fas fa-rocket"></i>
+                                <h3>더 많은 포스트가 곧 올라올 예정입니다!</h3>
+                                <p>개발 과정에서 배운 것들을 정리해서 공유하겠습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 사이드바 -->
+                <aside class="sidebar">
+                    <!-- 프로필 카드 -->
+                    <div class="profile-card">
+                        <div class="profile-image">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <h3>김민재</h3>
+                        <p>Flutter & React Native 개발자</p>
+                        <div class="profile-links">
+                            <a href="../portfolio/index.html" class="profile-link">
+                                <i class="fas fa-briefcase"></i> 포트폴리오
+                            </a>
+                            <a href="https://github.com/Mingjaam" class="profile-link" target="_blank">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 인기 태그 -->
+                    <div class="widget">
+                        <h3><i class="fas fa-tags"></i> 인기 태그</h3>
+                        <div class="tag-cloud">
+                            <span class="tag-item">Flutter</span>
+                            <span class="tag-item">React Native</span>
+                            <span class="tag-item">TypeScript</span>
+                            <span class="tag-item">NestJS</span>
+                            <span class="tag-item">Next.js</span>
+                            <span class="tag-item">Firebase</span>
+                            <span class="tag-item">PocketBase</span>
+                            <span class="tag-item">AI</span>
+                        </div>
+                    </div>
+
+                    <!-- 최근 댓글 -->
+                    <div class="widget">
+                        <h3><i class="fas fa-comments"></i> 최근 활동</h3>
+                        <div class="recent-activity">
+                            <div class="activity-item">
+                                <i class="fas fa-code"></i>
+                                <span>ERP 시스템 개발 완료</span>
+                                <small>1일 전</small>
+                            </div>
+                            <div class="activity-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>창업주간 우수상 수상</span>
+                                <small>6개월 전</small>
+                            </div>
+                            <div class="activity-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>멋쟁이 사자처럼 13기</span>
+                                <small>10개월 전</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 구독 -->
+                    <div class="widget subscribe-widget">
+                        <h3><i class="fas fa-bell"></i> 블로그 구독</h3>
+                        <p>새로운 포스트가 올라오면 알려드릴게요!</p>
+                        <form class="subscribe-form">
+                            <input type="email" placeholder="이메일 주소" required>
+                            <button type="submit">구독하기</button>
+                        </form>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                        <li><a href="https://linkedin.com/in/민재-김-209b0533b" target="_blank">LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
