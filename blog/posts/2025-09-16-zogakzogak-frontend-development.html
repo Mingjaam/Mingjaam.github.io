@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧩 조각조각: 노인과 보호자를 위한 추억 관리 플랫폼 프론트엔드 개발기 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .post-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+        
+        .post-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .post-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .post-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+        
+        .post-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .post-meta-item i {
+            color: #2563eb;
+        }
+        
+        .post-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .tag {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .post-body {
+            line-height: 1.8;
+            color: #374151;
+        }
+        
+        .post-body h2 {
+            font-size: 1.8rem;
+            color: #333;
+            margin: 2.5rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .post-body h3 {
+            font-size: 1.4rem;
+            color: #333;
+            margin: 2rem 0 1rem 0;
+        }
+        
+        .post-body h4 {
+            font-size: 1.2rem;
+            color: #333;
+            margin: 1.5rem 0 0.5rem 0;
+        }
+        
+        .post-body p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .post-body ul, .post-body ol {
+            margin: 1rem 0 1.5rem 2rem;
+        }
+        
+        .post-body li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .code-block .comment {
+            color: #64748b;
+        }
+        
+        .code-block .keyword {
+            color: #c084fc;
+        }
+        
+        .code-block .string {
+            color: #10b981;
+        }
+        
+        .highlight-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .highlight-box h4 {
+            color: #92400e;
+            margin-top: 0;
+        }
+        
+        .highlight-box p {
+            color: #92400e;
+            margin-bottom: 0;
+        }
+        
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tech-item {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .tech-item h4 {
+            color: #2563eb;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tech-item p {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+        
+        .back-to-blog {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-to-blog:hover {
+            gap: 0.75rem;
+        }
+        
+        .toc {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .toc ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc a {
+            color: #2563eb;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .toc a:hover {
+            color: #1d4ed8;
+        }
+        
+        @media (max-width: 768px) {
+            .post-content {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+            
+            .post-title {
+                font-size: 2rem;
+            }
+            
+            .post-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .tech-stack {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">🧩 조각조각: 노인과 보호자를 위한 추억 관리 플랫폼 프론트엔드 개발기</h1>
+                    
+                    <div class="post-meta">
+                        <div class="post-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>2025년 9월 16일</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>약 6분 읽기</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>김민재</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post-tags">
+                        <span class="tag">React</span>
+                        <span class="tag">TypeScript</span>
+                        <span class="tag">Vite</span>
+                        <span class="tag">Tailwind CSS</span>
+                        <span class="tag">팀프로젝트</span>
+                        <span class="tag">프론트엔드</span>
+                    </div>
+                </header>
+                
+                <div class="post-body">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                        <h3 style="color: white; margin-bottom: 1rem;">🧩 조각조각 프로젝트 소개</h3>
+                        <p style="color: white; line-height: 1.6; margin-bottom: 0;">
+                            '조각조각'은 노인과 보호자가 함께 소중한 추억을 기록하고 관리할 수 있는 플랫폼입니다. 
+                            이번 프로젝트에서 저는 프론트엔드 개발을 담당하여 사용자 친화적인 인터페이스를 구현했습니다. 
+                            React, TypeScript, Vite, Tailwind CSS 등 최신 기술 스택을 활용한 개발 경험을 공유하고자 합니다.
+                        </p>
+                    </div>
+
+                    <div class="toc">
+                        <h3>📋 목차</h3>
+                        <ul>
+                            <li><a href="#overview">프로젝트 개요</a></li>
+                            <li><a href="#tech-stack">기술 스택</a></li>
+                            <li><a href="#features">주요 기능</a></li>
+                            <li><a href="#challenges">개발 과정의 도전과 해결</a></li>
+                            <li><a href="#learning">학습 포인트</a></li>
+                            <li><a href="#conclusion">마무리</a></li>
+                        </ul>
+                    </div>
+
+                    <h2 id="overview">🎯 프로젝트 개요</h2>
+                    <p>조각조각(ZogakZogak)은 사용자들이 일상에서 경험하는 다양한 순간들을 사진과 함께 기록하고 공유할 수 있는 소셜 미디어 애플리케이션입니다. 이 앱은 사용자들이 자신의 일상을 조각조각 모아 하나의 이야기로 만들어가는 것을 목표로 합니다.</p>
+                    
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../assets/images/메인 페이지 사진.PNG" alt="조각조각 메인 페이지" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);" />
+                        <p style="color: #6b7280; font-size: 0.9rem; margin-top: 0.5rem;">조각조각 메인 페이지 - 일상의 조각들을 모아 하나의 이야기로</p>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 3rem 0; background: #f8fafc; padding: 2rem; border-radius: 12px;">
+                        <h3 style="color: #2563eb; margin-bottom: 1.5rem;">🎬 조각조각 시연 영상</h3>
+                        <p style="color: #6b7280; margin-bottom: 1.5rem;">조각조각 앱의 실제 사용 모습을 확인해보세요!</p>
+                        <a href="https://www.youtube.com/watch?v=d4U4ES7MPD0" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.3s ease;">
+                            <i class="fas fa-play-circle" style="margin-right: 0.5rem;"></i>
+                            시연 영상 보기
+                        </a>
+                        <p style="color: #9ca3af; font-size: 0.8rem; margin-top: 1rem;">YouTube에서 조각조각 앱의 모든 기능을 확인할 수 있습니다</p>
+                    </div>
+                    
+                    <div class="highlight-box">
+                        <h4>💡 프로젝트 목표</h4>
+                        <p>사용자들이 일상의 소중한 순간들을 쉽게 기록하고, 친구들과 공유하며, 여러 장의 사진을 모아 하나의 스토리로 구성할 수 있는 직관적인 플랫폼을 만드는 것입니다. 특히 노인 사용자들도 쉽게 사용할 수 있도록 접근성을 고려한 UI/UX를 제공합니다.</p>
+                    </div>
+
+                    <h3>🏆 프로젝트 성과</h3>
+                    <p>조각조각 프로젝트는 한일 로컬 러닝맨 대회에서 우수한 성과를 거두어 우수상을 수상했습니다. 이는 팀원들의 열정적인 노력과 사용자 중심의 설계 철학이 인정받은 결과라고 생각합니다.</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2rem 0;">
+                        <div style="text-align: center;">
+                            <img src="../assets/images/수상자 단체사진.JPG" alt="수상자 단체사진" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);" />
+                            <p style="color: #6b7280; font-size: 0.9rem; margin-top: 0.5rem;">한일 로컬 러닝맨 우수상 수상자 단체사진</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <img src="../assets/images/우리팀 발표사진.JPG" alt="팀 발표사진" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);" />
+                            <p style="color: #6b7280; font-size: 0.9rem; margin-top: 0.5rem;">조각조각 팀 발표 모습</p>
+                        </div>
+                    </div>
+
+                    <h2 id="tech-stack">🛠️ 기술 스택</h2>
+                    <p>프론트엔드 개발에서는 최신 기술 스택을 활용하여 안정적이고 확장 가능한 애플리케이션을 구축했습니다.</p>
+                    
+                    <div class="tech-stack">
+                        <div class="tech-item">
+                            <h4>⚛️ React</h4>
+                            <p>컴포넌트 기반의 UI 개발을 위해 사용</p>
+                        </div>
+                        <div class="tech-item">
+                            <h4>📘 TypeScript</h4>
+                            <p>정적 타입 체크로 코드 안정성 향상</p>
+                        </div>
+                        <div class="tech-item">
+                            <h4>⚡ Vite</h4>
+                            <p>빠른 빌드와 개발 환경 제공</p>
+                        </div>
+                        <div class="tech-item">
+                            <h4>🎨 Tailwind CSS</h4>
+                            <p>유틸리티 퍼스트 CSS 프레임워크</p>
+                        </div>
+                    </div>
+
+                    <h3>기술 선택 이유</h3>
+                    <ul>
+                        <li><strong>React</strong>: 컴포넌트 재사용성과 가상 DOM을 통한 성능 최적화</li>
+                        <li><strong>TypeScript</strong>: 개발 단계에서 타입 오류를 잡아내어 런타임 에러 방지</li>
+                        <li><strong>Vite</strong>: 빠른 HMR(Hot Module Replacement)과 빌드 속도</li>
+                        <li><strong>Tailwind CSS</strong>: 일관된 디자인 시스템과 빠른 스타일링</li>
+                    </ul>
+
+                    <h2 id="features">✨ 주요 기능</h2>
+                    <p>조각조각 플랫폼의 핵심 기능들을 자세히 소개합니다. 각 기능은 사용자 경험을 최우선으로 고려하여 설계되었습니다.</p>
+                    
+                    <h3>📸 사진 업로드 및 공유</h3>
+                    <p>사용자는 일상에서 찍은 사진을 쉽게 업로드하고, 간단한 설명과 함께 친구들과 공유할 수 있습니다. 드래그 앤 드롭 인터페이스와 실시간 미리보기 기능을 통해 직관적인 사용자 경험을 제공합니다.</p>
+                    
+                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                        <h4 style="color: #2563eb; margin-top: 0;">🔧 구현 세부사항</h4>
+                        <ul>
+                            <li><strong>이미지 최적화:</strong> 업로드된 이미지를 자동으로 압축하여 로딩 속도 향상</li>
+                            <li><strong>다중 업로드:</strong> 여러 장의 사진을 한 번에 선택하여 업로드 가능</li>
+                            <li><strong>실시간 미리보기:</strong> 업로드 전 사진을 미리 확인할 수 있는 기능</li>
+                            <li><strong>EXIF 데이터 처리:</strong> 사진의 메타데이터를 활용한 자동 태그 생성</li>
+                        </ul>
+                    </div>
+
+                    <h3>📖 스토리 생성</h3>
+                    <p>여러 장의 사진을 모아 하나의 스토리로 구성하여, 특정 이벤트나 주제에 대한 이야기를 만들 수 있습니다. 시간순 정렬과 자동 레이아웃 기능을 통해 아름다운 스토리를 쉽게 구성할 수 있습니다.</p>
+                    
+                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                        <h4 style="color: #2563eb; margin-top: 0;">🎨 스토리 편집 기능</h4>
+                        <ul>
+                            <li><strong>템플릿 시스템:</strong> 다양한 레이아웃 템플릿 제공</li>
+                            <li><strong>텍스트 오버레이:</strong> 사진 위에 설명 텍스트 추가</li>
+                            <li><strong>필터 효과:</strong> 사진에 다양한 필터 효과 적용</li>
+                            <li><strong>자동 정렬:</strong> 시간순, 장소순 등 다양한 정렬 옵션</li>
+                        </ul>
+                    </div>
+
+                    <h3>👥 커뮤니티 피드</h3>
+                    <p>친구들의 최신 게시물을 한눈에 볼 수 있는 피드를 제공하여, 서로의 일상을 쉽게 확인하고 소통할 수 있습니다. 무한 스크롤과 지연 로딩을 통해 부드러운 사용자 경험을 제공합니다.</p>
+                    
+                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                        <h4 style="color: #2563eb; margin-top: 0;">🔄 피드 최적화</h4>
+                        <ul>
+                            <li><strong>무한 스크롤:</strong> 페이지네이션 없이 연속적인 콘텐츠 로딩</li>
+                            <li><strong>지연 로딩:</strong> 뷰포트에 들어올 때만 이미지 로딩</li>
+                            <li><strong>캐싱 시스템:</strong> 이미 로드된 콘텐츠의 빠른 재표시</li>
+                            <li><strong>개인화 알고리즘:</strong> 사용자 관심사 기반 콘텐츠 추천</li>
+                        </ul>
+                    </div>
+
+                    <h3>💬 댓글 및 좋아요</h3>
+                    <p>게시물에 댓글을 달거나 좋아요를 눌러, 친구들과의 상호작용을 촉진합니다. 실시간 알림 시스템과 함께 사용자 간의 활발한 소통을 지원합니다.</p>
+                    
+                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                        <h4 style="color: #2563eb; margin-top: 0;">🔔 상호작용 기능</h4>
+                        <ul>
+                            <li><strong>실시간 댓글:</strong> WebSocket을 활용한 실시간 댓글 시스템</li>
+                            <li><strong>이모지 반응:</strong> 다양한 이모지로 감정 표현</li>
+                            <li><strong>댓글 알림:</strong> 새로운 댓글에 대한 즉시 알림</li>
+                            <li><strong>좋아요 애니메이션:</strong> 시각적으로 만족스러운 피드백</li>
+                        </ul>
+                    </div>
+
+                    <h3>📱 반응형 디자인</h3>
+                    <p>다양한 디바이스에서 최적의 사용자 경험을 제공하기 위해 반응형 디자인을 적용했습니다. 모바일, 태블릿, 데스크톱 모든 환경에서 일관된 사용자 경험을 제공합니다.</p>
+                    
+                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                        <h4 style="color: #2563eb; margin-top: 0;">📐 반응형 구현</h4>
+                        <ul>
+                            <li><strong>모바일 퍼스트:</strong> 모바일 환경을 우선으로 한 디자인</li>
+                            <li><strong>유연한 그리드:</strong> CSS Grid와 Flexbox를 활용한 레이아웃</li>
+                            <li><strong>터치 최적화:</strong> 터치 인터페이스에 최적화된 버튼 크기</li>
+                            <li><strong>성능 최적화:</strong> 디바이스별 최적화된 이미지 제공</li>
+                        </ul>
+                    </div>
+
+                    <h2 id="challenges">🔧 개발 과정의 도전과 해결</h2>
+                    <p>조각조각 프로젝트를 개발하면서 겪은 다양한 도전과 그 해결 과정을 공유합니다.</p>
+                    
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../assets/images/우리팀 개발 과정.jpg" alt="팀 개발 과정" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);" />
+                        <p style="color: #6b7280; font-size: 0.9rem; margin-top: 0.5rem;">조각조각 팀의 열정적인 개발 과정</p>
+                    </div>
+                    
+                    <h3>1. 반응형 디자인 구현</h3>
+                    <div class="highlight-box">
+                        <h4>🎯 도전 과제</h4>
+                        <p>노인 사용자들을 고려하여 큰 화면과 작은 화면 모두에서 사용하기 편한 인터페이스를 구현해야 했습니다.</p>
+                    </div>
+                    
+                    <p><strong>해결 방법</strong>: Tailwind CSS의 반응형 유틸리티 클래스를 활용하여 모바일 퍼스트 접근 방식으로 디자인했습니다.</p>
+                    
+                    <div class="code-block">
+<span class="comment">// 반응형 디자인 예시</span>
+&lt;<span class="keyword">div</span> <span class="keyword">className</span>=<span class="string">"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"</span>&gt;
+  &lt;<span class="keyword">div</span> <span class="keyword">className</span>=<span class="string">"p-4 bg-white rounded-lg shadow-md"</span>&gt;
+    <span class="comment">// 카드 내용</span>
+  &lt;/<span class="keyword">div</span>&gt;
+&lt;/<span class="keyword">div</span>&gt;
+                    </div>
+
+                    <h3>2. 상태 관리</h3>
+                    <p>복잡한 상태 관리를 위해 React의 Context API와 useReducer를 활용했습니다. 전역 상태와 지역 상태를 적절히 분리하여 관리했습니다.</p>
+                    
+                    <div class="code-block">
+<span class="comment">// Context API를 활용한 상태 관리</span>
+<span class="keyword">const</span> <span class="keyword">AppContext</span> = <span class="keyword">createContext</span>(<span class="keyword">null</span>);
+
+<span class="keyword">const</span> <span class="keyword">AppProvider</span> = ({ <span class="keyword">children</span> }) => {
+  <span class="keyword">const</span> [<span class="keyword">state</span>, <span class="keyword">dispatch</span>] = <span class="keyword">useReducer</span>(<span class="keyword">appReducer</span>, <span class="keyword">initialState</span>);
+  
+  <span class="keyword">return</span> (
+    &lt;<span class="keyword">AppContext</span>.<span class="keyword">Provider</span> <span class="keyword">value</span>={{ <span class="keyword">state</span>, <span class="keyword">dispatch</span> }}&gt;
+      {<span class="keyword">children</span>}
+    &lt;/<span class="keyword">AppContext</span>.<span class="keyword">Provider</span>&gt;
+  );
+};
+                    </div>
+
+                    <h3>3. 접근성 고려</h3>
+                    <p>노인 사용자들을 위해 접근성을 고려한 UI/UX를 구현했습니다. 큰 버튼, 명확한 색상 대비, 키보드 네비게이션 등을 적용했습니다.</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                        <div style="text-align: center;">
+                            <img src="../assets/images/accessibility-before.png" alt="접근성 개선 전" style="width: 100%; max-width: 300px; height: auto; border-radius: 8px; border: 2px solid #ef4444;" />
+                            <p style="color: #dc2626; font-size: 0.9rem; margin-top: 0.5rem;">개선 전: 작은 버튼과 낮은 대비</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <img src="../assets/images/accessibility-after.png" alt="접근성 개선 후" style="width: 100%; max-width: 300px; height: auto; border-radius: 8px; border: 2px solid #22c55e;" />
+                            <p style="color: #16a34a; font-size: 0.9rem; margin-top: 0.5rem;">개선 후: 큰 버튼과 높은 대비</p>
+                        </div>
+                    </div>
+
+                    <h2 id="learning">📚 학습 포인트</h2>
+                    <p>조각조각 프로젝트를 통해 얻은 소중한 경험과 학습 내용을 공유합니다.</p>
+                    
+                    <h3>👥 팀 협업의 중요성</h3>
+                    <p>프론트엔드와 백엔드, AI 모듈이 함께 작업하는 팀 프로젝트에서 API 설계와 데이터 구조에 대한 소통이 얼마나 중요한지 배웠습니다. 특히 실시간 기능 구현을 위해 WebSocket 통신 방식을 백엔드 팀과 협의하여 설계했습니다.</p>
+                    
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; margin: 2rem 0; text-align: center;">
+                        <h3 style="color: white; margin-bottom: 1rem;">🏆 조각조각팀 (ZogakZogak Team)</h3>
+                        <p style="color: white; font-size: 1.1rem; margin-bottom: 0;">한일 로컬 러닝맨 우수상 수상팀</p>
+                    </div>
+                    
+                    <h4 style="color: #2563eb; margin-bottom: 1.5rem;">👨‍💻 팀원 소개</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2rem 0;">
+                        <div style="text-align: center; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 2px solid #e5e7eb;">
+                            <img src="../assets/images/내 단독 사진.JPG" alt="프론트엔드 개발자" style="width: 100%; max-width: 200px; height: auto; border-radius: 50%; margin-bottom: 1rem;" />
+                            <h4 style="color: #2563eb; margin-bottom: 0.5rem;">프론트엔드 개발자</h4>
+                            <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;"><strong>담당 역할:</strong> React, TypeScript, UI/UX</p>
+                            <p style="font-size: 0.8rem; color: #9ca3af;">• 사용자 인터페이스 설계 및 구현<br/>• 반응형 디자인 및 접근성 고려<br/>• 실시간 통신 기능 구현</p>
+                        </div>
+                        <div style="text-align: center; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 2px solid #e5e7eb;">
+                            <img src="../assets/images/백앤드 양지우 사진.jpg" alt="백엔드 개발자" style="width: 100%; max-width: 200px; height: auto; border-radius: 50%; margin-bottom: 1rem;" />
+                            <h4 style="color: #2563eb; margin-bottom: 0.5rem;">백엔드 개발자 - 양지우</h4>
+                            <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;"><strong>담당 역할:</strong> Node.js, Express, 데이터베이스</p>
+                            <p style="font-size: 0.8rem; color: #9ca3af;">• RESTful API 설계 및 구현<br/>• 데이터베이스 설계 및 관리<br/>• WebSocket 실시간 통신</p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0;">
+                        <h4 style="color: #0369a1; margin-top: 0;">🤝 팀 협업 과정</h4>
+                        <ul style="color: #0369a1;">
+                            <li><strong>기획 단계:</strong> 사용자 요구사항 분석 및 기능 정의를 함께 논의</li>
+                            <li><strong>설계 단계:</strong> API 명세서 작성 및 데이터 구조 설계 협의</li>
+                            <li><strong>개발 단계:</strong> 일일 스탠드업 미팅을 통한 진행상황 공유</li>
+                            <li><strong>테스트 단계:</strong> 통합 테스트 및 사용자 테스트 함께 진행</li>
+                            <li><strong>발표 단계:</strong> 팀원 모두가 참여한 발표 및 시연</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>2. 사용자 중심 설계</h3>
+                    <p>노인 사용자들의 특성을 고려한 UI/UX 설계의 중요성을 깨달았습니다. 단순함이 복잡함보다 더 가치 있다는 것을 배웠습니다.</p>
+                    
+                    <h3>3. 최신 기술 스택 활용</h3>
+                    <p>Vite와 Tailwind CSS 같은 최신 도구들을 프로젝트에 적용하면서 개발 생산성이 얼마나 향상되는지 경험했습니다.</p>
+                    
+                    <h3>4. TypeScript의 장점</h3>
+                    <p>대규모 프로젝트에서 TypeScript의 타입 안정성이 얼마나 중요한지 실감했습니다. 특히 팀 프로젝트에서 API 응답 타입을 정의하는 것이 매우 유용했습니다.</p>
+
+                    <h2 id="conclusion">🎉 마무리</h2>
+                    
+                    <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 2rem; margin: 3rem 0; border-radius: 0 8px 8px 0;">
+                        <h3 style="color: #2563eb; margin-top: 0;">💭 프로젝트를 마치며</h3>
+                        
+                        <p>조각조각 프로젝트를 통해 사용자 중심의 개발이 무엇인지 깊이 있게 배울 수 있었습니다. 단순히 기능을 구현하는 것이 아니라, 실제 사용자들이 편리하게 사용할 수 있는 인터페이스를 만드는 것이 얼마나 중요한지 깨달았습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🤝 팀 협업의 가치</h4>
+                        <p>프론트엔드, 백엔드, AI 모듈이 함께 작업하는 과정에서 각자의 역할과 책임이 명확해야 한다는 것을 배웠습니다. 특히 API 설계 단계에서 충분한 소통이 얼마나 중요한지 실감했습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🎨 사용자 경험의 중요성</h4>
+                        <p>노인 사용자들을 대상으로 한 프로젝트에서 접근성과 사용성의 중요성을 깊이 이해했습니다. 큰 버튼, 명확한 색상 대비, 직관적인 네비게이션 등이 사용자 경험에 미치는 영향을 직접 경험했습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">⚡ 최신 기술의 활용</h4>
+                        <p>Vite의 빠른 빌드 속도, Tailwind CSS의 효율적인 스타일링, TypeScript의 타입 안정성 등 최신 기술들이 개발 생산성과 코드 품질에 미치는 긍정적인 영향을 체감했습니다.</p>
+                        
+                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
+                            <h4 style="color: #92400e; margin-top: 0;">🚀 앞으로의 다짐</h4>
+                            <p style="color: #92400e; margin-bottom: 0;">
+                                이번 프로젝트를 통해 배운 사용자 중심의 개발 철학을 앞으로의 모든 프로젝트에 적용하겠습니다. 
+                                기술적 완성도뿐만 아니라 사용자 경험을 최우선으로 고려하는 개발자가 되고 싶습니다. 
+                                또한 팀 협업의 중요성을 깨달았으니, 앞으로 더 나은 소통과 협업을 통해 팀 전체의 성장에 기여하겠습니다.
+                            </p>
+                        </div>
+                        
+                        <div style="text-align: center; margin: 2rem 0; background: #f0f9ff; padding: 2rem; border-radius: 12px; border: 2px solid #0ea5e9;">
+                            <h4 style="color: #0369a1; margin-bottom: 1rem;">🎬 조각조각 시연 영상</h4>
+                            <p style="color: #0369a1; margin-bottom: 1.5rem;">프로젝트의 실제 동작 모습을 확인해보세요!</p>
+                            <a href="https://www.youtube.com/watch?v=d4U4ES7MPD0" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%); color: white; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.3s ease; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);">
+                                <i class="fas fa-play-circle" style="margin-right: 0.5rem;"></i>
+                                시연 영상 보기
+                            </a>
+                        </div>
+                        
+                        <p style="text-align: center; font-weight: 600; color: #2563eb; margin-top: 2rem;">
+                            사용자와 함께 성장하는 개발자가 되겠습니다! 🚀
+                        </p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="../index.html">블로그</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>
+ㅌ
