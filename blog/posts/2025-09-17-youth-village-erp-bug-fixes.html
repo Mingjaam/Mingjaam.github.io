@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏘️ 청년마을 ERP 시스템 개발: 월별 통계 오류 해결 및 UI 개선 작업 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .post-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+        
+        /* 모바일 최적화 */
+        @media (max-width: 768px) {
+            .post-content {
+                padding: 1.5rem;
+                margin: 1rem;
+                border-radius: 8px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .post-content {
+                padding: 1rem;
+                margin: 0.5rem;
+                border-radius: 6px;
+            }
+        }
+        
+        .post-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .post-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .post-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+        
+        .post-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .post-meta-item i {
+            color: #2563eb;
+        }
+        
+        .post-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .tag {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .post-body {
+            line-height: 1.8;
+            color: #374151;
+        }
+        
+        .post-body h2 {
+            font-size: 1.8rem;
+            color: #333;
+            margin: 2.5rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .post-body h3 {
+            font-size: 1.4rem;
+            color: #333;
+            margin: 2rem 0 1rem 0;
+        }
+        
+        .post-body h4 {
+            font-size: 1.2rem;
+            color: #333;
+            margin: 1.5rem 0 0.5rem 0;
+        }
+        
+        .post-body p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .post-body ul, .post-body ol {
+            margin: 1rem 0 1.5rem 2rem;
+        }
+        
+        .post-body li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .code-block .comment {
+            color: #64748b;
+        }
+        
+        .code-block .keyword {
+            color: #c084fc;
+        }
+        
+        .code-block .string {
+            color: #10b981;
+        }
+        
+        .highlight-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .highlight-box h4 {
+            color: #92400e;
+            margin-top: 0;
+        }
+        
+        .highlight-box p {
+            color: #92400e;
+            margin-bottom: 0;
+        }
+        
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tech-item {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .tech-item h4 {
+            color: #2563eb;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tech-item p {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+        
+        .back-to-blog {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-to-blog:hover {
+            gap: 0.75rem;
+        }
+        
+        .toc {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .toc ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc a {
+            color: #2563eb;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .toc a:hover {
+            color: #1d4ed8;
+        }
+        
+        .problem-solution {
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .problem-solution h4 {
+            color: #0369a1;
+            margin-top: 0;
+        }
+        
+        .problem-solution .problem {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        
+        .problem-solution .solution {
+            color: #059669;
+            font-weight: 600;
+        }
+        
+        .success-box {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .success-box h4 {
+            color: #15803d;
+            margin-top: 0;
+        }
+        
+        .success-box p {
+            color: #15803d;
+            margin-bottom: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .post-content {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+            
+            .post-title {
+                font-size: 2rem;
+            }
+            
+            .post-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .tech-stack {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">🏘️ 청년마을 ERP 시스템 개발: 월별 통계 오류 해결 및 UI 개선 작업</h1>
+                    
+                    <div class="post-meta">
+                        <div class="post-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>2025년 9월 17일</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>약 8분 읽기</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>김민재</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post-tags">
+                        <span class="tag">NestJS</span>
+                        <span class="tag">Next.js</span>
+                        <span class="tag">TypeScript</span>
+                        <span class="tag">PostgreSQL</span>
+                        <span class="tag">SQLite</span>
+                        <span class="tag">Docker</span>
+                        <span class="tag">버그 수정</span>
+                        <span class="tag">UI/UX</span>
+                    </div>
+                </header>
+                
+                <div class="post-body">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                        <h3 style="color: white; margin-bottom: 1rem;">🏘️ 청년마을 ERP 시스템 프로젝트</h3>
+                        <p style="color: white; line-height: 1.6; margin-bottom: 0;">
+                            청년마을 ERP 시스템의 관리자 대시보드에서 월별 참여자 현황이 표시되지 않는 문제를 발견하고, 
+                            이를 해결하는 과정에서 여러 UI/UX 개선 작업을 병행했습니다. 
+                            데이터베이스 호환성, Docker 환경 설정, 그리고 사용자 인터페이스 개선까지 
+                            다양한 기술적 도전과 해결 과정을 공유하고자 합니다.
+                        </p>
+                    </div>
+
+                    <div class="toc">
+                        <h3>📋 목차</h3>
+                        <ul>
+                            <li><a href="#overview">프로젝트 배경</a></li>
+                            <li><a href="#main-issues">주요 해결 문제</a></li>
+                            <li><a href="#database-compatibility">데이터베이스 호환성 문제</a></li>
+                            <li><a href="#ui-improvements">UI/UX 개선 작업</a></li>
+                            <li><a href="#docker-issues">Docker 환경 문제</a></li>
+                            <li><a href="#learning-points">개발 과정에서의 학습 포인트</a></li>
+                            <li><a href="#results">결과 및 성과</a></li>
+                            <li><a href="#conclusion">마무리</a></li>
+                        </ul>
+                    </div>
+
+                    <h2 id="overview">🎯 프로젝트 배경</h2>
+                    <p>청년마을 ERP 시스템의 관리자 대시보드에서 월별 참여자 현황이 표시되지 않는 문제를 발견했습니다. 이는 단순한 버그 수정을 넘어서 전체적인 사용자 경험 개선과 시스템 안정성 향상의 기회가 되었습니다.</p>
+                    
+                    <div class="highlight-box">
+                        <h4>💡 개발 동기</h4>
+                        <p>관리자가 월별 참여자 현황을 한눈에 파악할 수 있어야 효과적인 프로그램 관리가 가능합니다. 하지만 현재 시스템에서는 이 중요한 데이터가 표시되지 않아 관리자들이 프로그램 운영 현황을 파악하기 어려운 상황이었습니다.</p>
+                    </div>
+
+                    <h2 id="main-issues">🔧 주요 해결 문제</h2>
+                    <p>이번 작업에서 해결한 주요 문제들을 카테고리별로 정리해보겠습니다.</p>
+
+                    <h3>1. 월별 참여자 현황 데이터 표시 오류</h3>
+                    <div class="problem-solution">
+                        <h4>🚨 문제 상황</h4>
+                        <p class="problem">관리자 대시보드의 "월별 참여자 현황" 섹션에 데이터가 전혀 표시되지 않음</p>
+                        <p class="problem">"월별 데이터가 없습니다" 메시지만 표시됨</p>
+                    </div>
+
+                    <h4>원인 분석</h4>
+                    <div class="code-block">
+<span class="comment">// 문제가 된 코드 (PostgreSQL 함수 사용)</span>
+.<span class="keyword">select</span>(<span class="string">'DATE_TRUNC(\'month\', application.createdAt)'</span>, <span class="string">'month'</span>)
+                    </div>
+
+                    <p>개발 환경에서 SQLite를 사용하고 있는데, PostgreSQL 전용 함수인 <code>DATE_TRUNC</code>를 사용하여 SQL 쿼리가 실행되지 않았습니다.</p>
+
+                    <h4>해결 방법</h4>
+                    <div class="code-block">
+<span class="comment">// SQLite 호환 함수로 변경</span>
+.<span class="keyword">select</span>(<span class="string">'strftime(\'%Y-%m\', application.createdAt)'</span>, <span class="string">'month'</span>)
+.<span class="keyword">groupBy</span>(<span class="string">'strftime(\'%Y-%m\', application.createdAt)'</span>)
+                    </div>
+
+                    <p>SQLite의 <code>strftime</code> 함수를 사용하여 월별 데이터를 올바르게 그룹화하도록 수정했습니다.</p>
+
+                    <div class="success-box">
+                        <h4>✅ 추가 수정사항</h4>
+                        <p><code>getApplicationTrends</code> 메서드도 동일한 문제가 있어 함께 수정</p>
+                        <p><code>DATE_TRUNC('day', ...)</code> → <code>strftime('%Y-%m-%d', ...)</code> 변경</p>
+                    </div>
+
+                    <h3>2. 헤더 드롭다운 메뉴 역할별 조건부 렌더링</h3>
+                    <p>사용자 역할에 따라 헤더 드롭다운 메뉴를 다르게 표시하도록 개선했습니다.</p>
+
+                    <div class="code-block">
+<span class="comment">// 관리자/운영자용 메뉴</span>
+{(<span class="keyword">user</span>.<span class="keyword">role</span> === <span class="string">'admin'</span> || <span class="keyword">user</span>.<span class="keyword">role</span> === <span class="string">'operator'</span>) && (
+  &lt;<span class="keyword">DropdownMenuItem</span> <span class="keyword">asChild</span>&gt;
+    &lt;<span class="keyword">Link</span> <span class="keyword">href</span>=<span class="string">"/admin"</span> <span class="keyword">className</span>=<span class="string">"flex items-center"</span>&gt;
+      &lt;<span class="keyword">Shield</span> <span class="keyword">className</span>=<span class="string">"mr-2 h-4 w-4"</span> /&gt;
+      관리자 페이지
+    &lt;/<span class="keyword">Link</span>&gt;
+  &lt;/<span class="keyword">DropdownMenuItem</span>&gt;
+)}
+
+<span class="comment">// 일반 사용자용 메뉴</span>
+{<span class="keyword">user</span>.<span class="keyword">role</span> === <span class="string">'applicant'</span> && (
+  &lt;<span class="keyword">DropdownMenuItem</span> <span class="keyword">asChild</span>&gt;
+    &lt;<span class="keyword">Link</span> <span class="keyword">href</span>=<span class="string">"/applications"</span> <span class="keyword">className</span>=<span class="string">"flex items-center"</span>&gt;
+      &lt;<span class="keyword">FileText</span> <span class="keyword">className</span>=<span class="string">"mr-2 h-4 w-4"</span> /&gt;
+      내 신청 목록
+    &lt;/<span class="keyword">Link</span>&gt;
+  &lt;/<span class="keyword">DropdownMenuItem</span>&gt;
+)}
+                    </div>
+
+                    <h2 id="database-compatibility">🗄️ 데이터베이스 호환성 문제</h2>
+                    <p>개발 환경과 프로덕션 환경에서 사용하는 데이터베이스가 다를 때 발생하는 호환성 문제를 해결했습니다.</p>
+
+                    <h3>PostgreSQL vs SQLite 함수 차이</h3>
+                    <div class="tech-stack">
+                        <div class="tech-item">
+                            <h4>🐘 PostgreSQL</h4>
+                            <p>DATE_TRUNC() 함수 사용</p>
+                        </div>
+                        <div class="tech-item">
+                            <h4>📱 SQLite</h4>
+                            <p>strftime() 함수 사용</p>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>💡 학습 포인트</h4>
+                        <p>크로스 플랫폼 호환성을 고려한 코드 작성의 중요성을 배웠습니다. 개발 환경과 프로덕션 환경의 차이를 미리 고려하여 데이터베이스 추상화 레이어를 구축하는 것이 중요합니다.</p>
+                    </div>
+
+                    <h2 id="ui-improvements">🎨 UI/UX 개선 작업</h2>
+                    <p>버그 수정과 함께 사용자 경험을 크게 개선하는 작업들을 진행했습니다.</p>
+
+                    <h3>1. 모바일 하단 네비게이션 패딩 추가</h3>
+                    <p>모바일에서 하단 고정 네비게이션이 콘텐츠를 가리지 않도록 패딩을 추가했습니다.</p>
+
+                    <div class="code-block">
+<span class="comment">// 모든 페이지에 모바일 패딩 추가</span>
+&lt;<span class="keyword">div</span> <span class="keyword">className</span>=<span class="string">"flex-1 pb-16 md:pb-0"</span>&gt;
+  {<span class="comment">/* 페이지 콘텐츠 */</span>}
+&lt;/<span class="keyword">div</span>&gt;
+                    </div>
+
+                    <h3>2. 사용자 사이드바 UI 대폭 개선</h3>
+                    <div class="success-box">
+                        <h4>🎯 주요 변경사항</h4>
+                        <ul>
+                            <li>홈 메뉴 제거 및 마을 프로그램 브랜딩 제거</li>
+                            <li>메뉴 확장/축소 기능 제거로 단순화</li>
+                            <li>데스크톱: 전체 배경 위에 떠있는 플로팅 사이드바로 변경</li>
+                            <li>모바일: 하단 고정 네비게이션 추가</li>
+                            <li>메뉴 아이템 높이 통일 (h-16, min-h-16)</li>
+                            <li>호버 효과 및 애니메이션 개선</li>
+                        </ul>
+                    </div>
+
+                    <h3>3. 신청서 상세 페이지 오류 해결</h3>
+                    <div class="problem-solution">
+                        <h4>🚨 문제 상황</h4>
+                        <p class="problem">신청서 상세 페이지에서 <code>application.program.organizer.name</code>이 undefined로 인한 오류 발생</p>
+                    </div>
+
+                    <h4>해결 방법</h4>
+                    <div class="code-block">
+<span class="comment">// 옵셔널 체이닝 적용</span>
+&lt;<span class="keyword">span</span>&gt;주최: {<span class="keyword">application</span>.<span class="keyword">program</span>.<span class="keyword">organizer</span>?.<span class="keyword">name</span> || <span class="string">'정보 없음'</span>}&lt;/<span class="keyword">span</span>&gt;
+
+<span class="comment">// 백엔드에서 organizer 정보 포함하도록 수정</span>
+<span class="keyword">const</span> <span class="keyword">application</span> = <span class="keyword">await</span> <span class="keyword">this</span>.<span class="keyword">applicationRepository</span>
+  .<span class="keyword">createQueryBuilder</span>(<span class="string">'application'</span>)
+  .<span class="keyword">leftJoinAndSelect</span>(<span class="string">'application.program'</span>, <span class="string">'program'</span>)
+  .<span class="keyword">leftJoinAndSelect</span>(<span class="string">'program.organizer'</span>, <span class="string">'organizer'</span>)  <span class="comment">// 추가</span>
+  .<span class="keyword">where</span>(<span class="string">'application.id = :id'</span>, { <span class="keyword">id</span> })
+  .<span class="keyword">getOne</span>();
+                    </div>
+
+                    <h2 id="docker-issues">🐳 Docker 환경 문제</h2>
+                    <p>Docker 환경에서 발생한 여러 문제들을 해결했습니다.</p>
+
+                    <h3>1. ESM 모듈 오류 해결</h3>
+                    <div class="problem-solution">
+                        <h4>🚨 문제 상황</h4>
+                        <p class="problem">Docker 환경에서 <code>uuid</code> 패키지의 ESM 모듈을 CommonJS에서 require할 수 없는 오류 발생</p>
+                    </div>
+
+                    <h4>해결 방법</h4>
+                    <div class="code-block">
+<span class="comment">// 기존 코드</span>
+<span class="keyword">import</span> { <span class="keyword">v4</span> <span class="keyword">as</span> <span class="keyword">uuidv4</span> } <span class="keyword">from</span> <span class="string">'uuid'</span>;
+<span class="keyword">const</span> <span class="keyword">uniqueName</span> = <span class="string">`${uuidv4()}${extname(file.originalname)}`</span>;
+
+<span class="comment">// 수정된 코드</span>
+<span class="keyword">import</span> { <span class="keyword">randomUUID</span> } <span class="keyword">from</span> <span class="string">'crypto'</span>;
+<span class="keyword">const</span> <span class="keyword">uniqueName</span> = <span class="string">`${randomUUID()}${extname(file.originalname)}`</span>;
+                    </div>
+
+                    <p>Node.js 내장 <code>crypto</code> 모듈의 <code>randomUUID</code> 함수를 사용하여 의존성 문제를 해결했습니다.</p>
+
+                    <h3>2. Next.js 15 호환성 문제</h3>
+                    <div class="problem-solution">
+                        <h4>🚨 문제 상황</h4>
+                        <p class="problem">Next.js 15에서 <code>serverComponentsExternalPackages</code> 설정이 변경되어 빌드 오류 발생</p>
+                    </div>
+
+                    <h4>해결 방법</h4>
+                    <div class="code-block">
+<span class="comment">// 기존 코드</span>
+<span class="keyword">const</span> <span class="keyword">nextConfig</span>: <span class="keyword">NextConfig</span> = {
+  <span class="keyword">experimental</span>: {
+    <span class="keyword">serverComponentsExternalPackages</span>: [],
+  },
+};
+
+<span class="comment">// 수정된 코드</span>
+<span class="keyword">const</span> <span class="keyword">nextConfig</span>: <span class="keyword">NextConfig</span> = {
+  <span class="keyword">serverExternalPackages</span>: [],
+};
+                    </div>
+
+                    <h3>3. 이미지 업로드 API 호환성 문제</h3>
+                    <div class="problem-solution">
+                        <h4>🚨 문제 상황</h4>
+                        <p class="problem"><code>apiClient.post</code>가 <code>multipart/form-data</code> 요청을 제대로 처리하지 못하는 문제</p>
+                    </div>
+
+                    <h4>해결 방법</h4>
+                    <div class="code-block">
+<span class="comment">// 기존 코드</span>
+<span class="keyword">const</span> <span class="keyword">response</span> = <span class="keyword">await</span> <span class="keyword">apiClient</span>.<span class="keyword">post</span>(<span class="string">'/api/upload/image'</span>, <span class="keyword">formData</span>, {
+  <span class="keyword">headers</span>: { <span class="string">'Content-Type'</span>: <span class="string">'multipart/form-data'</span> }
+});
+
+<span class="comment">// 수정된 코드</span>
+<span class="keyword">const</span> <span class="keyword">response</span> = <span class="keyword">await</span> <span class="keyword">fetch</span>(<span class="string">'/api/upload/image'</span>, {
+  <span class="keyword">method</span>: <span class="string">'POST'</span>,
+  <span class="keyword">headers</span>: {
+    <span class="string">'Authorization'</span>: <span class="string">`Bearer ${localStorage.getItem('accessToken')}`</span>,
+  },
+  <span class="keyword">body</span>: <span class="keyword">formData</span>,
+});
+                    </div>
+
+                    <p>네이티브 <code>fetch</code> API를 사용하여 파일 업로드 기능을 안정화했습니다.</p>
+
+                    <h2 id="learning-points">📚 개발 과정에서의 학습 포인트</h2>
+                    <p>이번 작업을 통해 얻은 소중한 경험과 학습 내용을 공유합니다.</p>
+
+                    <h3>1. 데이터베이스 호환성의 중요성</h3>
+                    <p>SQLite와 PostgreSQL 간의 함수 차이를 인식하고, 크로스 플랫폼 호환성을 고려한 코드 작성의 중요성을 배웠습니다.</p>
+
+                    <h3>2. Docker 환경에서의 모듈 시스템</h3>
+                    <p>ESM과 CommonJS 모듈 시스템의 차이점을 이해하고, Docker 환경에서의 의존성 관리 방법을 학습했습니다.</p>
+
+                    <h3>3. API 응답 타입 안전성</h3>
+                    <p>동적으로 변할 수 있는 API 응답에 대한 방어적 프로그래밍의 중요성을 경험했습니다.</p>
+
+                    <div class="code-block">
+<span class="comment">// 안전한 타입 캐스팅으로 오류 방지</span>
+<span class="keyword">const</span> <span class="keyword">data</span> = <span class="keyword">response</span>.<span class="keyword">data</span> || <span class="keyword">response</span>;
+<span class="keyword">const</span> <span class="keyword">dataObj</span> = <span class="keyword">data</span> <span class="keyword">as</span> <span class="keyword">any</span>;
+<span class="keyword">const</span> <span class="keyword">programs</span> = (<span class="keyword">dataObj</span>.<span class="keyword">programs</span> <span class="keyword">as</span> <span class="keyword">Program</span>[]) || 
+                (<span class="keyword">dataObj</span>.<span class="keyword">data</span> <span class="keyword">as</span> <span class="keyword">Program</span>[]) || 
+                (<span class="keyword">dataObj</span>.<span class="keyword">items</span> <span class="keyword">as</span> <span class="keyword">Program</span>[]) || [];
+                    </div>
+
+                    <h3>4. 사용자 경험 개선</h3>
+                    <p>관리자와 일반 사용자를 위한 차별화된 UI 설계의 필요성을 인식했습니다.</p>
+
+                    <h2 id="results">🏆 결과 및 성과</h2>
+                    <p>이번 작업을 통해 달성한 주요 성과들을 정리해보겠습니다.</p>
+
+                    <h3>1. 기능적 개선</h3>
+                    <div class="success-box">
+                        <h4>✅ 달성한 기능들</h4>
+                        <ul>
+                            <li>월별 참여자 현황 데이터 정상 표시</li>
+                            <li>역할별 맞춤형 헤더 메뉴 제공</li>
+                            <li>안정적인 파일 업로드 기능</li>
+                            <li>모바일 최적화된 네비게이션</li>
+                            <li>직관적인 사이드바 디자인</li>
+                            <li>오류 없는 페이지 로딩</li>
+                        </ul>
+                    </div>
+
+                    <h3>2. 개발 환경 안정화</h3>
+                    <div class="success-box">
+                        <h4>✅ 해결된 환경 문제들</h4>
+                        <ul>
+                            <li>Docker 환경에서의 안정적인 빌드</li>
+                            <li>TypeScript 빌드 오류 해결</li>
+                            <li>Next.js 15 호환성 확보</li>
+                            <li>데이터베이스 호환성 문제 해결</li>
+                        </ul>
+                    </div>
+
+                    <h3>3. 사용자 경험 개선</h3>
+                    <div class="success-box">
+                        <h4>✅ UX 개선 사항들</h4>
+                        <ul>
+                            <li>모바일 최적화된 네비게이션</li>
+                            <li>직관적인 사이드바 디자인</li>
+                            <li>역할별 맞춤형 인터페이스</li>
+                            <li>오류 없는 페이지 로딩</li>
+                        </ul>
+                    </div>
+
+                    <h2 id="conclusion">🎉 마무리</h2>
+                    
+                    <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 2rem; margin: 3rem 0; border-radius: 0 8px 8px 0;">
+                        <h3 style="color: #2563eb; margin-top: 0;">💭 이번 작업을 마치며</h3>
+                        
+                        <p>이번 작업을 통해 단순한 버그 수정을 넘어서 전체적인 사용자 경험 개선과 시스템 안정성 향상을 달성할 수 있었습니다. 특히 데이터베이스 호환성, 모듈 시스템, 그리고 사용자 인터페이스 설계에 대한 깊은 이해를 얻을 수 있었습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🔧 기술적 성장</h4>
+                        <p>PostgreSQL과 SQLite 간의 호환성 문제를 해결하면서 데이터베이스 추상화의 중요성을 배웠습니다. 또한 Docker 환경에서의 모듈 시스템 문제를 해결하며 컨테이너 환경에서의 개발 노하우를 쌓을 수 있었습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🎨 사용자 중심 개발</h4>
+                        <p>관리자와 일반 사용자를 위한 차별화된 UI를 구현하면서 사용자 역할에 따른 맞춤형 인터페이스 설계의 중요성을 깨달았습니다. 모바일 최적화와 접근성도 함께 고려한 포괄적인 UI 개선을 진행할 수 있었습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🛡️ 방어적 프로그래밍</h4>
+                        <p>API 응답의 불확실성에 대비한 방어 코드 작성과 옵셔널 체이닝을 통한 안전한 데이터 접근 방법을 학습했습니다. 이러한 경험은 더욱 안정적인 애플리케이션 개발에 큰 도움이 될 것입니다.</p>
+                        
+                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
+                            <h4 style="color: #92400e; margin-top: 0;">🚀 앞으로의 다짐</h4>
+                            <p style="color: #92400e; margin-bottom: 0;">
+                                이번 작업을 통해 배운 사용자 중심의 개발 철학과 기술적 문제 해결 능력을 앞으로의 모든 프로젝트에 적용하겠습니다. 
+                                단순히 기능을 구현하는 것이 아니라, 사용자가 실제로 편리하게 사용할 수 있는 시스템을 만드는 것이 얼마나 중요한지 깨달았습니다. 
+                                앞으로도 지속적인 모니터링과 사용자 피드백을 통해 시스템을 더욱 개선해 나갈 계획입니다.
+                            </p>
+                        </div>
+                        
+                        <p style="text-align: center; font-weight: 600; color: #2563eb; margin-top: 2rem;">
+                            사용자와 함께 성장하는 개발자가 되겠습니다! 🚀
+                        </p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="../index.html">블로그</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>
