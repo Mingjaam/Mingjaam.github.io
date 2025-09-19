@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 NestJS + Next.js로 프로그램 신청서 심사 및 입금 관리 시스템 개발기 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">🔍 NestJS + Next.js로 프로그램 신청서 심사 및 입금 관리 시스템 개발기</h1>
+                    
+                    <div class="post-meta">
+                        <div class="post-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>2025년 9월 19일</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>약 15분 읽기</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>김민재</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post-tags">
+                        <span class="tag">NestJS</span>
+                        <span class="tag">Next.js</span>
+                        <span class="tag">TypeScript</span>
+                        <span class="tag">PostgreSQL</span>
+                        <span class="tag">Docker</span>
+                        <span class="tag">API개발</span>
+                    </div>
+                </header>
+                
+                <div class="post-body">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                        <h3 style="color: white; margin-bottom: 1rem;">🎯 프로젝트 개요</h3>
+                        <p style="color: white; line-height: 1.6; margin-bottom: 0;">
+                            ERP 시스템의 프로그램 신청서 관리 기능을 확장하여, 관리자가 신청서를 심사하고 입금 상태를 관리할 수 있는 시스템을 개발했습니다. 
+                            이 글에서는 개발 과정에서 겪은 문제점들과 해결 방법을 상세히 기록합니다.
+                        </p>
+                    </div>
+
+                    <div class="toc">
+                        <h3>📋 목차</h3>
+                        <ul>
+                            <li><a href="#overview">프로젝트 개요</a></li>
+                            <li><a href="#tech-stack">기술 스택</a></li>
+                            <li><a href="#features">구현한 기능</a></li>
+                            <li><a href="#problems">개발 과정에서 겪은 문제점들</a></li>
+                            <li><a href="#unresolved">아직 해결되지 않은 문제</a></li>
+                            <li><a href="#lessons">개발 과정에서의 교훈</a></li>
+                            <li><a href="#future">향후 개선 방향</a></li>
+                            <li><a href="#conclusion">결론</a></li>
+                        </ul>
+                    </div>
+
+                    <h2 id="overview">📊 프로젝트 개요</h2>
+                    
+                    <p>ERP 시스템의 프로그램 신청서 관리 기능을 확장하여, 관리자가 신청서를 심사하고 입금 상태를 관리할 수 있는 시스템을 개발했습니다. 
+                    이번 프로젝트에서는 백엔드 API 개발부터 프론트엔드 UI 구현까지 전체적인 풀스택 개발 과정을 경험할 수 있었습니다.</p>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">새로운 API 엔드포인트</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">데이터베이스 컬럼 추가</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">해결한 문제들</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">1</div>
+                            <div class="stat-label">진행 중인 문제</div>
+                        </div>
+                    </div>
+
+                    <h2 id="tech-stack">🛠️ 기술 스택</h2>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🔧</div>
+                            <div class="feature-title">Backend</div>
+                            <div class="feature-description">NestJS, TypeORM, PostgreSQL</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚛️</div>
+                            <div class="feature-title">Frontend</div>
+                            <div class="feature-description">Next.js 15, React, Shadcn UI</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🗄️</div>
+                            <div class="feature-title">Database</div>
+                            <div class="feature-description">PostgreSQL</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🐳</div>
+                            <div class="feature-title">Containerization</div>
+                            <div class="feature-description">Docker, Docker Compose</div>
+                        </div>
+                    </div>
+
+                    <h2 id="features">🚀 구현한 기능</h2>
+
+                    <h3>1. 데이터베이스 스키마 확장</h3>
+
+                    <h4>Application 엔티티 업데이트</h4>
+                    <div class="code-block">
+<span class="comment">// Application 엔티티에 입금 관련 필드 추가</span>
+<span class="keyword">@Column</span>({ default: <span class="keyword">false</span> })
+isPaymentReceived: <span class="keyword">boolean</span>;
+
+<span class="keyword">@Column</span>({ type: <span class="string">'timestamp'</span>, nullable: <span class="keyword">true</span> })
+paymentReceivedAt: <span class="keyword">Date</span>;
+                    </div>
+
+                    <h4>Program 엔티티 업데이트</h4>
+                    <div class="code-block">
+<span class="comment">// Program 엔티티에 매출 필드 추가</span>
+<span class="keyword">@Column</span>({ type: <span class="string">'int'</span>, default: 0 })
+revenue: <span class="keyword">number</span>;
+                    </div>
+
+                    <h3>2. 백엔드 API 개발</h3>
+
+                    <h4>ApplicationsService에 새로운 메서드 추가</h4>
+
+                    <div class="highlight-box">
+                        <h4>📝 reviewApplication 메서드</h4>
+                        <ul>
+                            <li>신청서를 합격 또는 불합격으로 처리</li>
+                            <li>권한 검증 및 상태 검증 로직 포함</li>
+                            <li>이미 처리된 신청서에 대한 중복 처리 방지</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>💰 updatePaymentStatus 메서드</h4>
+                        <ul>
+                            <li>입금 상태 업데이트</li>
+                            <li>입금 확인 시 프로그램 매출에 참가비 자동 반영</li>
+                            <li>입금 취소 시 매출에서 차감</li>
+                            <li>합격된 신청서만 입금 상태 변경 가능</li>
+                        </ul>
+                    </div>
+
+                    <h4>ApplicationsController에 API 엔드포인트 추가</h4>
+                    <div class="code-block">
+<span class="comment">// 심사 API 엔드포인트</span>
+<span class="keyword">@Patch</span>(<span class="string">':id/review'</span>)
+<span class="keyword">@UseGuards</span>(RolesGuard)
+<span class="keyword">@Roles</span>(UserRole.ADMIN, UserRole.OPERATOR)
+review(<span class="keyword">@Param</span>(<span class="string">'id'</span>) id: <span class="keyword">string</span>, <span class="keyword">@Body</span>() body: { decision: <span class="string">'selected'</span> | <span class="string">'rejected'</span> }, <span class="keyword">@Request</span>() req) {
+  <span class="keyword">return</span> <span class="keyword">this</span>.applicationsService.reviewApplication(id, body.decision, req.user);
+}
+
+<span class="comment">// 입금 상태 업데이트 API 엔드포인트</span>
+<span class="keyword">@Patch</span>(<span class="string">':id/payment'</span>)
+<span class="keyword">@UseGuards</span>(RolesGuard)
+<span class="keyword">@Roles</span>(UserRole.ADMIN, UserRole.OPERATOR)
+updatePaymentStatus(<span class="keyword">@Param</span>(<span class="string">'id'</span>) id: <span class="keyword">string</span>, <span class="keyword">@Body</span>() body: { isPaymentReceived: <span class="keyword">boolean</span> }, <span class="keyword">@Request</span>() req) {
+  <span class="keyword">return</span> <span class="keyword">this</span>.applicationsService.updatePaymentStatus(id, body.isPaymentReceived, req.user);
+}
+                    </div>
+
+                    <h3>3. 프론트엔드 UI 개발</h3>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">⚖️</div>
+                            <div class="feature-title">심사 관리 UI</div>
+                            <div class="feature-description">Dialog 컴포넌트를 사용한 모달 방식의 심사 인터페이스</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">💰</div>
+                            <div class="feature-title">입금 관리 UI</div>
+                            <div class="feature-description">합격된 신청자에게만 표시되는 입금 확인 체크박스</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <div class="feature-title">매출 정보 표시</div>
+                            <div class="feature-description">프로그램 참가비와 현재 매출 실시간 표시</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔔</div>
+                            <div class="feature-title">실시간 피드백</div>
+                            <div class="feature-description">Toast 알림으로 사용자에게 결과 전달</div>
+                        </div>
+                    </div>
+
+                    <h2 id="problems">🔧 개발 과정에서 겪은 문제점들</h2>
+
+                    <h3>1. 데이터베이스 스키마 업데이트 문제</h3>
+                    
+                    <div class="problem-solution">
+                        <div class="problem">
+                            <h4>❌ 문제</h4>
+                            <p>Docker 환경에서 TypeORM의 <code>synchronize</code> 옵션이 제대로 작동하지 않아 새로운 컬럼이 생성되지 않음</p>
+                        </div>
+                        <div class="solution">
+                            <h4>✅ 해결</h4>
+                            <p>수동으로 SQL 명령어를 실행하여 컬럼 추가</p>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+<span class="comment">-- 수동으로 컬럼 추가</span>
+<span class="keyword">ALTER TABLE</span> applications <span class="keyword">ADD COLUMN</span> <span class="string">"isPaymentReceived"</span> boolean <span class="keyword">DEFAULT</span> <span class="keyword">false</span>;
+<span class="keyword">ALTER TABLE</span> applications <span class="keyword">ADD COLUMN</span> <span class="string">"paymentReceivedAt"</span> timestamp;
+<span class="keyword">ALTER TABLE</span> programs <span class="keyword">ADD COLUMN</span> revenue integer <span class="keyword">DEFAULT</span> 0;
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>💡 교훈</h4>
+                        <p>프로덕션 환경에서는 마이그레이션을 사용하는 것이 안전하며, 개발 환경에서도 <code>synchronize</code> 옵션의 한계를 인지해야 함</p>
+                    </div>
+
+                    <h3>2. Docker 빌드 캐시 문제</h3>
+                    
+                    <div class="problem-solution">
+                        <div class="problem">
+                            <h4>❌ 문제</h4>
+                            <p>코드 변경 후 Docker 재빌드 시 변경사항이 반영되지 않음</p>
+                        </div>
+                        <div class="solution">
+                            <h4>✅ 해결</h4>
+                            <p><code>--force-recreate</code> 옵션을 사용하여 강제 재생성</p>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+<span class="comment"># Docker 캐시 문제 해결</span>
+docker-compose down
+docker-compose up --build --force-recreate
+                    </div>
+
+                    <h3>3. API 엔드포인트 404 오류</h3>
+                    
+                    <div class="problem-solution">
+                        <div class="problem">
+                            <h4>❌ 문제</h4>
+                            <p>새로 추가한 API 엔드포인트가 404 오류를 반환</p>
+                        </div>
+                        <div class="solution">
+                            <h4>✅ 해결</h4>
+                            <p>백엔드 컨테이너 완전 재시작 및 Docker 이미지 재빌드</p>
+                        </div>
+                    </div>
+
+                    <h4>원인 분석</h4>
+                    <ul>
+                        <li>백엔드 컨테이너가 제대로 재시작되지 않음</li>
+                        <li>새로운 라우트가 등록되지 않음</li>
+                        <li>Docker 빌드 과정에서 코드 변경사항이 반영되지 않음</li>
+                    </ul>
+
+                    <h3>4. 프론트엔드 UI 컴포넌트 문제</h3>
+                    
+                    <div class="problem-solution">
+                        <div class="problem">
+                            <h4>❌ 문제</h4>
+                            <p>Dialog 컴포넌트가 제대로 작동하지 않음</p>
+                        </div>
+                        <div class="solution">
+                            <h4>✅ 해결</h4>
+                            <p>Dialog 컴포넌트 재구현 및 단계적 접근</p>
+                        </div>
+                    </div>
+
+                    <h4>해결 과정</h4>
+                    <ol>
+                        <li><strong>초기 접근</strong>: Dialog 컴포넌트 사용</li>
+                        <li><strong>문제 발생</strong>: 버튼 클릭이 작동하지 않음</li>
+                        <li><strong>임시 해결</strong>: confirm 다이얼로그로 대체</li>
+                        <li><strong>최종 해결</strong>: Dialog 컴포넌트 재구현</li>
+                    </ol>
+
+                    <h2 id="unresolved">⚠️ 아직 해결되지 않은 문제</h2>
+
+                    <h3>API 엔드포인트 404 오류 지속</h3>
+
+                    <div class="highlight-box">
+                        <h4>🚨 현재 상황</h4>
+                        <ul>
+                            <li>백엔드 컨트롤러에 새로운 엔드포인트가 정의되어 있음</li>
+                            <li>Docker 재빌드 후에도 라우트가 등록되지 않음</li>
+                            <li>프론트엔드에서 <code>PATCH /api/applications/:id/review</code> 요청 시 404 오류</li>
+                        </ul>
+                    </div>
+
+                    <h4>예상 원인</h4>
+                    <ol>
+                        <li><strong>Docker 빌드 캐시 문제</strong>: 이전 빌드 결과가 캐시되어 새로운 코드가 반영되지 않음</li>
+                        <li><strong>TypeScript 컴파일 문제</strong>: 빌드 과정에서 TypeScript 컴파일 오류</li>
+                        <li><strong>모듈 로딩 문제</strong>: ApplicationsController가 제대로 로드되지 않음</li>
+                        <li><strong>포트 충돌</strong>: 프론트엔드가 로컬에서 실행 중이어서 Docker 컨테이너 시작 실패</li>
+                    </ol>
+
+                    <h4>예상 해결 방법</h4>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🧹</div>
+                            <div class="feature-title">Docker 캐시 완전 삭제</div>
+                            <div class="feature-description">docker system prune -a로 모든 캐시 삭제</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔧</div>
+                            <div class="feature-title">백엔드만 별도 실행</div>
+                            <div class="feature-description">프론트엔드는 로컬, 백엔드와 DB만 Docker로 실행</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <div class="feature-title">백엔드 로그 상세 확인</div>
+                            <div class="feature-description">라우트 등록 로그를 통해 문제 원인 파악</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🧪</div>
+                            <div class="feature-title">수동 API 테스트</div>
+                            <div class="feature-description">curl을 사용한 직접 API 테스트</div>
+                        </div>
+                    </div>
+
+                    <h2 id="lessons">📚 개발 과정에서의 교훈</h2>
+
+                    <h3>1. 점진적 개발의 중요성</h3>
+                    <ul>
+                        <li>복잡한 기능을 한 번에 구현하려 하지 말고 단계적으로 접근</li>
+                        <li>각 단계마다 테스트하고 검증하는 습관 필요</li>
+                    </ul>
+
+                    <h3>2. Docker 환경 관리</h3>
+                    <ul>
+                        <li>개발 환경에서 Docker 캐시 문제는 자주 발생</li>
+                        <li><code>--force-recreate</code> 옵션을 적극 활용</li>
+                        <li>로그를 통해 문제 원인 파악하는 습관 필요</li>
+                    </ul>
+
+                    <h3>3. API 개발 시 주의사항</h3>
+                    <ul>
+                        <li>새로운 엔드포인트 추가 후 반드시 서버 재시작</li>
+                        <li>라우트 등록 로그 확인으로 문제 조기 발견</li>
+                        <li>권한 설정과 데이터 검증 로직을 철저히 구현</li>
+                    </ul>
+
+                    <h3>4. 프론트엔드-백엔드 연동</h3>
+                    <ul>
+                        <li>API 엔드포인트가 제대로 등록되었는지 먼저 확인</li>
+                        <li>네트워크 탭에서 실제 요청 URL과 응답 확인</li>
+                        <li>에러 처리와 사용자 피드백을 적절히 구현</li>
+                    </ul>
+
+                    <h2 id="future">🚀 향후 개선 방향</h2>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🗄️</div>
+                            <div class="feature-title">데이터베이스 마이그레이션 시스템 구축</div>
+                            <div class="feature-description">TypeORM 마이그레이션을 사용한 스키마 관리</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📚</div>
+                            <div class="feature-title">API 문서화 강화</div>
+                            <div class="feature-description">Swagger를 활용한 API 문서 자동 생성</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚠️</div>
+                            <div class="feature-title">에러 처리 개선</div>
+                            <div class="feature-description">구체적인 에러 메시지와 사용자 친화적 표시</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🧪</div>
+                            <div class="feature-title">테스트 코드 작성</div>
+                            <div class="feature-description">단위 테스트와 통합 테스트 추가</div>
+                        </div>
+                    </div>
+
+                    <h2 id="conclusion">🎉 결론</h2>
+
+                    <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 2rem; margin: 3rem 0; border-radius: 0 8px 8px 0;">
+                        <h3 style="color: #2563eb; margin-top: 0;">💭 개발을 마치며 느낀 점</h3>
+                        
+                        <p>이번 프로젝트를 통해 NestJS와 Next.js를 사용한 풀스택 개발의 전 과정을 경험할 수 있었습니다. 
+                        특히 Docker 환경에서의 개발과 API 개발, 프론트엔드-백엔드 연동 과정에서 많은 문제를 겪었지만, 
+                        이를 통해 실무에서 자주 발생하는 문제들과 해결 방법을 학습할 수 있었습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🔧 기술적 성장</h4>
+                        <p>Docker 환경 관리, API 개발, 데이터베이스 스키마 설계 등 다양한 기술적 도전을 통해 
+                        풀스택 개발자로서의 역량을 크게 향상시킬 수 있었습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🐛 문제 해결 능력</h4>
+                        <p>404 오류, Docker 캐시 문제, UI 컴포넌트 이슈 등 다양한 문제를 해결하는 과정에서 
+                        디버깅 능력과 문제 해결 사고력을 기를 수 있었습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">📈 지속적인 학습</h4>
+                        <p>아직 완전히 해결되지 않은 API 404 오류 문제는 다음 단계에서 해결할 예정이며, 
+                        이를 통해 더욱 견고한 시스템을 구축할 수 있을 것입니다.</p>
+                        
+                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
+                            <h4 style="color: #92400e; margin-top: 0;">🎯 앞으로의 다짐</h4>
+                            <p style="color: #92400e; margin-bottom: 0;">
+                                이번 프로젝트에서 배운 경험을 바탕으로 더욱 안정적이고 확장 가능한 시스템을 구축하겠습니다. 
+                                특히 테스트 코드 작성과 API 문서화에 더욱 신경 써서 유지보수성이 높은 코드를 작성하겠습니다.
+                            </p>
+                        </div>
+                        
+                        <p style="text-align: center; font-weight: 600; color: #2563eb; margin-top: 2rem;">
+                            함께 성장하는 개발자가 되겠습니다! 🚀
+                        </p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="../index.html">블로그</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script src="../post-script.js"></script>
+</body>
+</html>
