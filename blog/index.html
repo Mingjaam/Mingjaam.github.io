@@ -75,30 +75,39 @@
                 <section class="posts-section">
                     <div class="section-header">
                         <h2><i class="fas fa-newspaper"></i> 최신 포스트</h2>
-                        <div class="filter-tabs">
-                            <button class="tab-btn active" data-filter="all">전체</button>
-                            <button class="tab-btn" data-filter="development">개발</button>
-                            <button class="tab-btn" data-filter="learning">학습</button>
-                            <button class="tab-btn" data-filter="project">프로젝트</button>
+                        <div class="header-controls">
+                            <div class="search-box">
+                                <input type="text" id="search-input" placeholder="포스트 검색...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="filter-tabs">
+                                <button class="tab-btn active" data-filter="all">전체</button>
+                                <button class="tab-btn" data-filter="erp">ERP 개발</button>
+                                <button class="tab-btn" data-filter="frontend">프론트엔드</button>
+                                <button class="tab-btn" data-filter="backend">백엔드</button>
+                                <button class="tab-btn" data-filter="project">프로젝트</button>
+                                <button class="tab-btn" data-filter="learning">학습</button>
+                            </div>
                         </div>
                     </div>
 
                     <div class="posts-grid">
                         <!-- 포스트 카드 1 -->
-                        <article class="post-card" data-category="development project">
+                        <article class="post-card" data-category="erp backend project">
                             <div class="post-meta">
                                 <div class="post-date">
                                     <i class="fas fa-calendar"></i>
                                     <span>2025년 9월 19일</span>
                                 </div>
                                 <div class="post-categories">
-                                    <span class="category-tag development">개발</span>
+                                    <span class="category-tag erp">ERP 개발</span>
+                                    <span class="category-tag backend">백엔드</span>
                                     <span class="category-tag project">프로젝트</span>
                                 </div>
                             </div>
                             <div class="post-content">
                                 <h3 class="post-title">
-                                    <a href="posts/2025-09-19-nestjs-nextjs-application-review-system.html">
+                                    <a href="posts/2025-09-19-erp-application-review-system.html">
                                         🔍 NestJS + Next.js로 프로그램 신청서 심사 및 입금 관리 시스템 개발기
                                     </a>
                                 </h3>
@@ -119,27 +128,28 @@
                                     <i class="fas fa-clock"></i>
                                     <span>약 15분 읽기</span>
                                 </div>
-                                <a href="posts/2025-09-19-nestjs-nextjs-application-review-system.html" class="read-more">
+                                <a href="posts/2025-09-19-erp-application-review-system.html" class="read-more">
                                     자세히 보기 <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>
                         </article>
 
                         <!-- 포스트 카드 2 -->
-                        <article class="post-card" data-category="development project">
+                        <article class="post-card" data-category="erp frontend project">
                             <div class="post-meta">
                                 <div class="post-date">
                                     <i class="fas fa-calendar"></i>
                                     <span>2025년 9월 18일</span>
                                 </div>
                                 <div class="post-categories">
-                                    <span class="category-tag development">개발</span>
+                                    <span class="category-tag erp">ERP 개발</span>
+                                    <span class="category-tag frontend">프론트엔드</span>
                                     <span class="category-tag project">프로젝트</span>
                                 </div>
                             </div>
                             <div class="post-content">
                                 <h3 class="post-title">
-                                    <a href="posts/2025-09-18-intu-erp-ux-improvements.html">
+                                    <a href="posts/2025-09-18-erp-ux-improvements-intu.html">
                                         🚀 Intu ERP 시스템 대폭 개선: UX 개선부터 성능 최적화까지
                                     </a>
                                 </h3>
@@ -161,27 +171,29 @@
                                     <i class="fas fa-clock"></i>
                                     <span>약 12분 읽기</span>
                                 </div>
-                                <a href="posts/2025-09-18-intu-erp-ux-improvements.html" class="read-more">
+                                <a href="posts/2025-09-18-erp-ux-improvements-intu.html" class="read-more">
                                     자세히 보기 <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>
                         </article>
 
-                        <!-- 포스트 카드 2 -->
-                        <article class="post-card" data-category="development project">
-                            <div class="post-meta">
-                                <div class="post-date">
-                                    <i class="fas fa-calendar"></i>
-                                    <span>2025년 9월 17일</span>
-                                </div>
+                        <!-- 포스트 카드 3 -->
+                        <article class="post-card" data-category="erp frontend backend project">
+                        <div class="post-meta">
+                            <div class="post-date">
+                                <i class="fas fa-calendar"></i>
+                                <span>2025년 9월 17일</span>
+                            </div>
                                 <div class="post-categories">
-                                    <span class="category-tag development">개발</span>
+                                    <span class="category-tag erp">ERP 개발</span>
+                                    <span class="category-tag frontend">프론트엔드</span>
+                                    <span class="category-tag backend">백엔드</span>
                                     <span class="category-tag project">프로젝트</span>
                                 </div>
                             </div>
                             <div class="post-content">
                                 <h3 class="post-title">
-                                    <a href="posts/2025-09-17-youth-village-erp-bug-fixes.html">
+                                    <a href="posts/2025-09-17-erp-bug-fixes-youth-village.html">
                                         🏘️ 청년마을 ERP 시스템 개발: 월별 통계 오류 해결 및 UI 개선 작업
                                     </a>
                                 </h3>
@@ -202,27 +214,27 @@
                                     <i class="fas fa-clock"></i>
                                     <span>약 8분 읽기</span>
                                 </div>
-                                <a href="posts/2025-09-17-youth-village-erp-bug-fixes.html" class="read-more">
+                                <a href="posts/2025-09-17-erp-bug-fixes-youth-village.html" class="read-more">
                                     자세히 보기 <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>
                         </article>
 
-                        <!-- 포스트 카드 2 -->
-                        <article class="post-card" data-category="development project">
+                        <!-- 포스트 카드 4 -->
+                        <article class="post-card" data-category="frontend project">
                             <div class="post-meta">
                                 <div class="post-date">
                                     <i class="fas fa-calendar"></i>
                                     <span>2025년 9월 16일</span>
                                 </div>
                                 <div class="post-categories">
-                                    <span class="category-tag development">개발</span>
+                                    <span class="category-tag frontend">프론트엔드</span>
                                     <span class="category-tag project">프로젝트</span>
                                 </div>
                             </div>
                             <div class="post-content">
                                 <h3 class="post-title">
-                                    <a href="posts/2025-09-16-zogakzogak-frontend-development.html">
+                                    <a href="posts/2025-09-16-frontend-development-zogakzogak.html">
                                         🧩 조각조각: 노인과 보호자를 위한 추억 관리 플랫폼 프론트엔드 개발기
                                     </a>
                                 </h3>
@@ -242,27 +254,29 @@
                                     <i class="fas fa-clock"></i>
                                     <span>약 6분 읽기</span>
                                 </div>
-                                <a href="posts/2025-09-16-zogakzogak-frontend-development.html" class="read-more">
+                                <a href="posts/2025-09-16-frontend-development-zogakzogak.html" class="read-more">
                                     자세히 보기 <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>
                         </article>
 
-                        <!-- 포스트 카드 3 -->
-                        <article class="post-card" data-category="development project">
+                        <!-- 포스트 카드 5 -->
+                        <article class="post-card" data-category="erp backend frontend project">
                         <div class="post-meta">
                             <div class="post-date">
                                 <i class="fas fa-calendar"></i>
                                 <span>2025년 9월 16일</span>
                             </div>
                                 <div class="post-categories">
-                                    <span class="category-tag development">개발</span>
+                                    <span class="category-tag erp">ERP 개발</span>
+                                    <span class="category-tag backend">백엔드</span>
+                                    <span class="category-tag frontend">프론트엔드</span>
                                     <span class="category-tag project">프로젝트</span>
                                 </div>
                             </div>
                             <div class="post-content">
                                 <h3 class="post-title">
-                                    <a href="posts/2025-09-16-nestjs-nextjs-erp-development.html">
+                                    <a href="posts/2025-09-16-erp-development-nestjs-nextjs.html">
                                         🚀 NestJS + Next.js ERP 시스템 개발일지: 신청서 관리 시스템 구축
                                     </a>
                                 </h3>
@@ -282,7 +296,7 @@
                                     <i class="fas fa-clock"></i>
                                     <span>약 8분 읽기</span>
                                 </div>
-                                <a href="posts/2025-09-16-nestjs-nextjs-erp-development.html" class="read-more">
+                                <a href="posts/2025-09-16-erp-development-nestjs-nextjs.html" class="read-more">
                                     자세히 보기 <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>
@@ -322,14 +336,14 @@
                     <div class="widget">
                         <h3><i class="fas fa-tags"></i> 인기 태그</h3>
                         <div class="tag-cloud">
-                            <span class="tag-item">Flutter</span>
-                            <span class="tag-item">React Native</span>
+                            <span class="tag-item">ERP</span>
+                            <span class="tag-item">React</span>
                             <span class="tag-item">TypeScript</span>
                             <span class="tag-item">NestJS</span>
                             <span class="tag-item">Next.js</span>
-                            <span class="tag-item">Firebase</span>
-                            <span class="tag-item">PocketBase</span>
-                            <span class="tag-item">AI</span>
+                            <span class="tag-item">PostgreSQL</span>
+                            <span class="tag-item">Docker</span>
+                            <span class="tag-item">UX/UI</span>
                         </div>
                     </div>
 

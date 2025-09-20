@@ -65,9 +65,86 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 
+    // 카테고리 통계 업데이트
+    function updateCategoryStats() {
+        const categories = {
+            'erp': 0,
+            'frontend': 0,
+            'backend': 0,
+            'project': 0,
+            'learning': 0
+        };
+        
+        postCards.forEach(card => {
+            const cardCategories = card.getAttribute('data-category').split(' ');
+            cardCategories.forEach(cat => {
+                if (categories.hasOwnProperty(cat)) {
+                    categories[cat]++;
+                }
+            });
+        });
+        
+        // 각 탭 버튼에 카운트 표시
+        tabBtns.forEach(btn => {
+            const filter = btn.getAttribute('data-filter');
+            if (filter !== 'all' && categories[filter] !== undefined) {
+                const count = categories[filter];
+                const existingCount = btn.querySelector('.count');
+                if (existingCount) {
+                    existingCount.textContent = count;
+                } else {
+                    const countSpan = document.createElement('span');
+                    countSpan.className = 'count';
+                    countSpan.textContent = count;
+                    countSpan.style.cssText = 'background: rgba(37, 99, 235, 0.1); color: #2563eb; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.7rem; margin-left: 0.5rem;';
+                    btn.appendChild(countSpan);
+                }
+            }
+        });
+    }
+    
     // 필터 탭 기능
     const tabBtns = document.querySelectorAll('.tab-btn');
     const postCards = document.querySelectorAll('.post-card');
+    
+    // 카테고리 통계 초기화
+    updateCategoryStats();
+    
+    // 검색 기능
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            postCards.forEach(card => {
+                const title = card.querySelector('.post-title a').textContent.toLowerCase();
+                const excerpt = card.querySelector('.post-excerpt').textContent.toLowerCase();
+                const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
+                
+                const matches = title.includes(searchTerm) || 
+                              excerpt.includes(searchTerm) || 
+                              tags.some(tag => tag.includes(searchTerm));
+                
+                if (matches) {
+                    card.style.display = 'block';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 300);
+                }
+            });
+            
+            // 검색 시 필터 탭을 '전체'로 변경
+            if (searchTerm) {
+                tabBtns.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('[data-filter="all"]').classList.add('active');
+            }
+        });
+    }
 
     tabBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -81,12 +158,20 @@ document.addEventListener('DOMContentLoaded', function() {
             postCards.forEach(card => {
                 if (filter === 'all') {
                     card.style.display = 'block';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
                 } else {
                     const categories = card.getAttribute('data-category');
                     if (categories && categories.includes(filter)) {
                         card.style.display = 'block';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
                     } else {
-                        card.style.display = 'none';
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
                     }
                 }
             });
