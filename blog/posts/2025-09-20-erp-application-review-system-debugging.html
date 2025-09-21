@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NestJS + Next.js 프로그램 신청서 심사 시스템 개발 - 문제 해결 과정 상세 기록 | 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="description" content="ERP 시스템의 프로그램 신청서 심사 기능 개발 과정에서 발생한 문제들과 해결 방법을 상세히 기록합니다. Docker, TypeORM, React 컴포넌트 개발 경험을 공유합니다.">
+    <meta name="keywords" content="NestJS, Next.js, ERP, TypeORM, PostgreSQL, Docker, React, 문제해결, 개발일지">
+    <meta name="author" content="김민재">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://mingjaam.github.io/blog/posts/2025-09-20-erp-application-review-system-debugging.html">
+    <meta property="og:title" content="NestJS + Next.js 프로그램 신청서 심사 시스템 개발 - 문제 해결 과정 상세 기록">
+    <meta property="og:description" content="ERP 시스템의 프로그램 신청서 심사 기능 개발 과정에서 발생한 문제들과 해결 방법을 상세히 기록합니다.">
+    <meta property="og:image" content="https://mingjaam.github.io/blog/assets/images/백_양지우.JPG">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://mingjaam.github.io/blog/posts/2025-09-20-erp-application-review-system-debugging.html">
+    <meta property="twitter:title" content="NestJS + Next.js 프로그램 신청서 심사 시스템 개발 - 문제 해결 과정 상세 기록">
+    <meta property="twitter:description" content="ERP 시스템의 프로그램 신청서 심사 기능 개발 과정에서 발생한 문제들과 해결 방법을 상세히 기록합니다.">
+    <meta property="twitter:image" content="https://mingjaam.github.io/blog/assets/images/백_양지우.JPG">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <article class="post">
+                <!-- 포스트 헤더 -->
+                <header class="post-header">
+                    <div class="post-meta">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i>
+                            <span>2025년 9월 20일</span>
+                        </div>
+                        <div class="post-categories">
+                            <span class="category-tag erp">ERP 개발</span>
+                            <span class="category-tag backend">백엔드</span>
+                            <span class="category-tag frontend">프론트엔드</span>
+                            <span class="category-tag project">프로젝트</span>
+                        </div>
+                    </div>
+                    <h1 class="post-title">
+                        🔍 NestJS + Next.js 프로그램 신청서 심사 시스템 개발 - 문제 해결 과정 상세 기록
+                    </h1>
+                    <div class="post-excerpt">
+                        ERP 시스템의 프로그램 신청서 관리 기능을 확장하여, 관리자가 신청서를 심사하고 입금 상태를 관리할 수 있는 시스템을 개발했습니다. 
+                        개발 과정에서 겪은 문제점들과 해결 방법을 상세히 기록합니다.
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag">NestJS</span>
+                        <span class="tag">Next.js</span>
+                        <span class="tag">TypeScript</span>
+                        <span class="tag">PostgreSQL</span>
+                        <span class="tag">Docker</span>
+                        <span class="tag">TypeORM</span>
+                        <span class="tag">React</span>
+                        <span class="tag">문제해결</span>
+                    </div>
+                </header>
+
+                <!-- 포스트 콘텐츠 -->
+                <div class="post-content">
+                    <h2>프로젝트 개요</h2>
+                    <p>ERP 시스템의 프로그램 신청서 관리 기능을 확장하여, 관리자가 신청서를 심사하고 입금 상태를 관리할 수 있는 시스템을 개발했습니다. 이 글에서는 개발 과정에서 발생한 모든 문제점들과 해결 방법을 순서대로 상세히 기록합니다.</p>
+
+                    <h2>기술 스택</h2>
+                    <div class="tech-stack">
+                        <div class="tech-item">
+                            <strong>Backend:</strong> NestJS, TypeORM, PostgreSQL
+                        </div>
+                        <div class="tech-item">
+                            <strong>Frontend:</strong> Next.js 15, React, Shadcn UI
+                        </div>
+                        <div class="tech-item">
+                            <strong>Database:</strong> PostgreSQL
+                        </div>
+                        <div class="tech-item">
+                            <strong>Containerization:</strong> Docker, Docker Compose
+                        </div>
+                    </div>
+
+                    <h2>구현한 기능</h2>
+                    <h3>1. 데이터베이스 스키마 확장</h3>
+                    <ul>
+                        <li>Application 엔티티에 <code>isPaymentReceived</code>, <code>paymentReceivedAt</code> 필드 추가</li>
+                        <li>Program 엔티티에 <code>revenue</code> 필드 추가</li>
+                    </ul>
+
+                    <h3>2. 백엔드 API 개발</h3>
+                    <ul>
+                        <li><code>/api/applications/:id/review</code> - 신청서 심사 (합격/불합격)</li>
+                        <li><code>/api/applications/:id/payment</code> - 입금 상태 업데이트</li>
+                    </ul>
+
+                    <h3>3. 프론트엔드 UI 개발</h3>
+                    <ul>
+                        <li>심사하기 Dialog 컴포넌트</li>
+                        <li>입금 확인 체크박스</li>
+                        <li>매출 표시 기능</li>
+                    </ul>
+
+                    <h2>발생한 문제들과 해결 과정</h2>
+
+                    <div class="problem-section">
+                        <h3>문제 1: Docker 빌드 캐시로 인한 코드 반영 실패</h3>
+                        
+                        <div class="problem-box">
+                            <h4>문제 상황</h4>
+                            <ul>
+                                <li>코드 변경 후 <code>docker-compose up</code> 실행했지만 새로운 API 엔드포인트가 등록되지 않음</li>
+                                <li>백엔드 로그에서 <code>/api/applications/:id/review</code>, <code>/api/applications/:id/payment</code> 엔드포인트가 보이지 않음</li>
+                            </ul>
+                        </div>
+
+                        <div class="solution-box">
+                            <h4>원인 분석</h4>
+                            <ul>
+                                <li>Docker의 빌드 캐시가 이전 코드를 유지하고 있음</li>
+                                <li>TypeScript 컴파일 과정에서 새로운 코드가 반영되지 않음</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+                            <h4>해결 방법</h4>
+                            <pre><code># 1. 모든 컨테이너 중지
+docker-compose down
+
+# 2. Docker 시스템 캐시 완전 삭제
+docker system prune -a -f
+
+# 3. 강제 재빌드 및 재생성
+docker-compose up --build --force-recreate -d postgres redis backend</code></pre>
+                        </div>
+
+                        <div class="result-box">
+                            <strong>결과:</strong> 새로운 API 엔드포인트들이 정상적으로 등록됨
+                        </div>
+                    </div>
+
+                    <div class="problem-section">
+                        <h3>문제 2: 데이터베이스 스키마 동기화 실패</h3>
+                        
+                        <div class="problem-box">
+                            <h4>문제 상황</h4>
+                            <ul>
+                                <li>TypeORM의 <code>synchronize: true</code> 설정이 Docker 환경에서 작동하지 않음</li>
+                                <li>새로운 컬럼들이 데이터베이스에 추가되지 않음</li>
+                            </ul>
+                        </div>
+
+                        <div class="solution-box">
+                            <h4>원인 분석</h4>
+                            <ul>
+                                <li>Docker 컨테이너 내부의 TypeORM 설정 문제</li>
+                                <li>데이터베이스 마이그레이션이 자동으로 실행되지 않음</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+                            <h4>해결 방법</h4>
+                            <pre><code>-- 수동으로 컬럼 추가
+ALTER TABLE applications ADD COLUMN "isPaymentReceived" boolean DEFAULT false;
+ALTER TABLE applications ADD COLUMN "paymentReceivedAt" timestamp;
+ALTER TABLE programs ADD COLUMN revenue integer DEFAULT 0;
+ALTER TABLE users ADD COLUMN "isBlocked" boolean DEFAULT false;
+ALTER TABLE users ADD COLUMN "blockReason" text;</code></pre>
+                        </div>
+
+                        <div class="result-box">
+                            <strong>결과:</strong> 모든 필요한 컬럼이 데이터베이스에 추가됨
+                        </div>
+                    </div>
+
+                    <div class="problem-section">
+                        <h3>문제 3: Dialog 컴포넌트 undefined prop 경고</h3>
+                        
+                        <div class="problem-box">
+                            <h4>문제 상황</h4>
+                            <ul>
+                                <li>React 개발자 도구에서 <code>{undefined}</code> for {DialogContent} 경고 발생</li>
+                                <li>Dialog 컴포넌트가 정상적으로 작동하지 않음</li>
+                            </ul>
+                        </div>
+
+                        <div class="solution-box">
+                            <h4>원인 분석</h4>
+                            <ul>
+                                <li><code>DialogTrigger</code>의 <code>asChild</code> prop과 <code>Button</code> 컴포넌트 간의 호환성 문제</li>
+                                <li>Button 컴포넌트에 필요한 props가 누락됨</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+                            <h4>해결 방법</h4>
+                            <pre><code>// 수정 전
+&lt;DialogTrigger asChild&gt;
+  &lt;Button variant="outline" size="sm"&gt;
+    심사하기
+  &lt;/Button&gt;
+&lt;/DialogTrigger&gt;
+
+// 수정 후
+&lt;DialogTrigger asChild&gt;
+  &lt;Button variant="outline" size="sm" type="button"&gt;
+    심사하기
+  &lt;/Button&gt;
+&lt;/DialogTrigger&gt;</code></pre>
+                        </div>
+
+                        <div class="result-box">
+                            <strong>결과:</strong> Dialog 컴포넌트가 정상적으로 작동하고 경고가 사라짐
+                        </div>
+                    </div>
+
+                    <div class="problem-section">
+                        <h3>문제 4: API 엔드포인트 404 오류</h3>
+                        
+                        <div class="problem-box">
+                            <h4>문제 상황</h4>
+                            <ul>
+                                <li>프론트엔드에서 <code>PATCH /api/applications/:id/review</code> 호출 시 404 Not Found 오류</li>
+                                <li>백엔드 로그에서 해당 엔드포인트가 등록되지 않음</li>
+                            </ul>
+                        </div>
+
+                        <div class="solution-box">
+                            <h4>원인 분석</h4>
+                            <ul>
+                                <li>Docker 빌드 과정에서 새로운 코드가 제대로 반영되지 않음</li>
+                                <li>TypeScript 컴파일 과정에서 문제 발생</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+                            <h4>해결 방법</h4>
+                            <pre><code># 1. 백엔드 컨테이너 내부에서 수동 빌드
+docker-compose exec backend npm run build
+
+# 2. 백엔드 컨테이너 재시작
+docker-compose restart backend
+
+# 3. 로그 확인
+docker-compose logs backend | grep -A 20 "ApplicationsController"</code></pre>
+                        </div>
+
+                        <div class="result-box">
+                            <strong>결과:</strong> API 엔드포인트가 정상적으로 등록되고 404 오류 해결
+                        </div>
+                    </div>
+
+                    <div class="problem-section">
+                        <h3>문제 5: 데이터베이스 스키마 불일치로 인한 500 오류</h3>
+                        
+                        <div class="problem-box">
+                            <h4>문제 상황</h4>
+                            <ul>
+                                <li>API 호출 시 500 Internal Server Error 발생</li>
+                                <li>백엔드 로그에서 <code>applicant.isblocked</code> 컬럼이 존재하지 않는다는 오류</li>
+                            </ul>
+                        </div>
+
+                        <div class="solution-box">
+                            <h4>원인 분석</h4>
+                            <ul>
+                                <li>ApplicationsService의 GROUP BY 절에 <code>applicant.isBlocked</code>와 <code>applicant.blockReason</code> 포함</li>
+                                <li>이 필드들이 집계 함수가 아니므로 GROUP BY에 포함할 수 없음</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+                            <h4>해결 방법</h4>
+                            <pre><code>// 수정 전 - GROUP BY에 집계 함수가 아닌 필드 포함
+.groupBy('application.id, program.id, organizer.id, applicant.id, organization.id, selection.id, program.title, program.description, program.summary, program.organizerId, program.status, program.applyStart, program.applyEnd, program.programStart, program.programEnd, program.location, program.fee, program.maxParticipants, program.applicationForm, program.metadata, program.imageUrl, program.isActive, program.createdAt, program.updatedAt, organizer.name, organizer.type, organizer.address, organizer.contact, organizer.description, organizer.isActive, organizer.createdAt, organizer.updatedAt, applicant.email, applicant.passwordHash, applicant.name, applicant.role, applicant.organizationId, applicant.phone, applicant.isActive, applicant.isBlocked, applicant.blockReason, applicant.lastLoginAt, applicant.createdAt, applicant.updatedAt, organization.name, organization.type, organization.address, organization.contact, organization.description, organization.isActive, organization.createdAt, organization.updatedAt, selection.id, selection.name, selection.description, selection.isActive, selection.createdAt, selection.updatedAt')
+
+// 수정 후 - 집계 함수가 아닌 필드 제거
+.groupBy('application.id, program.id, organizer.id, applicant.id, organization.id, selection.id, program.title, program.description, program.summary, program.organizerId, program.status, program.applyStart, program.applyEnd, program.programStart, program.programEnd, program.location, program.fee, program.maxParticipants, program.applicationForm, program.metadata, program.imageUrl, program.isActive, program.createdAt, program.updatedAt, organizer.name, organizer.type, organizer.address, organizer.contact, organizer.description, organizer.isActive, organizer.createdAt, organizer.updatedAt, applicant.email, applicant.passwordHash, applicant.name, applicant.role, applicant.organizationId, applicant.phone, applicant.isActive, applicant.lastLoginAt, applicant.createdAt, applicant.updatedAt, organization.name, organization.type, organization.address, organization.contact, organization.description, organization.isActive, organization.createdAt, organization.updatedAt, selection.id, selection.name, selection.description, selection.isActive, selection.createdAt, selection.updatedAt')</code></pre>
+                        </div>
+
+                        <div class="result-box">
+                            <strong>결과:</strong> 500 오류 해결되고 신청자 목록이 정상적으로 표시됨
+                        </div>
+                    </div>
+
+                    <div class="problem-section">
+                        <h3>문제 6: 409 Conflict 오류 (이미 처리된 신청서)</h3>
+                        
+                        <div class="problem-box">
+                            <h4>문제 상황</h4>
+                            <ul>
+                                <li>심사하기 버튼 클릭 시 409 Conflict 오류 발생</li>
+                                <li>"이미 처리된 신청서입니다" 메시지</li>
+                            </ul>
+                        </div>
+
+                        <div class="solution-box">
+                            <h4>원인 분석</h4>
+                            <ul>
+                                <li>해당 신청서의 상태가 이미 <code>rejected</code>로 되어 있음</li>
+                                <li>ApplicationsService에서 이미 처리된 신청서에 대한 재심사 방지 로직</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+                            <h4>해결 방법</h4>
+                            <pre><code>-- 테스트를 위해 신청서 상태 초기화
+UPDATE applications SET status = 'submitted' WHERE id = '752574b6-2eca-40a9-a598-41023bc0027b';</code></pre>
+                        </div>
+
+                        <div class="result-box">
+                            <strong>결과:</strong> 신청서 상태가 초기화되어 재심사 가능
+                        </div>
+                    </div>
+
+                    <h2>최종 해결된 기능들</h2>
+                    
+                    <div class="success-grid">
+                        <div class="success-item">
+                            <h3>✅ 백엔드 API 엔드포인트</h3>
+                            <ul>
+                                <li><code>/api/applications/:id/review</code> - 신청서 심사</li>
+                                <li><code>/api/applications/:id/payment</code> - 입금 상태 업데이트</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="success-item">
+                            <h3>✅ 데이터베이스 스키마</h3>
+                            <ul>
+                                <li><code>applications</code> 테이블에 <code>isPaymentReceived</code>, <code>paymentReceivedAt</code> 컬럼 추가</li>
+                                <li><code>programs</code> 테이블에 <code>revenue</code> 컬럼 추가</li>
+                                <li><code>users</code> 테이블에 <code>isBlocked</code>, <code>blockReason</code> 컬럼 추가</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="success-item">
+                            <h3>✅ 프론트엔드 UI</h3>
+                            <ul>
+                                <li>심사하기 Dialog 컴포넌트</li>
+                                <li>입금 확인 체크박스</li>
+                                <li>매출 표시 기능</li>
+                                <li>상태별 버튼 표시 로직</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>개발 과정에서 배운 점</h2>
+
+                    <div class="learning-section">
+                        <h3>1. Docker 환경에서의 개발 주의사항</h3>
+                        <ul>
+                            <li>빌드 캐시 문제로 인한 코드 반영 실패가 자주 발생</li>
+                            <li><code>docker system prune -a -f</code>로 캐시 완전 삭제 후 재빌드 필요</li>
+                            <li>TypeORM의 <code>synchronize</code> 옵션이 Docker 환경에서 예상대로 작동하지 않을 수 있음</li>
+                        </ul>
+
+                        <h3>2. 데이터베이스 스키마 관리</h3>
+                        <ul>
+                            <li>새로운 컬럼 추가 시 수동으로 SQL 실행이 필요할 수 있음</li>
+                            <li>GROUP BY 절에서 집계 함수가 아닌 필드 포함 시 오류 발생</li>
+                            <li>컬럼명의 대소문자 구분에 주의 필요</li>
+                        </ul>
+
+                        <h3>3. React 컴포넌트 개발</h3>
+                        <ul>
+                            <li>Dialog 컴포넌트 사용 시 <code>asChild</code> prop과 하위 컴포넌트 간의 호환성 확인 필요</li>
+                            <li><code>type="button"</code> 속성 추가로 기본 동작 방지</li>
+                        </ul>
+
+                        <h3>4. API 개발</h3>
+                        <ul>
+                            <li>새로운 엔드포인트 추가 시 Docker 재빌드 필요</li>
+                            <li>409 Conflict 오류는 비즈니스 로직상 정상적인 응답일 수 있음</li>
+                        </ul>
+                    </div>
+
+                    <h2>결론</h2>
+                    <p>이번 개발 과정에서 Docker 환경에서의 개발, 데이터베이스 스키마 관리, React 컴포넌트 개발 등 다양한 문제들을 경험했습니다. 각 문제를 체계적으로 분석하고 해결하는 과정을 통해 더욱 견고한 시스템을 구축할 수 있었습니다.</p>
+                    
+                    <p>특히 Docker의 빌드 캐시 문제와 TypeORM의 스키마 동기화 문제는 실제 프로덕션 환경에서도 발생할 수 있는 중요한 이슈들이므로, 향후 개발 시 이러한 문제들을 미리 고려하여 개발 프로세스를 개선할 필요가 있습니다.</p>
+
+                    <div class="post-footer">
+                        <div class="read-time">
+                            <i class="fas fa-clock"></i>
+                            <span>약 12분 읽기</span>
+                        </div>
+                        <div class="post-actions">
+                            <a href="../index.html" class="back-to-blog">
+                                <i class="fas fa-arrow-left"></i> 블로그로 돌아가기
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                        <li><a href="https://linkedin.com/in/민재-김-209b0533b" target="_blank">LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../post-script.js"></script>
+</body>
+</html>
