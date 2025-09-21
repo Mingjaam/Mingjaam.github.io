@@ -284,6 +284,92 @@
     line-height: 1.5;
 }
 
+/* 기술 스택 */
+.tech-stack {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.tech-item {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #2563eb;
+}
+
+/* 문제 해결 섹션 */
+.problem-section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border-left: 4px solid #dc2626;
+}
+
+.problem-box {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.solution-box {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.result-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    color: #166534;
+}
+
+/* 성공 그리드 */
+.success-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.success-item {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.success-item h3 {
+    color: #166534;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* 학습 섹션 */
+.learning-section {
+    background: #fefce8;
+    border: 1px solid #fde047;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.learning-section h3 {
+    color: #a16207;
+    margin-bottom: 1rem;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .post-content {
@@ -324,5 +410,18 @@
     
     .stats-grid {
         grid-template-columns: 1fr;
+    }
+    
+    /* 새로운 스타일 모바일 최적화 */
+    .tech-stack {
+        grid-template-columns: 1fr;
+    }
+    
+    .success-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .problem-section {
+        padding: 1rem;
     }
 }
