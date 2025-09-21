@@ -587,6 +587,27 @@ body {
     background: #f59e0b;
 }
 
+/* GitHub 통계 위젯 */
+.github-stats {
+    overflow: hidden;
+}
+
+.github-stats-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.github-stats-container img {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.github-stats-container img:hover {
+    transform: scale(1.02);
+}
+
 /* 푸터 */
 .footer {
     background: #1f2937;
