@@ -58,7 +58,12 @@
     <!-- 메인 콘텐츠 -->
     <main class="main-content">
         <div class="container">
-            <article class="post">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            
+            <article class="post-content">
                 <header class="post-header">
                     <h1 class="post-title">🔍 NestJS + Next.js 프로그램 신청서 심사 시스템 개발 - 문제 해결 과정 상세 기록</h1>
                     
@@ -88,12 +93,50 @@
                         <span class="tag">문제해결</span>
                     </div>
                 </header>
-
+                
                 <div class="post-body">
-                    <h2>프로젝트 개요</h2>
-                    <p>ERP 시스템의 프로그램 신청서 관리 기능을 확장하여, 관리자가 신청서를 심사하고 입금 상태를 관리할 수 있는 시스템을 개발했습니다. 이 글에서는 개발 과정에서 발생한 모든 문제점들과 해결 방법을 순서대로 상세히 기록합니다.</p>
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                        <h3 style="color: white; margin-bottom: 1rem;">🎯 프로젝트 개요</h3>
+                        <p style="color: white; line-height: 1.6; margin-bottom: 0;">
+                            ERP 시스템의 프로그램 신청서 관리 기능을 확장하여, 관리자가 신청서를 심사하고 입금 상태를 관리할 수 있는 시스템을 개발했습니다. 
+                            이 글에서는 개발 과정에서 발생한 모든 문제점들과 해결 방법을 순서대로 상세히 기록합니다.
+                        </p>
+                    </div>
 
-                    <h2>기술 스택</h2>
+                    <div class="toc">
+                        <h3>📋 목차</h3>
+                        <ul>
+                            <li><a href="#overview">프로젝트 개요</a></li>
+                            <li><a href="#tech-stack">기술 스택</a></li>
+                            <li><a href="#features">구현한 기능</a></li>
+                            <li><a href="#problems">발생한 문제들과 해결 과정</a></li>
+                            <li><a href="#success">최종 해결된 기능들</a></li>
+                            <li><a href="#lessons">개발 과정에서 배운 점</a></li>
+                            <li><a href="#conclusion">결론</a></li>
+                        </ul>
+                    </div>
+
+                    <h2 id="overview">📊 프로젝트 개요</h2>
+                    
+                    <p>ERP 시스템의 프로그램 신청서 관리 기능을 확장하여, 관리자가 신청서를 심사하고 입금 상태를 관리할 수 있는 시스템을 개발했습니다. 
+                    이번 프로젝트에서는 Docker 환경에서의 개발, 데이터베이스 스키마 관리, React 컴포넌트 개발 등 다양한 문제들을 경험하며 해결하는 과정을 상세히 기록합니다.</p>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">6</div>
+                            <div class="stat-label">해결한 문제들</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">새로운 API 엔드포인트</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">데이터베이스 컬럼 추가</div>
+                        </div>
+                    </div>
+
+                    <h2 id="tech-stack">🛠️ 기술 스택</h2>
                     <div class="tech-stack">
                         <div class="tech-item">
                             <strong>Backend:</strong> NestJS, TypeORM, PostgreSQL
@@ -109,7 +152,7 @@
                         </div>
                     </div>
 
-                    <h2>구현한 기능</h2>
+                    <h2 id="features">⚡ 구현한 기능</h2>
                     <h3>1. 데이터베이스 스키마 확장</h3>
                     <ul>
                         <li>Application 엔티티에 <code>isPaymentReceived</code>, <code>paymentReceivedAt</code> 필드 추가</li>
@@ -129,7 +172,7 @@
                         <li>매출 표시 기능</li>
                     </ul>
 
-                    <h2>발생한 문제들과 해결 과정</h2>
+                    <h2 id="problems">🔧 발생한 문제들과 해결 과정</h2>
 
                     <div class="problem-section">
                         <h3>문제 1: Docker 빌드 캐시로 인한 코드 반영 실패</h3>
@@ -341,7 +384,7 @@ UPDATE applications SET status = 'submitted' WHERE id = '752574b6-2eca-40a9-a598
                         </div>
                     </div>
 
-                    <h2>최종 해결된 기능들</h2>
+                    <h2 id="success">✅ 최종 해결된 기능들</h2>
                     
                     <div class="success-grid">
                         <div class="success-item">
@@ -372,7 +415,7 @@ UPDATE applications SET status = 'submitted' WHERE id = '752574b6-2eca-40a9-a598
                         </div>
                     </div>
 
-                    <h2>개발 과정에서 배운 점</h2>
+                    <h2 id="lessons">📚 개발 과정에서 배운 점</h2>
 
                     <div class="learning-section">
                         <h3>1. Docker 환경에서의 개발 주의사항</h3>
@@ -402,7 +445,7 @@ UPDATE applications SET status = 'submitted' WHERE id = '752574b6-2eca-40a9-a598
                         </ul>
                     </div>
 
-                    <h2>결론</h2>
+                    <h2 id="conclusion">🎯 결론</h2>
                     <p>이번 개발 과정에서 Docker 환경에서의 개발, 데이터베이스 스키마 관리, React 컴포넌트 개발 등 다양한 문제들을 경험했습니다. 각 문제를 체계적으로 분석하고 해결하는 과정을 통해 더욱 견고한 시스템을 구축할 수 있었습니다.</p>
                     
                     <p>특히 Docker의 빌드 캐시 문제와 TypeORM의 스키마 동기화 문제는 실제 프로덕션 환경에서도 발생할 수 있는 중요한 이슈들이므로, 향후 개발 시 이러한 문제들을 미리 고려하여 개발 프로세스를 개선할 필요가 있습니다.</p>
