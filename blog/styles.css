@@ -109,6 +109,33 @@ body {
     margin: 0 auto;
 }
 
+.blog-profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.blog-profile .profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.blog-profile .profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-info {
+    text-align: left;
+}
+
 .blog-title {
     font-size: 3rem;
     font-weight: 700;
@@ -682,6 +709,16 @@ body {
 
     .nav-menu.active {
         left: 0;
+    }
+
+    .blog-profile {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .profile-info {
+        text-align: center;
     }
 
     .blog-title {
