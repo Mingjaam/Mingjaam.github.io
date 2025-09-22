@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토스 - 경쟁사 분석</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            background: linear-gradient(135deg, #007AFF 0%, #0051D5 50%, #003A9B 100%);
+            margin: 0;
+            padding: 0;
+            height: 720px;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+        .competitors-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            flex: 1;
+        }
+        .competitor-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            padding: 40px;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .competitor-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .competitor-card h2 {
+            color: #FFD700;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .competitor-list {
+            list-style: none;
+            padding: 0;
+        }
+        .competitor-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .competitor-list li:hover {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        .competitor-list li:last-child {
+            border-bottom: none;
+        }
+        .competitor-list i {
+            color: #22c55e;
+            width: 25px;
+            font-size: 1.3rem;
+        }
+        .highlight {
+            background: rgba(255,255,255,0.25);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-left: 5px solid #FFD700;
+            text-align: center;
+        }
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-chart-bar"></i> 경쟁사 분석</h1>
+        </div>
+
+        <div class="competitors-grid">
+            <div class="competitor-card">
+                <h2><i class="fas fa-building"></i> 국내 경쟁사</h2>
+                <ul class="competitor-list">
+                    <li><i class="fas fa-university"></i> 카카오뱅크 (인터넷전문은행)</li>
+                    <li><i class="fas fa-mobile-alt"></i> 네이버페이 (간편결제)</li>
+                    <li><i class="fas fa-credit-card"></i> 삼성페이 (모바일결제)</li>
+                    <li><i class="fas fa-chart-line"></i> 키움증권 (증권)</li>
+                </ul>
+            </div>
+
+            <div class="competitor-card">
+                <h2><i class="fas fa-globe"></i> 해외 경쟁사</h2>
+                <ul class="competitor-list">
+                    <li><i class="fas fa-mobile-alt"></i> PayPal (글로벌 결제)</li>
+                    <li><i class="fas fa-university"></i> Revolut (핀테크)</li>
+                    <li><i class="fas fa-credit-card"></i> Stripe (결제 인프라)</li>
+                    <li><i class="fas fa-chart-line"></i> Robinhood (증권)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="highlight">
+            토스는 사용자 경험과 혁신으로 경쟁 우위를 확보
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="window.parent.postMessage('prev', '*')">
+            <i class="fas fa-arrow-left"></i> 이전
+        </button>
+        <button class="nav-btn" onclick="window.parent.postMessage('next', '*')">
+            <i class="fas fa-arrow-right"></i> 다음
+        </button>
+    </div>
+</body>
+</html>
+

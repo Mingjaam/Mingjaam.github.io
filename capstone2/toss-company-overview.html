@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토스 - 기업 개요</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);
+            margin: 0;
+            padding: 0;
+            height: 720px;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .company-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 20px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #007AFF;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            flex: 1;
+        }
+        .info-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+        .info-card:hover {
+            transform: translateY(-2px);
+        }
+        .info-card h2 {
+            color: #FFD700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .info-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .highlight {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-weight: 600;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FFD700;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="company-logo">
+                <i class="fas fa-coins"></i>
+            </div>
+            <h1>토스 (Toss)</h1>
+        </div>
+
+        <div class="content-grid">
+            <div class="info-card">
+                <h2><i class="fas fa-building"></i> 기업 개요</h2>
+                <div class="info-content">
+                    <div class="highlight">한국의 대표 핀테크 기업</div>
+                    <p>2015년 설립된 토스는 '간편송금' 서비스로 시작하여 현재는 종합 금융 플랫폼으로 성장했습니다.</p>
+                    <br>
+                    <p><strong>주요 서비스:</strong></p>
+                    <ul>
+                        <li>토스 (간편송금)</li>
+                        <li>토스뱅크 (인터넷전문은행)</li>
+                        <li>토스페이먼츠 (결제 서비스)</li>
+                        <li>토스증권 (증권 서비스)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h2><i class="fas fa-chart-line"></i> 성장 현황</h2>
+                <div class="info-content">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">2,500만+</div>
+                            <div class="stat-label">사용자 수</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">₩8조+</div>
+                            <div class="stat-label">거래액</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">₩3조+</div>
+                            <div class="stat-label">기업가치</div>
+                        </div>
+                    </div>
+                    <div class="highlight">
+                        한국 핀테크 업계 1위 기업
+                    </div>
+                    <p>2021년 토스뱅크 상장으로 국내 인터넷전문은행 시장을 선도하고 있습니다.</p>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h2><i class="fas fa-users"></i> 조직 문화</h2>
+                <div class="info-content">
+                    <div class="highlight">혁신과 도전을 추구하는 문화</div>
+                    <p><strong>핵심 가치:</strong></p>
+                    <ul>
+                        <li>사용자 중심 사고</li>
+                        <li>데이터 기반 의사결정</li>
+                        <li>빠른 실행과 실험</li>
+                        <li>투명한 소통</li>
+                    </ul>
+                    <br>
+                    <p><strong>복리후생:</strong></p>
+                    <ul>
+                        <li>자유로운 근무 환경</li>
+                        <li>성장 지원 프로그램</li>
+                        <li>스톡옵션 제공</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h2><i class="fas fa-code"></i> 기술 스택</h2>
+                <div class="info-content">
+                    <div class="highlight">최신 기술 스택 활용</div>
+                    <p><strong>프론트엔드:</strong></p>
+                    <ul>
+                        <li>React, TypeScript</li>
+                        <li>Next.js, React Native</li>
+                        <li>GraphQL, Apollo</li>
+                    </ul>
+                    <br>
+                    <p><strong>백엔드:</strong></p>
+                    <ul>
+                        <li>Java, Spring Boot</li>
+                        <li>Kotlin, Go</li>
+                        <li>MySQL, Redis</li>
+                    </ul>
+                    <br>
+                    <p><strong>인프라:</strong></p>
+                    <ul>
+                        <li>AWS, Kubernetes</li>
+                        <li>Docker, Jenkins</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="window.parent.postMessage('prev', '*')">
+            <i class="fas fa-arrow-left"></i> 이전
+        </button>
+        <button class="nav-btn" onclick="window.parent.postMessage('next', '*')">
+            <i class="fas fa-arrow-right"></i> 다음
+        </button>
+    </div>
+</body>
+</html>
+

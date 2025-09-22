@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토스 - 면접 정보</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            background: linear-gradient(135deg, #007AFF 0%, #0051D5 50%, #003A9B 100%);
+            margin: 0;
+            padding: 0;
+            height: 720px;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+        .interview-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            flex: 1;
+        }
+        .interview-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            padding: 40px;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .interview-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .interview-card h2 {
+            color: #FFD700;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .question-list {
+            list-style: none;
+            padding: 0;
+        }
+        .question-list li {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        .question-list li:hover {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        .question-list li:last-child {
+            border-bottom: none;
+        }
+        .question-list i {
+            color: #22c55e;
+            width: 25px;
+            margin-top: 2px;
+            font-size: 1.3rem;
+        }
+        .question-text {
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        .question-detail {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-left: 40px;
+            line-height: 1.5;
+        }
+        .source {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.8rem;
+        }
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-comments"></i> 면접 정보</h1>
+        </div>
+
+        <div class="interview-grid">
+            <div class="interview-card">
+                <h2><i class="fas fa-code"></i> 기술 면접</h2>
+                <ul class="question-list">
+                    <li>
+                        <i class="fas fa-question-circle"></i>
+                        <div>
+                            <div class="question-text">알고리즘 문제 해결</div>
+                            <div class="question-detail">기본적인 자료구조와 알고리즘 이해도 확인</div>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-question-circle"></i>
+                        <div>
+                            <div class="question-text">시스템 설계</div>
+                            <div class="question-detail">대규모 시스템 아키텍처 설계 능력 평가</div>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-question-circle"></i>
+                        <div>
+                            <div class="question-text">프로젝트 경험</div>
+                            <div class="question-detail">기술적 도전과 해결 과정 설명</div>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-question-circle"></i>
+                        <div>
+                            <div class="question-text">코드 리뷰</div>
+                            <div class="question-detail">코드 품질과 최적화에 대한 이해</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="interview-card">
+                <h2><i class="fas fa-users"></i> 인성 면접</h2>
+                <ul class="question-list">
+                    <li>
+                        <i class="fas fa-question-circle"></i>
+                        <div>
+                            <div class="question-text">팀워크 경험</div>
+                            <div class="question-detail">협업 경험과 갈등 해결 능력 평가</div>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-question-circle"></i>
+                        <div>
+                            <div class="question-text">도전 정신</div>
+                            <div class="question-detail">새로운 기술 학습과 도전 의지 확인</div>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-question-circle"></i>
+                        <div>
+                            <div class="question-text">토스 서비스 이해</div>
+                            <div class="question-detail">토스 서비스에 대한 깊이 있는 이해</div>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-question-circle"></i>
+                        <div>
+                            <div class="question-text">성장 계획</div>
+                            <div class="question-detail">개인적 성장 목표와 계획</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="source">
+        출처: 토스 채용 공고, 토스 공식 홈페이지, 잡플래닛, 블라인드
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="window.parent.postMessage('prev', '*')">
+            <i class="fas fa-arrow-left"></i> 이전
+        </button>
+        <button class="nav-btn" onclick="window.parent.postMessage('next', '*')">
+            <i class="fas fa-arrow-right"></i> 다음
+        </button>
+    </div>
+</body>
+</html>

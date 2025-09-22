@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토스 - 합격 팁</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);
+            margin: 0;
+            padding: 0;
+            height: 720px;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            flex: 1;
+        }
+        .tip-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+        .tip-card:hover {
+            transform: translateY(-2px);
+        }
+        .tip-card h2 {
+            color: #FFD700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tip-list {
+            list-style: none;
+            padding: 0;
+        }
+        .tip-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .tip-list li:last-child {
+            border-bottom: none;
+        }
+        .tip-list i {
+            color: #22c55e;
+            width: 16px;
+            margin-top: 2px;
+        }
+        .highlight {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-weight: 600;
+        }
+        .warning-box {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+        }
+        .warning-box h3 {
+            color: #ef4444;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .warning-content {
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        .success-box {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+        }
+        .success-box h3 {
+            color: #22c55e;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .success-content {
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-trophy"></i> 토스 합격 팁</h1>
+        </div>
+
+        <div class="content-grid">
+            <div class="tip-card">
+                <h2><i class="fas fa-rocket"></i> 성공 전략</h2>
+                <ul class="tip-list">
+                    <li><i class="fas fa-check"></i> 포트폴리오 품질 향상</li>
+                    <li><i class="fas fa-check"></i> 기술 블로그 운영</li>
+                    <li><i class="fas fa-check"></i> 오픈소스 기여</li>
+                    <li><i class="fas fa-check"></i> 컨퍼런스 발표</li>
+                    <li><i class="fas fa-check"></i> 네트워킹 활동</li>
+                </ul>
+                <div class="success-box">
+                    <h3>✅ 핵심 포인트</h3>
+                    <div class="success-content">
+                        기술적 깊이와 폭넓은 이해도를 보여주세요.
+                        실무 경험보다는 학습 의지와 성장 가능성이 중요합니다.
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-card">
+                <h2><i class="fas fa-code"></i> 코딩 테스트 준비</h2>
+                <ul class="tip-list">
+                    <li><i class="fas fa-check"></i> 백준 실버 수준 문제 연습</li>
+                    <li><i class="fas fa-check"></i> 시간 복잡도 최적화</li>
+                    <li><i class="fas fa-check"></i> 코드 품질 향상</li>
+                    <li><i class="fas fa-check"></i> 테스트 케이스 검증</li>
+                    <li><i class="fas fa-check"></i> 다양한 알고리즘 패턴 학습</li>
+                </ul>
+                <div class="highlight">
+                    모든 문제를 풀지 못해도 접근 방식이 중요
+                </div>
+            </div>
+
+            <div class="tip-card">
+                <h2><i class="fas fa-comments"></i> 면접 준비</h2>
+                <ul class="tip-list">
+                    <li><i class="fas fa-check"></i> 프로젝트 경험 정리</li>
+                    <li><i class="fas fa-check"></i> 기술적 도전과 해결 과정</li>
+                    <li><i class="fas fa-check"></i> 시스템 설계 연습</li>
+                    <li><i class="fas fa-check"></i> 최신 기술 트렌드 파악</li>
+                    <li><i class="fas fa-check"></i> 토스 서비스 체험</li>
+                </ul>
+                <div class="warning-box">
+                    <h3>⚠️ 주의사항</h3>
+                    <div class="warning-content">
+                        모르는 것은 모른다고 솔직하게 말하세요.
+                        단순 암기보다는 실무 경험 기반 설명이 중요합니다.
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-card">
+                <h2><i class="fas fa-heart"></i> 문화적합성</h2>
+                <ul class="tip-list">
+                    <li><i class="fas fa-check"></i> 토스 가치관 이해</li>
+                    <li><i class="fas fa-check"></i> 개인 성장 스토리 준비</li>
+                    <li><i class="fas fa-check"></i> 협업 경험 어필</li>
+                    <li><i class="fas fa-check"></i> 새로운 시도에 대한 열정</li>
+                    <li><i class="fas fa-check"></i> 사용자 중심 사고</li>
+                </ul>
+                <div class="success-box">
+                    <h3>✅ 핵심 포인트</h3>
+                    <div class="success-content">
+                        개인의 고유한 가치와 성향을 어필하세요.
+                        토스의 혁신 문화에 부합하는 스토리를 준비하세요.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="window.parent.postMessage('prev', '*')">
+            <i class="fas fa-arrow-left"></i> 이전
+        </button>
+        <button class="nav-btn" onclick="window.parent.postMessage('next', '*')">
+            <i class="fas fa-arrow-right"></i> 다음
+        </button>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,125 @@
+<!DOCTYPE html><html lang="ko"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>GitHub Repository</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script><style>
+        body {overflow: hidden; width: 1280px; height: 720px; margin: 0; padding: 0;}
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+        }
+        .liquid-glass {
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        .apple-blue {
+            color: #007AFF;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+        }
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+            overflow-x: auto;
+        }
+
+    html {
+        overflow: hidden;
+    }</style>
+    </head>
+    <body>
+    <div class="slide gradient-bg p-6 flex flex-col" style=" overflow: hidden;">
+    <!-- Header -->
+    <div class="mb-4">
+    <h1 class="text-5xl font-bold tracking-tight text-gray-800">GitHub <span class="apple-blue">Repository</span></h1>
+    <p class="text-xl text-gray-600 mt-2">프로젝트 저장소 및 버전 관리 전략</p>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex flex-1 space-x-6">
+    <!-- Left Column: Repository Info -->
+    <div class="w-1/2 flex flex-col space-y-4">
+    <div class="liquid-glass rounded-2xl p-6 flex-1">
+    <h3 class="text-3xl font-semibold mb-6 text-gray-700">Repository 정보</h3>
+    <div class="space-y-6">
+    <div class="flex items-center">
+    <i class="fab fa-github text-gray-600 mr-4 text-2xl"></i>
+    <div>
+    <p class="text-lg text-gray-600">Repository Name</p>
+    <p class="text-2xl font-semibold text-gray-800">1on-Musk-Capstone-Design</p>
+    </div>
+    </div>
+    <div class="flex items-center">
+    <i class="fas fa-link text-gray-600 mr-4 text-2xl"></i>
+    <div>
+    <p class="text-lg text-gray-600">Repository URL</p>
+    <p class="text-lg text-blue-600">github.com/1on-Musk-Capstone-Design</p>
+    </div>
+    </div>
+    <div class="flex items-center">
+    <i class="fas fa-shield-alt text-gray-600 mr-4 text-2xl"></i>
+    <div>
+    <p class="text-lg text-gray-600">Visibility</p>
+    <p class="text-lg text-gray-600">Private (팀 내부 개발)</p>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    <!-- Right Column: Version Control Strategy -->
+    <div class="w-1/2 flex flex-col space-y-4">
+    <div class="liquid-glass rounded-2xl p-6 flex-1">
+    <h3 class="text-3xl font-semibold mb-6 text-gray-700">버전 관리 전략</h3>
+    <div class="space-y-6">
+    <div class="flex items-start">
+    <i class="fas fa-code-branch text-blue-600 mr-4 text-2xl mt-1"></i>
+    <div>
+    <h4 class="text-xl font-semibold text-gray-700 mb-2">Git Flow 전략</h4>
+    <p class="text-lg text-gray-600">main, develop, feature 브랜치를 활용한 체계적인 개발 프로세스</p>
+    </div>
+    </div>
+    <div class="flex items-start">
+    <i class="fas fa-users text-green-600 mr-4 text-2xl mt-1"></i>
+    <div>
+    <h4 class="text-xl font-semibold text-gray-700 mb-2">코드 리뷰</h4>
+    <p class="text-lg text-gray-600">Pull Request를 통한 코드 품질 관리 및 팀원 간 지식 공유</p>
+    </div>
+    </div>
+    <div class="flex items-start">
+    <i class="fas fa-tags text-purple-600 mr-4 text-2xl mt-1"></i>
+    <div>
+    <h4 class="text-xl font-semibold text-gray-700 mb-2">태그 관리</h4>
+    <p class="text-lg text-gray-600">주요 마일스톤별 버전 태그를 통한 릴리즈 관리</p>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    <!-- Slide Number -->
+    <div class="slide-number">10 / 11</div>
+    </div>
+    
+    </body></html>

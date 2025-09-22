@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토스 - 연봉 정보</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            background: linear-gradient(135deg, #007AFF 0%, #0051D5 50%, #003A9B 100%);
+            margin: 0;
+            padding: 0;
+            height: 720px;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+        .salary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            flex: 1;
+        }
+        .salary-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            padding: 40px;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .salary-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .salary-card h2 {
+            color: #FFD700;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .salary-range {
+            background: rgba(255,255,255,0.25);
+            padding: 25px;
+            border-radius: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border: 3px solid #FFD700;
+        }
+        .salary-amount {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #FFD700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .salary-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+        .position-list {
+            list-style: none;
+            padding: 0;
+        }
+        .position-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .position-list li:hover {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        .position-list li:last-child {
+            border-bottom: none;
+        }
+        .position-name {
+            font-weight: 700;
+        }
+        .position-salary {
+            color: #FFD700;
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+        .source {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.8rem;
+        }
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-dollar-sign"></i> 연봉 정보</h1>
+        </div>
+
+        <div class="salary-grid">
+            <div class="salary-card">
+                <h2><i class="fas fa-chart-bar"></i> 평균 연봉</h2>
+                <div class="salary-range">
+                    <div class="salary-amount">₩8,500만</div>
+                    <div class="salary-label">토스 평균 연봉</div>
+                </div>
+                <p style="text-align: center; font-size: 1.1rem; opacity: 0.9;">
+                    업계 최고 수준의 경쟁력 있는 연봉
+                </p>
+                <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                    <h3 style="color: #FFD700; margin-bottom: 10px;">성과급</h3>
+                    <p style="font-size: 0.9rem;">• 분기별 성과급 지급</p>
+                    <p style="font-size: 0.9rem;">• 스톡옵션 제공</p>
+                    <p style="font-size: 0.9rem;">• 인센티브 최대 200%</p>
+                </div>
+            </div>
+
+            <div class="salary-card">
+                <h2><i class="fas fa-briefcase"></i> 직무별 연봉</h2>
+                <ul class="position-list">
+                    <li>
+                        <span class="position-name">시니어 개발자 (5년+)</span>
+                        <span class="position-salary">₩1.2억~1.8억</span>
+                    </li>
+                    <li>
+                        <span class="position-name">주니어 개발자 (1-3년)</span>
+                        <span class="position-salary">₩6,000만~8,000만</span>
+                    </li>
+                    <li>
+                        <span class="position-name">프로덕트 매니저</span>
+                        <span class="position-salary">₩1억~1.5억</span>
+                    </li>
+                    <li>
+                        <span class="position-name">데이터 사이언티스트</span>
+                        <span class="position-salary">₩9,000만~1.3억</span>
+                    </li>
+                    <li>
+                        <span class="position-name">DevOps 엔지니어</span>
+                        <span class="position-salary">₩8,000만~1.2억</span>
+                    </li>
+                    <li>
+                        <span class="position-name">QA 엔지니어</span>
+                        <span class="position-salary">₩7,000만~1억</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="source">
+        출처: 잡플래닛, 사람인, 크레딧잡, 토스 채용 공고 (2024년 기준)
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="window.parent.postMessage('prev', '*')">
+            <i class="fas fa-arrow-left"></i> 이전
+        </button>
+        <button class="nav-btn" onclick="window.parent.postMessage('next', '*')">
+            <i class="fas fa-arrow-right"></i> 다음
+        </button>
+    </div>
+</body>
+</html>

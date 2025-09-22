@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토스 - 코딩테스트</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            background: linear-gradient(135deg, #007AFF 0%, #0051D5 50%, #003A9B 100%);
+            margin: 0;
+            padding: 0;
+            height: 720px;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+        .coding-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            flex: 1;
+        }
+        .coding-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        .coding-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .coding-card h2 {
+            color: #FFD700;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .coding-list {
+            list-style: none;
+            padding: 0;
+        }
+        .coding-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .coding-list li:hover {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+        .coding-list li:last-child {
+            border-bottom: none;
+        }
+        .coding-list i {
+            color: #22c55e;
+            width: 20px;
+            margin-top: 2px;
+            font-size: 1.1rem;
+        }
+        .highlight {
+            background: rgba(255,255,255,0.25);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-weight: 700;
+            font-size: 1rem;
+            border-left: 4px solid #FFD700;
+            text-align: center;
+        }
+        .source {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.8rem;
+        }
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-code"></i> 코딩테스트</h1>
+        </div>
+
+        <div class="coding-grid">
+            <div class="coding-card">
+                <h2><i class="fas fa-tasks"></i> 문제 유형</h2>
+                <ul class="coding-list">
+                    <li><i class="fas fa-sort"></i> 정렬 알고리즘 (퀵소트, 머지소트)</li>
+                    <li><i class="fas fa-search"></i> 탐색 알고리즘 (DFS, BFS)</li>
+                    <li><i class="fas fa-project-diagram"></i> 동적 프로그래밍 (DP)</li>
+                    <li><i class="fas fa-sitemap"></i> 그래프 알고리즘</li>
+                    <li><i class="fas fa-calculator"></i> 수학 문제 (조합론, 확률)</li>
+                    <li><i class="fas fa-database"></i> 문자열 처리</li>
+                </ul>
+            </div>
+
+            <div class="coding-card">
+                <h2><i class="fas fa-clock"></i> 시험 정보</h2>
+                <ul class="coding-list">
+                    <li><i class="fas fa-hourglass-half"></i> 시험 시간: 2시간</li>
+                    <li><i class="fas fa-question-circle"></i> 문제 수: 3-4문제</li>
+                    <li><i class="fas fa-language"></i> 언어: Java, Python, JavaScript</li>
+                    <li><i class="fas fa-laptop"></i> 온라인 플랫폼: HackerRank</li>
+                    <li><i class="fas fa-check-circle"></i> 통과 기준: 2문제 이상</li>
+                    <li><i class="fas fa-redo"></i> 재응시: 1회 가능</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="highlight">
+            알고리즘 기초와 문제 해결 능력을 중점적으로 평가
+        </div>
+    </div>
+
+    <div class="source">
+        출처: 토스 채용 공고, HackerRank, 프로그래머스
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="window.parent.postMessage('prev', '*')">
+            <i class="fas fa-arrow-left"></i> 이전
+        </button>
+        <button class="nav-btn" onclick="window.parent.postMessage('next', '*')">
+            <i class="fas fa-arrow-right"></i> 다음
+        </button>
+    </div>
+</body>
+</html>

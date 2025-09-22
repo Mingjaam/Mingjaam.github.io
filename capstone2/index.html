@@ -1,0 +1,395 @@
+<!DOCTYPE html><html lang="ko"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>1-on-musk 캡스톤 발표</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script><style>
+        body {overflow: hidden; width: 1280px;
+            height: 720px;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            background: #000;}
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+        }
+        .liquid-glass {
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        .main-blue {color: #007AFF;}
+        .apple-blue {color: #007AFF;}
+        .korean-text {font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;}
+        
+        .slideshow-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .slide-frame {
+            width: 1280px;
+            height: 720px;
+            border: none;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            transform-origin: center center;
+            transition: transform 0.3s ease;
+        }
+        
+        /* Fullscreen mode styles */
+        .fullscreen .slide-frame {
+            border-radius: 0;
+        }
+        
+        .fullscreen .controls {
+            display: none;
+        }
+        
+        .fullscreen .slide-list {
+            display: none !important;
+        }
+        
+        .fullscreen .keyboard-hint {
+            display: none;
+        }
+        
+        .fullscreen .fullscreen-btn {
+            display: none;
+        }
+        
+        .fullscreen .slide-nav {
+            display: none;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+        
+        .control-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .control-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .slide-nav {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.7);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+        
+        .prev-btn {
+            left: 30px;
+        }
+        
+        .next-btn {
+            right: 30px;
+        }
+        
+        .slide-nav:hover {
+            background: rgba(0,0,0,0.9);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .fullscreen-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+        
+        .fullscreen-btn:hover {
+            background: rgba(0,0,0,0.9);
+            transform: scale(1.1);
+        }
+        
+        .slide-counter {
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .slide-list {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            max-height: 70vh;
+            overflow-y: auto;
+            min-width: 300px;
+        }
+        
+        .slide-list h3 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #007AFF;
+        }
+        
+        .slide-item {
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .slide-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .slide-item.active {
+            background: rgba(0,122,255,0.3);
+            color: #007AFF;
+        }
+        
+        .keyboard-hint {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="slideshow-container">
+        <iframe id="slideFrame" class="slide-frame" src="1p.html"></iframe>
+    </div>
+
+    <button class="fullscreen-btn" onclick="toggleFullscreen()" title="전체화면">⛶</button>
+    
+    <button class="slide-nav prev-btn" id="prevBtn" onclick="previousSlide()" title="이전 슬라이드">‹</button>
+    <button class="slide-nav next-btn" id="nextBtn" onclick="nextSlide()" title="다음 슬라이드">›</button>
+
+    <div class="controls">
+        <button class="control-btn" onclick="previousSlide()">이전</button>
+        <span class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">18</span>
+        </span>
+        <button class="control-btn" onclick="nextSlide()">다음</button>
+        <button class="control-btn" onclick="toggleSlideList()" title="슬라이드 목록">
+            <i class="fas fa-list"></i>
+        </button>
+    </div>
+
+    <div class="keyboard-hint">
+        키보드: ← → (이전/다음) | F (전체화면) | ESC (전체화면 해제)
+    </div>
+
+    <div class="slide-list" id="slideList" style="display: none;">
+        <h3>슬라이드 목록</h3>
+        <div class="slide-item active" onclick="goToSlide(1)">1. 타이틀</div>
+        <div class="slide-item" onclick="goToSlide(2)">2. 팀/프로젝트 소개</div>
+        <div class="slide-item" onclick="goToSlide(3)">3. 프로젝트 개요</div>
+        <div class="slide-item" onclick="goToSlide(4)">4. Motivation & Contribution</div>
+        <div class="slide-item" onclick="goToSlide(5)">5. 프로젝트 목표</div>
+        <div class="slide-item" onclick="goToSlide(6)">6. Technical Difficulties</div>
+        <div class="slide-item" onclick="goToSlide(7)">7. 시스템 설계</div>
+        <div class="slide-item" onclick="goToSlide(8)">8. Demo Scenario</div>
+        <div class="slide-item" onclick="goToSlide(9)">9. R&R (역할 분담)</div>
+        <div class="slide-item" onclick="goToSlide(10)">10. GitHub Repository</div>
+        <div class="slide-item" onclick="goToSlide(11)">11. 캡스톤(2) 연계 방안</div>
+        <div class="slide-item" onclick="goToSlide(11)">12. 토스 - 기업 소개</div>
+        <div class="slide-item" onclick="goToSlide(12)">13. 토스 - 성장 현황</div>
+        <div class="slide-item" onclick="goToSlide(13)">14. 토스 - 주요 서비스</div>
+        <div class="slide-item" onclick="goToSlide(14)">15. 토스 - 조직 문화</div>
+        <div class="slide-item" onclick="goToSlide(15)">16. 토스 - 기술 스택</div>
+        <div class="slide-item" onclick="goToSlide(16)">17. 토스 - 연봉 정보</div>
+        <div class="slide-item" onclick="goToSlide(17)">18. 토스 - 복리후생</div>
+        <div class="slide-item" onclick="goToSlide(18)">19. 토스 - 채용 조건</div>
+        <div class="slide-item" onclick="goToSlide(19)">20. 토스 - 채용 과정</div>
+        <div class="slide-item" onclick="goToSlide(20)">21. 토스 - 코딩테스트</div>
+        <div class="slide-item" onclick="goToSlide(21)">22. 토스 - 면접 정보</div>
+        <div class="slide-item" onclick="goToSlide(22)">23. 토스 - 합격 팁</div>
+        <div class="slide-item" onclick="goToSlide(23)">24. 토스 - 주요 성과</div>
+        <div class="slide-item" onclick="goToSlide(24)">25. 토스 - 미래 비전</div>
+        <div class="slide-item" onclick="goToSlide(25)">26. 토스 - 경쟁사 분석</div>
+        <div class="slide-item" onclick="goToSlide(26)">27. 토스 - 도전 과제</div>
+        <div class="slide-item" onclick="goToSlide(27)">28. 토스 - 요약</div>
+    </div>
+
+    <script>
+        const slides = [
+            '1p.html', '2p.html', '3p.html', '4p.html', '5p.html', 
+            '6p.html', '7p.html', '8p.html', '9p.html', '10p.html', '11p.html',
+            'toss-1-company.html', 'toss-2-growth.html', 'toss-3-services.html', 
+            'toss-4-culture.html', 'toss-5-tech.html', 'toss-6-salary.html', 
+            'toss-7-benefits.html', 'toss-8-requirements.html', 'toss-9-process.html', 
+            'toss-17-coding-test.html', 'toss-10-interview.html', 'toss-11-tips.html', 
+            'toss-12-achievements.html', 'toss-13-future.html', 'toss-14-competitors.html', 
+            'toss-15-challenges.html', 'toss-16-summary.html'
+        ];
+        
+        let currentSlideIndex = 0;
+        const totalSlides = slides.length;
+        
+        function updateSlide() {
+            const frame = document.getElementById('slideFrame');
+            const currentSlideSpan = document.getElementById('currentSlide');
+            const slideItems = document.querySelectorAll('.slide-item');
+            
+            frame.src = slides[currentSlideIndex];
+            currentSlideSpan.textContent = currentSlideIndex + 1;
+            
+            // Update active slide in list
+            slideItems.forEach((item, index) => {
+                item.classList.toggle('active', index === currentSlideIndex);
+            });
+        }
+        
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                currentSlideIndex++;
+                updateSlide();
+            }
+        }
+        
+        function previousSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                updateSlide();
+            }
+        }
+        
+        function goToSlide(slideNumber) {
+            currentSlideIndex = slideNumber - 1;
+            updateSlide();
+            toggleSlideList();
+        }
+        
+        function toggleSlideList() {
+            const slideList = document.getElementById('slideList');
+            slideList.style.display = slideList.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    document.body.classList.add('fullscreen');
+                });
+            } else {
+                document.exitFullscreen().then(() => {
+                    document.body.classList.remove('fullscreen');
+                });
+            }
+        }
+        
+        // Keyboard controls
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case 'ArrowLeft':
+                    previousSlide();
+                    break;
+                case 'ArrowRight':
+                    nextSlide();
+                    break;
+                case 'f':
+                case 'F':
+                    toggleFullscreen();
+                    break;
+                case 'Escape':
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                    }
+                    break;
+            }
+        });
+        
+        // Calculate and apply scaling
+        function updateScaling() {
+            const frame = document.getElementById('slideFrame');
+            const isFullscreen = document.fullscreenElement;
+            
+            if (isFullscreen) {
+                // Fullscreen mode: scale to fit screen while maintaining aspect ratio
+                const scaleX = window.innerWidth / 1280;
+                const scaleY = window.innerHeight / 720;
+                const scale = Math.min(scaleX, scaleY);
+                frame.style.transform = `scale(${scale})`;
+            } else {
+                // Normal mode: scale to fit window while maintaining aspect ratio
+                const scaleX = Math.min(window.innerWidth / 1280, 1);
+                const scaleY = Math.min(window.innerHeight / 720, 1);
+                const scale = Math.min(scaleX, scaleY);
+                frame.style.transform = `scale(${scale})`;
+            }
+        }
+        
+        // Fullscreen change event listener
+        document.addEventListener('fullscreenchange', function() {
+            if (document.fullscreenElement) {
+                document.body.classList.add('fullscreen');
+            } else {
+                document.body.classList.remove('fullscreen');
+            }
+            updateScaling();
+        });
+        
+        // Window resize event listener
+        window.addEventListener('resize', updateScaling);
+        
+        // Initialize
+        updateSlide();
+        updateScaling();
+    </script>
+</body>
+</html>

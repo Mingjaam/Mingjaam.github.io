@@ -1,0 +1,189 @@
+<!DOCTYPE html><html lang="ko"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>캡스톤(2) 연계 방안</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script><style>
+        body {overflow: hidden; width: 1280px; height: 720px; margin: 0; padding: 0;}
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+        }
+        .liquid-glass {
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        .apple-blue {
+            color: #007AFF;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+        }
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+        .phase-card {
+            transition: transform 0.3s ease;
+        }
+        .phase-card:hover {
+            transform: translateY(-5px);
+        }
+        .phase-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #007AFF 0%, #0056b3 100%);
+            color: white;
+            margin-bottom: 16px;
+        }
+        .connection-line {
+            position: relative;
+            height: 2px;
+            background: linear-gradient(90deg, #007AFF, #0056b3);
+            margin: 20px 0;
+        }
+        .connection-line::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: -6px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid #0056b3;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+        }
+
+    html {
+        overflow: hidden;
+    }</style>
+    </head>
+    <body>
+    <div class="slide gradient-bg p-6 flex flex-col" style=" overflow: hidden;">
+    <!-- Header -->
+    <div class="mb-4">
+    <h1 class="text-5xl font-bold tracking-tight text-gray-800">캡스톤(2) <span class="apple-blue">연계 방안</span></h1>
+    <p class="text-xl text-gray-600 mt-2">1단계에서 2단계로의 자연스러운 발전 계획</p>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex flex-1 space-x-6">
+    <!-- Left Column: Phase 1 to 2 Connection -->
+    <div class="w-1/2 flex flex-col space-y-4">
+    <!-- Phase 1 Completion -->
+    <div class="liquid-glass rounded-2xl p-4 phase-card">
+    <div class="flex items-start">
+    <div class="phase-icon mr-4">
+    <i class="fas fa-check-circle text-2xl"></i>
+    </div>
+    <div>
+    <h3 class="text-2xl font-semibold mb-3 text-gray-700">캡스톤(1) 완성 목표</h3>
+    <ul class="text-sm text-gray-600 space-y-2">
+    <li>• 기본 실시간 협업 기능 구현</li>
+    <li>• 무한 캔버스 인터페이스 완성</li>
+    <li>• AI 클러스터링 기본 기능</li>
+    <li>• 프로토타입 데모 완성</li>
+    <li>• 사용자 테스트 및 피드백 수집</li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    
+    <!-- Connection Bridge -->
+    <div class="connection-line"></div>
+    
+    <!-- Phase 2 Planning -->
+    <div class="liquid-glass rounded-2xl p-4 phase-card">
+    <div class="flex items-start">
+    <div class="phase-icon mr-4">
+    <i class="fas fa-rocket text-2xl"></i>
+    </div>
+    <div>
+    <h3 class="text-2xl font-semibold mb-3 text-gray-700">캡스톤(2) 발전 방향</h3>
+    <ul class="text-sm text-gray-600 space-y-2">
+    <li>• 고도화된 AI 기능 (아이디어 생성, 아이디어 평가)</li>
+    <li>• 모바일 앱 버전 개발</li>
+    <li>• 팀 관리 및 프로젝트 통합 기능</li>
+    <li>• 상용화를 위한 확장성 개선</li>
+    <li>• 실제 기업 도입 및 검증</li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    <!-- Right Column: Future Roadmap -->
+    <div class="w-1/2 flex flex-col">
+    <!-- Future Roadmap -->
+    <div class="liquid-glass rounded-2xl p-6 flex-1 flex flex-col">
+    <div class="flex items-start flex-1">
+    <div class="phase-icon mr-4">
+    <i class="fas fa-route text-3xl"></i>
+    </div>
+    <div class="flex-1">
+    <h3 class="text-3xl font-semibold mb-6 text-gray-700">향후 로드맵</h3>
+    <div class="space-y-6 text-gray-600 flex-1 flex flex-col justify-center">
+    <div class="flex items-start">
+    <div class="w-4 h-4 bg-blue-500 rounded-full mr-4 mt-2 flex-shrink-0"></div>
+    <div>
+    <p class="text-lg font-semibold text-gray-700 mb-1">Phase 1 (캡스톤 (1))</p>
+    <p class="text-base text-gray-600">기본 기능 구현 및 프로토타입 완성</p>
+    </div>
+    </div>
+    <div class="flex items-start">
+    <div class="w-4 h-4 bg-yellow-500 rounded-full mr-4 mt-2 flex-shrink-0"></div>
+    <div>
+    <p class="text-lg font-semibold text-gray-700 mb-1">Phase 2 (학기 후 방학)</p>
+    <p class="text-base text-gray-600">베타 버전 출시 및 사용자 테스트</p>
+    </div>
+    </div>
+    <div class="flex items-start">
+    <div class="w-4 h-4 bg-green-500 rounded-full mr-4 mt-2 flex-shrink-0"></div>
+    <div>
+    <p class="text-lg font-semibold text-gray-700 mb-1">Phase 3 (캡스톤 (2))</p>
+    <p class="text-base text-gray-600">정식 서비스 런칭 및 상용화</p>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    <!-- Bottom Section -->
+    <div class="mt-4">
+    <div class="liquid-glass rounded-2xl p-4">
+    <div class="flex items-center">
+    <div class="mr-4 flex-shrink-0">
+    <i class="fas fa-link apple-blue text-2xl"></i>
+    </div>
+    <div>
+    <p class="text-lg text-gray-700">
+    <span class="font-semibold">연계 전략:</span> 
+    캡스톤(1)에서 구축한 핵심 기술과 사용자 피드백을 바탕으로, 
+    캡스톤(2)에서는 상용화 가능한 수준의 완성도 높은 제품을 개발하여 
+    실제 시장에서 검증받을 수 있는 혁신적인 협업 도구로 발전시킵니다.
+    </p>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    <!-- Slide Number -->
+    <div class="slide-number">11 / 11</div>
+    </div>
+    
+    </body></html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html><html lang="ko"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>시스템 설계</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script><style>
+        body {overflow: hidden; width: 1280px; min-height: 720px; margin: 0; padding: 0;}
+        .slide {
+            width: 1280px;
+            min-height: 720px;
+            position: relative;
+        }
+        .liquid-glass {
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        .apple-blue {
+            color: #007AFF;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+        }
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+        .architecture-line {
+            position: absolute;
+            border-top: 2px dashed #007AFF;
+            width: 100px;
+            transform-origin: left center;
+        }
+        .component-icon {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(0, 122, 255, 0.1);
+            color: #007AFF;
+        }
+        .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+        .arrow-right {
+            border-width: 10px 0 10px 15px;
+            border-color: transparent transparent transparent #007AFF;
+        }
+        .arrow-left {
+            border-width: 10px 15px 10px 0;
+            border-color: transparent #007AFF transparent transparent;
+        }
+    
+    html {
+        overflow: hidden;
+    }</style>
+    </head>
+    <body>
+    <div class="slide gradient-bg p-12 flex flex-col" style=" overflow: hidden;">
+    <!-- Header -->
+    <div class="mb-8">
+    <h1 class="text-5xl font-bold tracking-tight text-gray-800">시스템 <span class="apple-blue">설계</span></h1>
+    <p class="text-xl text-gray-600 mt-2">클라이언트-서버 아키텍처</p>
+    </div>
+    <!-- Main Content -->
+    <div class="flex flex-1 space-x-8 relative">
+    <!-- Left Column: Frontend -->
+    <div class="w-1/2 flex flex-col space-y-6">
+    <div class="liquid-glass rounded-2xl p-6 flex-grow">
+    <div class="flex items-center mb-4">
+    <div class="component-icon mr-4">
+    <i class="fas fa-desktop"></i>
+    </div>
+    <h3 class="text-2xl font-semibold text-gray-700">프론트엔드</h3>
+    </div>
+    <div class="space-y-4 mt-6">
+    <div class="flex items-start">
+    <div class="mr-3 mt-1">
+    <i class="fas fa-paint-brush apple-blue text-xl"></i>
+    </div>
+    <div>
+    <h4 class="text-lg font-semibold text-gray-700">무한 캔버스</h4>
+    <p class="text-gray-600">사용자가 아이디어를 자유롭게 배치하고 이동할 수 있는 무한한 캔버스 인터페이스</p>
+    </div>
+    </div>
+    <div class="flex items-start">
+    <div class="mr-3 mt-1">
+    <i class="fas fa-users apple-blue text-xl"></i>
+    </div>
+    <div>
+    <h4 class="text-lg font-semibold text-gray-700">협업 인터페이스</h4>
+    <p class="text-gray-600">다중 사용자 실시간으로 아이디어를 추가하고 수정하는 과정을 시각적으로 표현</p>
+    </div>
+    </div>
+    <div class="flex items-start">
+    <div class="mr-3 mt-1">
+    <i class="fas fa-sticky-note apple-blue text-xl"></i>
+    </div>
+    <div>
+    <h4 class="text-lg font-semibold text-gray-700">스티커 노트</h4>
+    <p class="text-gray-600">사용자가 입력한 아이디어 텍스트를 자유롭게 배치하고 연결할 수 있는 UI 요소</p>
+    </div>
+    </div>
+    <div class="flex items-start">
+    <div class="mr-3 mt-1">
+    <i class="fas fa-comments apple-blue text-xl"></i>
+    </div>
+    <div>
+    <h4 class="text-lg font-semibold text-gray-700">실시간 커뮤니케이션</h4>
+    <p class="text-gray-600">채팅 및 음성 통화를 통한 팀원 간 실시간 소통 기능</p>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <!-- Middle: Connection -->
+    <div class="absolute top-1/2 left-[46.5%] transform -translate-x-1/2 -translate-y-1/2 z-10"> <!-- 'left-[40%]' 값을 조절하여 좌우 위치를 변경할 수 있습니다. 숫자가 작아질수록 왼쪽으로 이동합니다. -->
+    <div class="liquid-glass rounded-full p-3 w-28 h-28 flex items-center justify-center">
+    <div class="text-center">
+    <i class="fas fa-exchange-alt apple-blue text-2xl mb-1"></i>
+    <p class="text-xs text-gray-700 font-semibold">WebSocket</p>
+    <p class="text-xs text-gray-600">실시간 통신</p>
+    </div>
+    </div>
+    <!-- Connection arrows -->
+    <div class="arrow arrow-right" style="top: 50%; left: 100%; transform: translateY(-50%);"></div>
+    <div class="arrow arrow-left" style="top: 50%; right: 100%; transform: translateY(-50%);"></div>
+    </div>
+    <!-- Right Column: Backend -->
+    <div class="w-1/2 flex flex-col space-y-6">
+    <div class="liquid-glass rounded-2xl p-6 flex-grow">
+    <div class="flex items-center mb-4">
+    <div class="component-icon mr-4">
+    <i class="fas fa-server"></i>
+    </div>
+    <h3 class="text-2xl font-semibold text-gray-700">백엔드</h3>
+    </div>
+    <div class="space-y-4 mt-6">
+    <div class="flex items-start">
+    <div class="mr-3 mt-1">
+    <i class="fas fa-database apple-blue text-xl"></i>
+    </div>
+    <div>
+    <h4 class="text-lg font-semibold text-gray-700">실시간 데이터베이스</h4>
+    <p class="text-gray-600">WebSocket을 통해 클라이언트와 서버 간의 실시간 데이터 동기화</p>
+    </div>
+    </div>
+    <div class="flex items-start">
+    <div class="mr-3 mt-1">
+    <i class="fas fa-sync-alt apple-blue text-xl"></i>
+    </div>
+    <div>
+    <h4 class="text-lg font-semibold text-gray-700">동기화 엔진</h4>
+    <p class="text-gray-600">Operational Transformation 또는 CRDT 알고리즘을 사용한 동시 편집 충돌 해결</p>
+    </div>
+    </div>
+    <div class="flex items-start">
+    <div class="mr-3 mt-1">
+    <i class="fas fa-brain apple-blue text-xl"></i>
+    </div>
+    <div>
+    <h4 class="text-lg font-semibold text-gray-700">AI 클러스터링</h4>
+    <p class="text-gray-600">입력된 아이디어 텍스트를 자연어 처리하여 의미상 관련된 아이디어들을 자동으로 그룹화</p>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <!-- Bottom Section: Data Flow -->
+    <div class="mt-6">
+    <div class="liquid-glass rounded-2xl p-4">
+    <div class="flex items-center">
+    <div class="mr-4 flex-shrink-0">
+    <i class="fas fa-info-circle apple-blue text-2xl"></i>
+    </div>
+    <div>
+    <p class="text-gray-600">
+    <span class="font-semibold">데이터 흐름:</span> 
+                                프론트엔드에서 발생한 아이디어 생성/이동/수정 이벤트 → WebSocket을 통해 서버로 전송 → 
+                                백엔드에서 동기화 및 충돌 해결 → AI로 클러스터링 → 다시 모든 클라이언트로 방출
+                            </p>
+    </div>
+    </div>
+    </div>
+    </div>
+    <!-- Slide Number -->
+    <div class="slide-number">7 / 11</div>
+    </div>
+    
+    </body></html>

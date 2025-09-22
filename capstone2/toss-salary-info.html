@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토스 - 연봉 정보</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);
+            margin: 0;
+            padding: 0;
+            height: 720px;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            flex: 1;
+        }
+        .salary-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+        .salary-card:hover {
+            transform: translateY(-2px);
+        }
+        .salary-card h2 {
+            color: #FFD700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .salary-range {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .salary-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #FFD700;
+            margin-bottom: 5px;
+        }
+        .salary-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .position-list {
+            list-style: none;
+            padding: 0;
+        }
+        .position-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .position-list li:last-child {
+            border-bottom: none;
+        }
+        .position-name {
+            font-weight: 600;
+        }
+        .position-salary {
+            color: #FFD700;
+            font-weight: 700;
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .benefit-item {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .benefit-item i {
+            color: #22c55e;
+            margin-bottom: 5px;
+        }
+        .highlight {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-weight: 600;
+        }
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-money-bill-wave"></i> 토스 연봉 정보</h1>
+        </div>
+
+        <div class="content-grid">
+            <div class="salary-card">
+                <h2><i class="fas fa-chart-bar"></i> 직무별 연봉</h2>
+                <ul class="position-list">
+                    <li>
+                        <span class="position-name">신입 개발자</span>
+                        <span class="position-salary">4,500만원</span>
+                    </li>
+                    <li>
+                        <span class="position-name">주니어 개발자 (1-3년)</span>
+                        <span class="position-salary">6,000-8,000만원</span>
+                    </li>
+                    <li>
+                        <span class="position-name">시니어 개발자 (4-7년)</span>
+                        <span class="position-salary">8,000-12,000만원</span>
+                    </li>
+                    <li>
+                        <span class="position-name">리드 개발자 (8년+)</span>
+                        <span class="position-salary">12,000-18,000만원</span>
+                    </li>
+                    <li>
+                        <span class="position-name">테크 리드</span>
+                        <span class="position-salary">15,000-25,000만원</span>
+                    </li>
+                </ul>
+                <div class="highlight">
+                    스톡옵션 별도 제공 (연봉의 20-50%)
+                </div>
+            </div>
+
+            <div class="salary-card">
+                <h2><i class="fas fa-coins"></i> 평균 연봉 현황</h2>
+                <div class="salary-range">
+                    <div class="salary-amount">7,200만원</div>
+                    <div class="salary-label">전체 개발자 평균 연봉</div>
+                </div>
+                <div class="salary-range">
+                    <div class="salary-amount">9,500만원</div>
+                    <div class="salary-label">시니어 이상 평균 연봉</div>
+                </div>
+                <div class="highlight">
+                    업계 평균 대비 20-30% 높은 수준
+                </div>
+                <p style="font-size: 0.9rem; margin-top: 15px;">
+                    토스는 성과에 따른 차등 보상과 스톡옵션을 통해 
+                    장기적인 성장 동기를 부여합니다.
+                </p>
+            </div>
+
+            <div class="salary-card">
+                <h2><i class="fas fa-gift"></i> 복리후생</h2>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <i class="fas fa-home"></i>
+                        <div>자유로운 근무</div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-utensils"></i>
+                        <div>식비 지원</div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-dumbbell"></i>
+                        <div>헬스장 지원</div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-book"></i>
+                        <div>교육비 지원</div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-plane"></i>
+                        <div>휴가 지원</div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>의료비 지원</div>
+                    </div>
+                </div>
+                <div class="highlight">
+                    연간 복리후생비: 1,000만원 이상
+                </div>
+            </div>
+
+            <div class="salary-card">
+                <h2><i class="fas fa-trophy"></i> 성과 보상</h2>
+                <div class="info-content">
+                    <div class="highlight">성과 기반 보상 시스템</div>
+                    <p><strong>정기 보상:</strong></p>
+                    <ul>
+                        <li>분기별 성과 평가</li>
+                        <li>성과급 지급 (연봉의 10-30%)</li>
+                        <li>스톡옵션 추가 지급</li>
+                    </ul>
+                    <br>
+                    <p><strong>특별 보상:</strong></p>
+                    <ul>
+                        <li>프로젝트 성과 보너스</li>
+                        <li>특허 출원 보상</li>
+                        <li>내부 컨퍼런스 발표 보상</li>
+                    </ul>
+                    <br>
+                    <div class="highlight">
+                        총 보상 = 기본급 + 성과급 + 스톡옵션
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="window.parent.postMessage('prev', '*')">
+            <i class="fas fa-arrow-left"></i> 이전
+        </button>
+        <button class="nav-btn" onclick="window.parent.postMessage('next', '*')">
+            <i class="fas fa-arrow-right"></i> 다음
+        </button>
+    </div>
+</body>
+</html>
+

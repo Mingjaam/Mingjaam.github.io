@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토스 - 도전 과제</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            background: linear-gradient(135deg, #007AFF 0%, #0051D5 50%, #003A9B 100%);
+            margin: 0;
+            padding: 0;
+            height: 720px;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            flex: 1;
+        }
+        .challenge-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            padding: 40px;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .challenge-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .challenge-card h2 {
+            color: #FFD700;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .challenge-list {
+            list-style: none;
+            padding: 0;
+        }
+        .challenge-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .challenge-list li:hover {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        .challenge-list li:last-child {
+            border-bottom: none;
+        }
+        .challenge-list i {
+            color: #ff6b6b;
+            width: 25px;
+            margin-top: 2px;
+            font-size: 1.3rem;
+        }
+        .highlight {
+            background: rgba(255,255,255,0.25);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-left: 5px solid #FFD700;
+            text-align: center;
+        }
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-exclamation-triangle"></i> 도전 과제</h1>
+        </div>
+
+        <div class="challenges-grid">
+            <div class="challenge-card">
+                <h2><i class="fas fa-shield-alt"></i> 규제 도전</h2>
+                <ul class="challenge-list">
+                    <li><i class="fas fa-gavel"></i> 금융 규제 강화</li>
+                    <li><i class="fas fa-lock"></i> 데이터 보안 요구사항</li>
+                    <li><i class="fas fa-balance-scale"></i> 법적 리스크 관리</li>
+                    <li><i class="fas fa-certificate"></i> 라이선스 취득</li>
+                </ul>
+            </div>
+
+            <div class="challenge-card">
+                <h2><i class="fas fa-users"></i> 시장 도전</h2>
+                <ul class="challenge-list">
+                    <li><i class="fas fa-chart-line"></i> 경쟁사 증가</li>
+                    <li><i class="fas fa-dollar-sign"></i> 수익성 압박</li>
+                    <li><i class="fas fa-globe"></i> 글로벌 진출</li>
+                    <li><i class="fas fa-mobile-alt"></i> 기술 변화</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="highlight">
+            지속적인 혁신과 적응으로 도전을 기회로 전환
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="window.parent.postMessage('prev', '*')">
+            <i class="fas fa-arrow-left"></i> 이전
+        </button>
+        <button class="nav-btn" onclick="window.parent.postMessage('next', '*')">
+            <i class="fas fa-arrow-right"></i> 다음
+        </button>
+    </div>
+</body>
+</html>
+
