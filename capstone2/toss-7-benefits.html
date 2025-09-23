@@ -85,27 +85,6 @@
             color: rgba(255,255,255,0.7);
             font-size: 0.8rem;
         }
-        .navigation {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-        }
-        .nav-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-        .nav-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
     </style>
 </head>
 <body>
@@ -157,13 +136,5 @@
         출처: 토스 공식 홈페이지, 토스 블로그, 잡플래닛, 사람인
     </div>
 
-    <div class="navigation">
-        <button class="nav-btn" onclick="window.parent.postMessage('prev', '*')">
-            <i class="fas fa-arrow-left"></i> 이전
-        </button>
-        <button class="nav-btn" onclick="window.parent.postMessage('next', '*')">
-            <i class="fas fa-arrow-right"></i> 다음
-        </button>
-    </div>
 </body>
 </html>
