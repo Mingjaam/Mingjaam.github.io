@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기술 스택 소개</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            height: 720px;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+        .tech-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        .tech-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+        .tech-icon {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .tech-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .tech-description {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+        .architecture-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .flow-item {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .arrow {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.8);
+        }
+        .source {
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.7rem;
+        }
+        .navigation {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>기술 스택</h1>
+            <div class="subtitle">프로젝트 구현을 위한 기술 구성</div>
+        </div>
+
+        <!-- Architecture Flow -->
+        <div class="architecture-flow">
+            <div class="flow-item">React CSR</div>
+            <div class="arrow">↔</div>
+            <div class="flow-item">Socket.IO</div>
+            <div class="arrow">↔</div>
+            <div class="flow-item">Spring Boot</div>
+            <div class="arrow">↔</div>
+            <div class="flow-item">PostgreSQL</div>
+        </div>
+
+        <div class="tech-grid">
+            <!-- Frontend -->
+            <div class="tech-card">
+                <i class="fab fa-react tech-icon" style="color: #61DAFB;"></i>
+                <div class="tech-title">프론트엔드</div>
+                <div class="tech-description">
+                    <strong>React CSR</strong><br>
+                    클라이언트 사이드 렌더링으로<br>
+                    빠른 사용자 인터랙션과<br>
+                    동적 UI 구현
+                </div>
+            </div>
+
+            <!-- Communication -->
+            <div class="tech-card">
+                <i class="fas fa-plug tech-icon" style="color: #FF6B6B;"></i>
+                <div class="tech-title">통신</div>
+                <div class="tech-description">
+                    <strong>Socket.IO</strong><br>
+                    실시간 양방향 통신으로<br>
+                    프론트엔드와 백엔드 간<br>
+                    즉시 데이터 동기화
+                </div>
+            </div>
+
+            <!-- Backend -->
+            <div class="tech-card">
+                <i class="fab fa-java tech-icon" style="color: #F89820;"></i>
+                <div class="tech-title">백엔드</div>
+                <div class="tech-description">
+                    <strong>Spring Boot</strong><br>
+                    Java 기반의 강력한<br>
+                    엔터프라이즈급 백엔드<br>
+                    서버 구현
+                </div>
+            </div>
+
+            <!-- Database -->
+            <div class="tech-card">
+                <i class="fas fa-database tech-icon" style="color: #336791;"></i>
+                <div class="tech-title">데이터베이스</div>
+                <div class="tech-description">
+                    <strong>PostgreSQL</strong><br>
+                    안정적이고 확장 가능한<br>
+                    관계형 데이터베이스로<br>
+                    데이터 무결성 보장
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="source">
+        출처: 공식 문서 및 기술 스펙
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="window.parent.postMessage('prev', '*')">
+            <i class="fas fa-arrow-left"></i> 이전
+        </button>
+        <button class="nav-btn" onclick="window.parent.postMessage('next', '*')">
+            <i class="fas fa-arrow-right"></i> 다음
+        </button>
+    </div>
+</body>
+</html> 
