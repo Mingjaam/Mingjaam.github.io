@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👤 NestJS + Next.js ERP 시스템 개발일지 #7: 사용자 프로필 시스템 구축 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">👤 NestJS + Next.js ERP 시스템 개발일지 #7: 사용자 프로필 시스템 구축</h1>
+                    
+                    <div class="post-meta">
+                        <div class="post-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>2025년 9월 24일</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>약 10분 읽기</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>김민재</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post-tags">
+                        <span class="tag">NestJS</span>
+                        <span class="tag">Next.js</span>
+                        <span class="tag">TypeScript</span>
+                        <span class="tag">ERP</span>
+                        <span class="tag">프로필시스템</span>
+                        <span class="tag">시스템안정성</span>
+                        <span class="tag">개발일지</span>
+                    </div>
+                </header>
+                
+                <div class="post-body">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                        <h3 style="color: white; margin-bottom: 1rem;">📝 2025년 9월 24일 개발 활동</h3>
+                        <p style="color: white; line-height: 1.6; margin-bottom: 0;">
+                            안녕하세요! 오늘은 ERP 시스템의 사용자 프로필 및 설정 시스템을 구축하고, 시스템 안정성을 개선한 하루였습니다. 
+                            개발 과정과 배운 점들을 공유해드리겠습니다.
+                        </p>
+                    </div>
+
+                    <div class="toc">
+                        <h3>📋 목차</h3>
+                        <ul>
+                            <li><a href="#goals">오늘의 개발 목표</a></li>
+                            <li><a href="#main-features">주요 개발 내용</a></li>
+                            <li><a href="#technical-improvements">기술적 개선사항</a></li>
+                            <li><a href="#development-stats">개발 통계</a></li>
+                            <li><a href="#achievements">주요 성과</a></li>
+                            <li><a href="#lessons">배운 점과 인사이트</a></li>
+                            <li><a href="#future-plans">향후 계획</a></li>
+                            <li><a href="#tips">개발 팁</a></li>
+                        </ul>
+                    </div>
+
+                    <h2 id="goals">🎯 오늘의 개발 목표</h2>
+                    <ul>
+                        <li>사용자 프로필 관리 시스템 구축</li>
+                        <li>설정 페이지 기본 구조 구현</li>
+                        <li>시스템 안정성 개선 및 버그 수정</li>
+                    </ul>
+
+                    <h2 id="main-features">🛠️ 주요 개발 내용</h2>
+
+                    <h3>1. 프로필 및 설정 페이지 추가</h3>
+                    <div class="highlight-box">
+                        <h4>✅ 구현한 기능</h4>
+                        <ul>
+                            <li>사용자 프로필 조회 및 수정 페이지</li>
+                            <li>설정 페이지 기본 구조</li>
+                            <li>모든 사용자가 접근 가능한 상단 바 기능</li>
+                        </ul>
+                    </div>
+
+                    <h4>기술적 특징</h4>
+                    <div class="code-block">
+<span class="comment">// 프로필 페이지 주요 기능</span>
+<span class="keyword">const</span> ProfilePage = () => {
+  <span class="keyword">const</span> { user, refreshUserProfile } = useAuth();
+  <span class="keyword">const</span> [isEditing, setIsEditing] = useState(<span class="keyword">false</span>);
+  
+  <span class="keyword">const</span> handleSave = <span class="keyword">async</span> () => {
+    <span class="keyword">await</span> apiClient.patch(API_ENDPOINTS.USERS.UPDATE_PROFILE, formData);
+    <span class="keyword">await</span> refreshUserProfile();
+  };
+};
+                    </div>
+
+                    <h4>사용자 경험 개선</h4>
+                    <ul>
+                        <li>직관적인 프로필 수정 인터페이스</li>
+                        <li>실시간 데이터 동기화</li>
+                        <li>반응형 디자인 적용</li>
+                    </ul>
+
+                    <h3>2. 사용자 프로필 업데이트 API 구현</h3>
+                    <div class="highlight-box">
+                        <h4>🔧 백엔드 API 개발</h4>
+                        <ul>
+                            <li>RESTful API 패턴 적용</li>
+                            <li>권한별 필드 변경 제한</li>
+                            <li>안전한 데이터 업데이트</li>
+                        </ul>
+                    </div>
+
+                    <div class="code-block">
+<span class="comment">// 백엔드 API 구현</span>
+<span class="keyword">@Patch</span>(<span class="string">'profile'</span>)
+<span class="keyword">@ApiOperation</span>({ summary: <span class="string">'내 프로필 수정'</span> })
+<span class="keyword">async</span> updateProfile(
+  <span class="keyword">@Request</span>() req,
+  <span class="keyword">@Body</span>() updateUserDto: UpdateUserDto,
+): Promise&lt;ApiResponseDto&lt;UserResponseDto&gt;&gt; {
+  <span class="keyword">const</span> user = <span class="keyword">await</span> <span class="keyword">this</span>.usersService.updateProfile(req.user.id, updateUserDto);
+  <span class="keyword">return</span> <span class="keyword">new</span> ApiResponseDto(user, <span class="keyword">true</span>, <span class="string">'프로필이 수정되었습니다.'</span>);
+}
+                    </div>
+
+                    <h4>보안 강화</h4>
+                    <ul>
+                        <li>역할, 조직, 활성화 상태 변경 제한</li>
+                        <li>사용자별 권한 검증</li>
+                        <li>안전한 데이터 업데이트</li>
+                    </ul>
+
+                    <h3>3. useAuth 훅 안정성 개선</h3>
+                    <div class="problem-solution">
+                        <div class="problem">
+                            <h4>❌ 문제 상황</h4>
+                            <p>순환 참조 문제로 인한 useAuth 훅 불안정성</p>
+                        </div>
+                        <div class="solution">
+                            <h4>✅ 해결 방법</h4>
+                            <p>순환 참조 해결을 통한 안정성 개선</p>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+<span class="comment">// 문제 상황: 순환 참조</span>
+<span class="keyword">const</span> fetchUserProfile = useCallback(<span class="keyword">async</span> () => {
+  <span class="keyword">try</span> {
+    <span class="comment">// ... API 호출</span>
+  } <span class="keyword">catch</span> (error) {
+    logout(); <span class="comment">// ❌ 순환 참조 발생</span>
+  }
+}, [logout]);
+
+<span class="comment">// 해결 방법: 순환 참조 해결</span>
+<span class="keyword">const</span> fetchUserProfile = useCallback(<span class="keyword">async</span> () => {
+  <span class="keyword">try</span> {
+    <span class="comment">// ... API 호출</span>
+  } <span class="keyword">catch</span> (error) {
+    <span class="comment">// 로그아웃 로직을 직접 구현</span>
+    apiClient.clearToken();
+    setUser(<span class="keyword">null</span>);
+    localStorage.removeItem(<span class="string">'user'</span>);
+  }
+}, []);
+                    </div>
+
+                    <h3>4. 데이터베이스 쿼리 오류 수정</h3>
+                    <div class="problem-solution">
+                        <div class="problem">
+                            <h4>❌ 문제 상황</h4>
+                            <p>Error: column applicant.isblocked does not exist</p>
+                        </div>
+                        <div class="solution">
+                            <h4>✅ 해결 방법</h4>
+                            <p>User 엔티티 구조와 불일치하는 필드 참조 수정</p>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+<span class="comment">// 수정 전</span>
+.groupBy(<span class="string">'...applicant.isBlocked, applicant.blockReason...'</span>)
+
+<span class="comment">// 수정 후</span>
+.groupBy(<span class="string">'...applicant.memo...'</span>)
+                    </div>
+
+                    <h2 id="technical-improvements">🔧 기술적 개선사항</h2>
+
+                    <h3>백엔드 개선</h3>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🔧</div>
+                            <div class="feature-title">API 설계</div>
+                            <div class="feature-description">RESTful API 패턴 적용</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔒</div>
+                            <div class="feature-title">보안</div>
+                            <div class="feature-description">권한별 필드 변경 제한</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🗄️</div>
+                            <div class="feature-title">데이터베이스</div>
+                            <div class="feature-description">쿼리 최적화 및 오류 수정</div>
+                        </div>
+                    </div>
+
+                    <h3>프론트엔드 개선</h3>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">⚛️</div>
+                            <div class="feature-title">상태 관리</div>
+                            <div class="feature-description">useAuth 훅 안정성 향상</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🎨</div>
+                            <div class="feature-title">UI/UX</div>
+                            <div class="feature-description">직관적인 프로필 관리 인터페이스</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔗</div>
+                            <div class="feature-title">API 통합</div>
+                            <div class="feature-description">일관된 API 클라이언트 사용</div>
+                        </div>
+                    </div>
+
+                    <h3>시스템 안정성</h3>
+                    <div class="success-box">
+                        <h4>✅ 개선된 안정성</h4>
+                        <ul>
+                            <li><strong>순환 참조 해결</strong>: useAuth 훅 안정성 개선</li>
+                            <li><strong>데이터베이스 오류 수정</strong>: 쿼리 안정성 향상</li>
+                            <li><strong>API 오류 해결</strong>: 500 에러 수정</li>
+                        </ul>
+                    </div>
+
+                    <h2 id="development-stats">📊 개발 통계</h2>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">총 커밋</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">기능 추가</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">버그 수정</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">659</div>
+                            <div class="stat-label">코드 추가</div>
+                        </div>
+                    </div>
+
+                    <h3>파일 변경</h3>
+                    <ul>
+                        <li>백엔드: 3개 파일 수정</li>
+                        <li>프론트엔드: 4개 파일 수정</li>
+                        <li>새로운 페이지: 2개 추가</li>
+                    </ul>
+
+                    <h2 id="achievements">🏆 주요 성과</h2>
+
+                    <h3>사용자 경험 개선</h3>
+                    <div class="success-box">
+                        <h4>✅ 달성한 기능들</h4>
+                        <ul>
+                            <li>개인 프로필 관리 기능 추가</li>
+                            <li>설정 페이지 기본 구조 구축</li>
+                            <li>직관적인 네비게이션 구조</li>
+                        </ul>
+                    </div>
+
+                    <h3>시스템 안정성 향상</h3>
+                    <div class="success-box">
+                        <h4>✅ 개선된 안정성</h4>
+                        <ul>
+                            <li>순환 참조 문제 해결</li>
+                            <li>데이터베이스 쿼리 오류 수정</li>
+                            <li>API 안정성 개선</li>
+                        </ul>
+                    </div>
+
+                    <h3>코드 품질 향상</h3>
+                    <div class="success-box">
+                        <h4>✅ 개선된 코드 품질</h4>
+                        <ul>
+                            <li>기능별 명확한 커밋 분리</li>
+                            <li>상세한 커밋 메시지</li>
+                            <li>체계적인 개발 프로세스</li>
+                        </ul>
+                    </div>
+
+                    <h2 id="lessons">🚀 배운 점과 인사이트</h2>
+
+                    <h3>1. 순환 참조 문제 해결</h3>
+                    <div class="highlight-box">
+                        <h4>💡 핵심 교훈</h4>
+                        <ul>
+                            <li><strong>문제</strong>: useAuth 훅에서 logout 함수 참조로 인한 순환 참조</li>
+                            <li><strong>해결</strong>: 로그아웃 로직을 직접 구현하여 의존성 제거</li>
+                            <li><strong>교훈</strong>: 훅 간 의존성을 최소화하고 단순한 구조 유지</li>
+                        </ul>
+                    </div>
+
+                    <h3>2. 데이터베이스 쿼리 최적화</h3>
+                    <div class="highlight-box">
+                        <h4>💡 핵심 교훈</h4>
+                        <ul>
+                            <li><strong>문제</strong>: 존재하지 않는 필드 참조로 인한 500 에러</li>
+                            <li><strong>해결</strong>: 엔티티 구조와 쿼리 일치성 확인</li>
+                            <li><strong>교훈</strong>: 데이터베이스 스키마 변경 시 관련 쿼리 전체 검토 필요</li>
+                        </ul>
+                    </div>
+
+                    <h3>3. 사용자 경험 중심 개발</h3>
+                    <div class="highlight-box">
+                        <h4>💡 핵심 교훈</h4>
+                        <ul>
+                            <li><strong>접근</strong>: 모든 사용자가 접근 가능한 상단 바 기능</li>
+                            <li><strong>구현</strong>: 직관적인 프로필 관리 인터페이스</li>
+                            <li><strong>교훈</strong>: 사용자 관점에서 기능 설계의 중요성</li>
+                        </ul>
+                    </div>
+
+                    <h2 id="future-plans">🔮 향후 계획</h2>
+
+                    <h3>단기 계획</h3>
+                    <ul>
+                        <li>설정 페이지 기능 확장</li>
+                        <li>사용자 참여 이력 관리 시스템</li>
+                        <li>고급 프로필 관리 기능</li>
+                    </ul>
+
+                    <h3>장기 계획</h3>
+                    <ul>
+                        <li>AI 기반 사용자 추천 시스템</li>
+                        <li>고급 분석 및 리포팅 기능</li>
+                        <li>모바일 앱 연동</li>
+                    </ul>
+
+                    <h2 id="tips">💡 개발 팁</h2>
+
+                    <h3>1. 커밋 전략</h3>
+                    <div class="code-block">
+<span class="comment"># 기능별 명확한 커밋 분리</span>
+feat: 새로운 기능 추가
+fix: 버그 수정
+refactor: 코드 리팩토링
+docs: 문서 수정
+                    </div>
+
+                    <h3>2. 에러 처리</h3>
+                    <div class="code-block">
+<span class="comment">// 순환 참조 방지</span>
+<span class="keyword">const</span> handleError = useCallback(() => {
+  <span class="comment">// 직접 구현으로 의존성 제거</span>
+}, []);
+                    </div>
+
+                    <h3>3. API 설계</h3>
+                    <div class="code-block">
+<span class="comment">// 보안 강화</span>
+<span class="keyword">const</span> updateProfile = <span class="keyword">async</span> (userId: <span class="keyword">string</span>, data: UpdateUserDto) => {
+  <span class="comment">// 권한별 필드 변경 제한</span>
+  <span class="keyword">const</span> { role, organizationId, isActive, ...allowedFields } = data;
+  <span class="keyword">return</span> <span class="keyword">await</span> <span class="keyword">this</span>.userRepository.update(userId, allowedFields);
+};
+                    </div>
+
+                    <h2 id="conclusion">🎉 마무리</h2>
+                    
+                    <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 2rem; margin: 3rem 0; border-radius: 0 8px 8px 0;">
+                        <h3 style="color: #2563eb; margin-top: 0;">💭 개발을 마치며 느낀 점</h3>
+                        
+                        <p>오늘은 사용자 프로필 시스템을 구축하고 시스템 안정성을 크게 개선한 하루였습니다. 순환 참조 문제 해결과 데이터베이스 쿼리 오류 수정을 통해 시스템의 안정성을 높였고, 사용자 경험을 개선할 수 있었습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🔧 기술적 성장</h4>
+                        <p>순환 참조 문제 해결을 통해 React 훅의 올바른 사용법을 배웠고, 데이터베이스 쿼리 최적화를 통해 백엔드 개발 역량을 향상시킬 수 있었습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🎨 사용자 중심 개발</h4>
+                        <p>모든 사용자가 접근 가능한 프로필 관리 시스템을 구축하면서 사용자 경험의 중요성을 다시 한번 깨달았습니다. 작은 개선이 전체 시스템의 사용성을 크게 향상시킨다는 것을 실감했습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🛡️ 시스템 안정성</h4>
+                        <p>순환 참조와 데이터베이스 쿼리 오류를 해결하면서 시스템의 안정성을 크게 향상시킬 수 있었습니다. 이러한 경험은 앞으로 더욱 견고한 시스템을 구축하는 데 큰 도움이 될 것입니다.</p>
+                        
+                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
+                            <h4 style="color: #92400e; margin-top: 0;">🚀 앞으로의 다짐</h4>
+                            <p style="color: #92400e; margin-bottom: 0;">
+                                앞으로도 사용자 중심의 개발을 통해 더 나은 ERP 시스템을 만들어가겠습니다! 
+                                지속적인 개선과 안정성 향상을 통해 사용자에게 진정한 가치를 제공하는 시스템을 구축하겠습니다.
+                            </p>
+                        </div>
+                        
+                        <p style="text-align: center; font-weight: 600; color: #2563eb; margin-top: 2rem;">
+                            함께 성장하는 개발자가 되겠습니다! 🚀
+                        </p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="../index.html">블로그</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script src="../post-script.js"></script>
+</body>
+</html>

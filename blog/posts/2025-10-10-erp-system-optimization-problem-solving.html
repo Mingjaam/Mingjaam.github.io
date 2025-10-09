@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 개발 일지: ERP 시스템 문제 해결 및 최적화 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="post-main">
+        <div class="container">
+            <!-- 포스트 헤더 -->
+            <header class="post-header">
+                <div class="post-meta">
+                    <div class="post-date">
+                        <i class="fas fa-calendar"></i>
+                        <span>2025년 10월 10일</span>
+                    </div>
+                    <div class="post-categories">
+                        <span class="category-tag erp">ERP 개발</span>
+                        <span class="category-tag backend">백엔드</span>
+                        <span class="category-tag frontend">프론트엔드</span>
+                        <span class="category-tag project">프로젝트</span>
+                    </div>
+                </div>
+                <h1 class="post-title">
+                    🔧 오늘의 개발 일지: ERP 시스템 문제 해결 및 최적화
+                </h1>
+                <div class="post-tags">
+                    <span class="tag">NestJS</span>
+                    <span class="tag">Next.js</span>
+                    <span class="tag">TypeScript</span>
+                    <span class="tag">Docker</span>
+                    <span class="tag">Nginx</span>
+                    <span class="tag">권한관리</span>
+                    <span class="tag">이미지처리</span>
+                    <span class="tag">문제해결</span>
+                </div>
+            </header>
+
+            <!-- 포스트 콘텐츠 -->
+            <article class="post-content">
+                <div class="post-intro">
+                    <p>최근 너무 바빴다. 일정도 많았고 개발을 마무리해야 하는 단계에서 블로그 올리기 힘들었다. 프로젝트 마감이 다가오면서 더욱 집중해야 할 시점이었고, 매일매일 새로운 문제들이 쏟아져 나오는 상황에서 블로그 작성까지 신경 쓸 여유가 없었다.</p>
+                    
+                    <p>하지만 몇 주 남지 않은 데드라인을 지키기 위해 더 열심히 하겠다는 마음으로, 오늘 하루 동안 해결한 문제들과 개선사항들을 정리해보려고 한다. ERP 시스템의 핵심 기능들을 안정화시키고, 사용자 경험을 개선하는 과정에서 많은 것을 배웠다.</p>
+                </div>
+
+                <h2>📅 2025년 10월 9일 개발 작업 내용</h2>
+
+                <h3>🎯 오늘의 주요 작업</h3>
+                <ol>
+                    <li><strong>직원 권한 문제 해결</strong></li>
+                    <li><strong>대시보드 삭제된 프로그램 표시 문제 해결</strong></li>
+                    <li><strong>이미지 업로드 및 표시 문제 해결</strong></li>
+                    <li><strong>uploads 폴더 위치 변경</strong></li>
+                    <li><strong>Next.js 이미지 도메인 설정</strong></li>
+                </ol>
+
+                <hr>
+
+                <h2>🔧 1. 직원 권한 문제 해결</h2>
+
+                <h3>문제 상황</h3>
+                <ul>
+                    <li>직원(<code>staff</code>)이 불량회원 관리 페이지에 접근할 수 없음</li>
+                    <li>페이지가 계속 로딩 상태로 표시됨</li>
+                    <li>운영자와 직원의 권한이 동일해야 함</li>
+                </ul>
+
+                <h3>해결 과정</h3>
+
+                <h4>1.1 백엔드 권한 설정 수정</h4>
+
+                <p><strong>UserReportsController 수정:</strong></p>
+                <pre><code class="language-typescript">// backend/src/user-reports/user-reports.controller.ts
+@Controller('user-reports')
+@UseGuards(JwtAuthGuard, RolesGuard)
+export class UserReportsController {
+  @Get()
+  @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.STAFF) // STAFF 추가
+  async findAll(@Request() req) {
+    return this.userReportsService.findAll(req.user);
+  }
+
+  @Post()
+  @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.STAFF) // STAFF 추가
+  async create(@Body() createUserReportDto: CreateUserReportDto, @Request() req) {
+    return this.userReportsService.create(createUserReportDto, req.user);
+  }
+}</code></pre>
+
+                <p><strong>UserReportsService 수정:</strong></p>
+                <pre><code class="language-typescript">// backend/src/user-reports/user-reports.service.ts
+async findAll(user: User) {
+  if (user.role === UserRole.ADMIN || user.role === UserRole.OPERATOR || user.role === UserRole.STAFF) {
+    // 모든 마을의 신고를 볼 수 있음
+    return this.userReportRepository.find({
+      relations: ['reporter', 'reportedUser', 'reviewer'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+  // ...
+}</code></pre>
+
+                <h4>1.2 프론트엔드 권한 수정</h4>
+
+                <p><strong>UserReportsPage 수정:</strong></p>
+                <pre><code class="language-typescript">// frontend/src/app/admin/users/reports/page.tsx
+useEffect(() => {
+  if (user?.role === 'admin' || user?.role === 'operator' || user?.role === 'staff') {
+    fetchReports(currentPage, searchTerm);
+  }
+}, [user, currentPage, searchTerm]);</code></pre>
+
+                <p><strong>Sidebar 네비게이션 수정:</strong></p>
+                <pre><code class="language-typescript">// frontend/src/components/layout/sidebar.tsx
+const getNavigation = (userRole: string) => {
+  if (userRole === 'admin' || userRole === 'operator' || userRole === 'staff') {
+    return [
+      { name: '대시보드', href: '/admin', icon: Home },
+      { name: '프로그램 관리', href: '/admin/programs', icon: Calendar },
+      { name: '사용자 관리', href: '/admin/users', icon: Users },
+      { name: '불량회원 관리', href: '/admin/users/reports', icon: Flag },
+      // ...
+    ];
+  }
+  // ...
+};</code></pre>
+
+                <div class="result-box">
+                    <h4>✅ 결과</h4>
+                    <p>직원이 운영자와 동일한 권한으로 모든 관리 기능에 접근 가능</p>
+                </div>
+
+                <hr>
+
+                <h2>🗑️ 2. 대시보드 삭제된 프로그램 표시 문제 해결</h2>
+
+                <h3>문제 상황</h3>
+                <ul>
+                    <li>대시보드에서 삭제된 프로그램(<code>isActive: false</code>)이 최근 프로그램으로 표시됨</li>
+                    <li>활성화된 프로그램만 표시되어야 함</li>
+                </ul>
+
+                <h3>해결 과정</h3>
+
+                <p><strong>DashboardService 수정:</strong></p>
+                <pre><code class="language-typescript">// backend/src/dashboard/dashboard.service.ts
+private async getRecentPrograms(limit = 5, organizationId?: string) {
+  let programs;
+  
+  if (!organizationId) {
+    programs = await this.programRepository.find({
+      where: { isActive: true }, // isActive 필터 추가
+      relations: ['organizer', 'applications'],
+      order: { createdAt: 'DESC' },
+      take: limit,
+    });
+  } else {
+    programs = await this.programRepository.find({
+      where: { organizerId: organizationId, isActive: true }, // isActive 필터 추가
+      relations: ['organizer', 'applications'],
+      order: { createdAt: 'DESC' },
+      take: limit,
+    });
+  }
+  // ...
+}</code></pre>
+
+                <div class="result-box">
+                    <h4>✅ 결과</h4>
+                    <p>대시보드에서 활성화된 프로그램만 표시됨</p>
+                </div>
+
+                <hr>
+
+                <h2>📸 3. 이미지 업로드 및 표시 문제 해결</h2>
+
+                <h3>문제 상황</h3>
+                <ol>
+                    <li>이미지 업로드는 되지만 화면에 표시되지 않음</li>
+                    <li><code>400 Bad Request</code> 에러 발생</li>
+                    <li>Next.js Image 컴포넌트가 외부 도메인을 차단</li>
+                </ol>
+
+                <h3>해결 과정</h3>
+
+                <h4>3.1 업로드 폴더 위치 변경</h4>
+
+                <p><strong>Docker Compose 설정 수정:</strong></p>
+                <pre><code class="language-yaml"># docker-compose.prod.yml
+backend:
+  volumes:
+    - ../uploads:/app/uploads:rw  # ./uploads → ../uploads
+
+nginx:
+  volumes:
+    - ../uploads:/var/www/uploads:rw  # ./uploads → ../uploads</code></pre>
+
+                <p><strong>폴더 구조 변경:</strong></p>
+                <pre><code>nuvio/
+├── uploads/          # ← 새로운 위치
+│   └── images/
+└── intu_erp/
+    ├── backend/
+    ├── frontend/
+    └── docker-compose.prod.yml</code></pre>
+
+                <h4>3.2 이미지 URL 절대 경로 변환</h4>
+
+                <p><strong>ImageUpload 컴포넌트 수정:</strong></p>
+                <pre><code class="language-typescript">// frontend/src/components/ui/image-upload.tsx
+const data = await response.json();
+const { url } = data;
+
+// 상대 경로를 절대 URL로 변환
+const fullUrl = url.startsWith('http') ? url : `https://nuvio.kr${url}`;
+
+setPreview(fullUrl);
+onChange(fullUrl);</code></pre>
+
+                <h4>3.3 Next.js 이미지 도메인 설정</h4>
+
+                <p><strong>next.config.ts 수정:</strong></p>
+                <pre><code class="language-typescript">// frontend/next.config.ts
+const nextConfig: NextConfig = {
+  // ... 기존 설정
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'nuvio.kr',
+        port: '',
+        pathname: '/uploads/images/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.nuvio.kr',
+        port: '',
+        pathname: '/uploads/images/**',
+      },
+    ],
+  },
+};</code></pre>
+
+                <h4>3.4 Nginx 이미지 서빙 설정</h4>
+
+                <p><strong>nginx.conf 수정:</strong></p>
+                <pre><code class="language-nginx"># nginx/nginx.conf
+location /uploads/ {
+    alias /var/www/uploads/;
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+    
+    # 이미지 파일 MIME 타입 설정
+    location ~* \.(jpg|jpeg|png|gif|webp|svg)$ {
+        add_header Content-Type image/jpeg;
+        add_header Content-Type image/png;
+        add_header Content-Type image/gif;
+        add_header Content-Type image/webp;
+        add_header Content-Type image/svg+xml;
+    }
+}</code></pre>
+
+                <div class="result-box">
+                    <h4>✅ 결과</h4>
+                    <p>이미지 업로드 및 표시가 정상적으로 작동</p>
+                </div>
+
+                <hr>
+
+                <h2>🔧 4. 프로그램 생성 권한 문제 해결</h2>
+
+                <h3>문제 상황</h3>
+                <ul>
+                    <li>직원이 프로그램 생성 시 <code>403 Forbidden</code> 에러 발생</li>
+                    <li>컨트롤러에는 권한이 있지만 서비스 로직에서 누락</li>
+                </ul>
+
+                <h3>해결 과정</h3>
+
+                <p><strong>ProgramsService 수정:</strong></p>
+                <pre><code class="language-typescript">// backend/src/programs/programs.service.ts
+async create(createProgramDto: CreateProgramDto, user: User): Promise<Program> {
+  // 권한 확인: 관리자, 운영자, 직원만 프로그램 생성 가능
+  if (user.role !== UserRole.ADMIN && user.role !== UserRole.OPERATOR && user.role !== UserRole.STAFF) {
+    throw new ForbiddenException('프로그램 생성 권한이 없습니다.');
+  }
+  // ...
+}</code></pre>
+
+                <div class="result-box">
+                    <h4>✅ 결과</h4>
+                    <p>직원이 프로그램을 정상적으로 생성할 수 있음</p>
+                </div>
+
+                <hr>
+
+                <h2>🚀 5. 배포 및 운영</h2>
+
+                <h3>배포 스크립트</h3>
+                <pre><code class="language-bash">#!/bin/bash
+# deploy.sh
+
+echo "🚀 프로덕션 배포 시작..."
+
+# 최신 코드 가져오기
+git pull origin main
+
+# 기존 컨테이너 정리
+docker-compose -f docker-compose.prod.yml --env-file .env.production down
+
+# 새 컨테이너 빌드 및 실행
+docker-compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+
+echo "✅ 배포 완료!"</code></pre>
+
+                <h3>서버 명령어</h3>
+                <pre><code class="language-bash"># 최신 코드 가져오기
+git pull origin main
+
+# 컨테이너 재시작
+docker-compose -f docker-compose.prod.yml --env-file .env.production down
+docker-compose -f docker-compose.prod.yml --env-file .env.production up -d
+
+# 특정 서비스만 재빌드
+docker-compose -f docker-compose.prod.yml --env-file .env.production up -d --build frontend</code></pre>
+
+                <hr>
+
+                <h2>📊 6. 문제 해결 과정에서 배운 점</h2>
+
+                <h3>1. 권한 관리의 중요성</h3>
+                <ul>
+                    <li>프론트엔드와 백엔드 모두에서 일관된 권한 체크 필요</li>
+                    <li>역할 기반 접근 제어(RBAC) 구현 시 모든 레이어에서 검증</li>
+                </ul>
+
+                <h3>2. 이미지 처리의 복잡성</h3>
+                <ul>
+                    <li>상대 경로 vs 절대 경로 처리</li>
+                    <li>Next.js Image 컴포넌트의 외부 도메인 제한</li>
+                    <li>Nginx를 통한 정적 파일 서빙 설정</li>
+                </ul>
+
+                <h3>3. Docker 컨테이너 권한 문제</h3>
+                <ul>
+                    <li>파일 업로드 시 컨테이너 사용자 권한 설정</li>
+                    <li>볼륨 마운트 시 호스트와 컨테이너 권한 일치</li>
+                </ul>
+
+                <h3>4. 환경별 설정 관리</h3>
+                <ul>
+                    <li>개발/프로덕션 환경 분리</li>
+                    <li>환경 변수를 통한 설정 관리</li>
+                    <li>Docker Compose를 통한 환경 구성</li>
+                </ul>
+
+                <hr>
+
+                <h2>🎯 7. 다음 단계 계획</h2>
+
+                <h3>1. 성능 최적화</h3>
+                <ul>
+                    <li>이미지 압축 및 최적화</li>
+                    <li>데이터베이스 쿼리 최적화</li>
+                    <li>캐싱 전략 구현</li>
+                </ul>
+
+                <h3>2. 보안 강화</h3>
+                <ul>
+                    <li>파일 업로드 보안 검증</li>
+                    <li>API 레이트 리미팅</li>
+                    <li>입력 데이터 검증 강화</li>
+                </ul>
+
+                <h3>3. 모니터링 및 로깅</h3>
+                <ul>
+                    <li>애플리케이션 로깅 시스템</li>
+                    <li>에러 추적 및 알림</li>
+                    <li>성능 모니터링</li>
+                </ul>
+
+                <h3>4. 사용자 경험 개선</h3>
+                <ul>
+                    <li>반응형 디자인 최적화</li>
+                    <li>로딩 상태 개선</li>
+                    <li>에러 메시지 사용자 친화적으로 개선</li>
+                </ul>
+
+                <hr>
+
+                <h2>📝 결론</h2>
+
+                <p>오늘의 작업을 통해 ERP 시스템의 핵심 기능들을 안정적으로 구축할 수 있었습니다. 특히 권한 관리, 이미지 처리, 배포 자동화 등 실제 운영 환경에서 중요한 요소들을 다뤄보며 많은 인사이트를 얻었습니다.</p>
+
+                <p>앞으로도 지속적인 개선과 최적화를 통해 더욱 안정적이고 사용자 친화적인 시스템을 만들어 나가겠습니다.</p>
+
+                <div class="post-footer">
+                    <div class="post-navigation">
+                        <a href="2025-09-24-erp-user-profile-system.html" class="nav-link prev">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>이전 포스트</span>
+                        </a>
+                        <a href="../index.html" class="nav-link home">
+                            <i class="fas fa-home"></i>
+                            <span>블로그 홈</span>
+                        </a>
+                        <div class="nav-link next disabled">
+                            <span>다음 포스트</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                        <li><a href="https://linkedin.com/in/민재-김-209b0533b" target="_blank">LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../post-script.js"></script>
+</body>
+</html>
