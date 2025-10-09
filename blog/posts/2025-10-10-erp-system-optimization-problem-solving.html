@@ -101,60 +101,68 @@
                 <h4>1.1 백엔드 권한 설정 수정</h4>
 
                 <p><strong>UserReportsController 수정:</strong></p>
-                <pre><code class="language-typescript">// backend/src/user-reports/user-reports.controller.ts
-@Controller('user-reports')
-@UseGuards(JwtAuthGuard, RolesGuard)
-export class UserReportsController {
-  @Get()
-  @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.STAFF) // STAFF 추가
-  async findAll(@Request() req) {
-    return this.userReportsService.findAll(req.user);
+                <div class="code-block">
+<span class="comment">// backend/src/user-reports/user-reports.controller.ts</span>
+<span class="keyword">@Controller</span>(<span class="string">'user-reports'</span>)
+<span class="keyword">@UseGuards</span>(JwtAuthGuard, RolesGuard)
+<span class="keyword">export class</span> UserReportsController {
+  <span class="keyword">@Get</span>()
+  <span class="keyword">@Roles</span>(UserRole.ADMIN, UserRole.OPERATOR, UserRole.STAFF) <span class="comment">// STAFF 추가</span>
+  <span class="keyword">async</span> findAll(<span class="keyword">@Request</span>() req) {
+    <span class="keyword">return</span> <span class="keyword">this</span>.userReportsService.findAll(req.user);
   }
 
-  @Post()
-  @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.STAFF) // STAFF 추가
-  async create(@Body() createUserReportDto: CreateUserReportDto, @Request() req) {
-    return this.userReportsService.create(createUserReportDto, req.user);
+  <span class="keyword">@Post</span>()
+  <span class="keyword">@Roles</span>(UserRole.ADMIN, UserRole.OPERATOR, UserRole.STAFF) <span class="comment">// STAFF 추가</span>
+  <span class="keyword">async</span> create(<span class="keyword">@Body</span>() createUserReportDto: CreateUserReportDto, <span class="keyword">@Request</span>() req) {
+    <span class="keyword">return</span> <span class="keyword">this</span>.userReportsService.create(createUserReportDto, req.user);
   }
-}</code></pre>
+}
+                </div>
 
                 <p><strong>UserReportsService 수정:</strong></p>
-                <pre><code class="language-typescript">// backend/src/user-reports/user-reports.service.ts
-async findAll(user: User) {
-  if (user.role === UserRole.ADMIN || user.role === UserRole.OPERATOR || user.role === UserRole.STAFF) {
-    // 모든 마을의 신고를 볼 수 있음
-    return this.userReportRepository.find({
-      relations: ['reporter', 'reportedUser', 'reviewer'],
-      order: { createdAt: 'DESC' },
+                <div class="code-block">
+<span class="comment">// backend/src/user-reports/user-reports.service.ts</span>
+<span class="keyword">async</span> findAll(user: User) {
+  <span class="keyword">if</span> (user.role === UserRole.ADMIN || user.role === UserRole.OPERATOR || user.role === UserRole.STAFF) {
+    <span class="comment">// 모든 마을의 신고를 볼 수 있음</span>
+    <span class="keyword">return</span> <span class="keyword">this</span>.userReportRepository.find({
+      relations: [<span class="string">'reporter'</span>, <span class="string">'reportedUser'</span>, <span class="string">'reviewer'</span>],
+      order: { createdAt: <span class="string">'DESC'</span> },
     });
   }
-  // ...
-}</code></pre>
+  <span class="comment">// ...</span>
+}
+                </div>
 
                 <h4>1.2 프론트엔드 권한 수정</h4>
 
                 <p><strong>UserReportsPage 수정:</strong></p>
-                <pre><code class="language-typescript">// frontend/src/app/admin/users/reports/page.tsx
+                <div class="code-block">
+<span class="comment">// frontend/src/app/admin/users/reports/page.tsx</span>
 useEffect(() => {
-  if (user?.role === 'admin' || user?.role === 'operator' || user?.role === 'staff') {
+  <span class="keyword">if</span> (user?.role === <span class="string">'admin'</span> || user?.role === <span class="string">'operator'</span> || user?.role === <span class="string">'staff'</span>) {
     fetchReports(currentPage, searchTerm);
   }
-}, [user, currentPage, searchTerm]);</code></pre>
+}, [user, currentPage, searchTerm]);
+                </div>
 
                 <p><strong>Sidebar 네비게이션 수정:</strong></p>
-                <pre><code class="language-typescript">// frontend/src/components/layout/sidebar.tsx
-const getNavigation = (userRole: string) => {
-  if (userRole === 'admin' || userRole === 'operator' || userRole === 'staff') {
-    return [
-      { name: '대시보드', href: '/admin', icon: Home },
-      { name: '프로그램 관리', href: '/admin/programs', icon: Calendar },
-      { name: '사용자 관리', href: '/admin/users', icon: Users },
-      { name: '불량회원 관리', href: '/admin/users/reports', icon: Flag },
-      // ...
+                <div class="code-block">
+<span class="comment">// frontend/src/components/layout/sidebar.tsx</span>
+<span class="keyword">const</span> getNavigation = (userRole: <span class="keyword">string</span>) => {
+  <span class="keyword">if</span> (userRole === <span class="string">'admin'</span> || userRole === <span class="string">'operator'</span> || userRole === <span class="string">'staff'</span>) {
+    <span class="keyword">return</span> [
+      { name: <span class="string">'대시보드'</span>, href: <span class="string">'/admin'</span>, icon: Home },
+      { name: <span class="string">'프로그램 관리'</span>, href: <span class="string">'/admin/programs'</span>, icon: Calendar },
+      { name: <span class="string">'사용자 관리'</span>, href: <span class="string">'/admin/users'</span>, icon: Users },
+      { name: <span class="string">'불량회원 관리'</span>, href: <span class="string">'/admin/users/reports'</span>, icon: Flag },
+      <span class="comment">// ...</span>
     ];
   }
-  // ...
-};</code></pre>
+  <span class="comment">// ...</span>
+};
+                </div>
 
                 <div class="result-box">
                     <h4>✅ 결과</h4>
@@ -174,27 +182,29 @@ const getNavigation = (userRole: string) => {
                 <h3>해결 과정</h3>
 
                 <p><strong>DashboardService 수정:</strong></p>
-                <pre><code class="language-typescript">// backend/src/dashboard/dashboard.service.ts
-private async getRecentPrograms(limit = 5, organizationId?: string) {
-  let programs;
+                <div class="code-block">
+<span class="comment">// backend/src/dashboard/dashboard.service.ts</span>
+<span class="keyword">private async</span> getRecentPrograms(limit = <span class="number">5</span>, organizationId?: <span class="keyword">string</span>) {
+  <span class="keyword">let</span> programs;
   
-  if (!organizationId) {
-    programs = await this.programRepository.find({
-      where: { isActive: true }, // isActive 필터 추가
-      relations: ['organizer', 'applications'],
-      order: { createdAt: 'DESC' },
+  <span class="keyword">if</span> (!organizationId) {
+    programs = <span class="keyword">await this</span>.programRepository.find({
+      where: { isActive: <span class="keyword">true</span> }, <span class="comment">// isActive 필터 추가</span>
+      relations: [<span class="string">'organizer'</span>, <span class="string">'applications'</span>],
+      order: { createdAt: <span class="string">'DESC'</span> },
       take: limit,
     });
-  } else {
-    programs = await this.programRepository.find({
-      where: { organizerId: organizationId, isActive: true }, // isActive 필터 추가
-      relations: ['organizer', 'applications'],
-      order: { createdAt: 'DESC' },
+  } <span class="keyword">else</span> {
+    programs = <span class="keyword">await this</span>.programRepository.find({
+      where: { organizerId: organizationId, isActive: <span class="keyword">true</span> }, <span class="comment">// isActive 필터 추가</span>
+      relations: [<span class="string">'organizer'</span>, <span class="string">'applications'</span>],
+      order: { createdAt: <span class="string">'DESC'</span> },
       take: limit,
     });
   }
-  // ...
-}</code></pre>
+  <span class="comment">// ...</span>
+}
+                </div>
 
                 <div class="result-box">
                     <h4>✅ 결과</h4>
@@ -217,71 +227,80 @@ private async getRecentPrograms(limit = 5, organizationId?: string) {
                 <h4>3.1 업로드 폴더 위치 변경</h4>
 
                 <p><strong>Docker Compose 설정 수정:</strong></p>
-                <pre><code class="language-yaml"># docker-compose.prod.yml
+                <div class="code-block">
+<span class="comment"># docker-compose.prod.yml</span>
 backend:
   volumes:
-    - ../uploads:/app/uploads:rw  # ./uploads → ../uploads
+    - ../uploads:/app/uploads:rw  <span class="comment"># ./uploads → ../uploads</span>
 
 nginx:
   volumes:
-    - ../uploads:/var/www/uploads:rw  # ./uploads → ../uploads</code></pre>
+    - ../uploads:/var/www/uploads:rw  <span class="comment"># ./uploads → ../uploads</span>
+                </div>
 
                 <p><strong>폴더 구조 변경:</strong></p>
-                <pre><code>nuvio/
-├── uploads/          # ← 새로운 위치
+                <div class="code-block">
+nuvio/
+├── uploads/          <span class="comment"># ← 새로운 위치</span>
 │   └── images/
 └── intu_erp/
     ├── backend/
     ├── frontend/
-    └── docker-compose.prod.yml</code></pre>
+    └── docker-compose.prod.yml
+                </div>
 
                 <h4>3.2 이미지 URL 절대 경로 변환</h4>
 
                 <p><strong>ImageUpload 컴포넌트 수정:</strong></p>
-                <pre><code class="language-typescript">// frontend/src/components/ui/image-upload.tsx
-const data = await response.json();
-const { url } = data;
+                <div class="code-block">
+<span class="comment">// frontend/src/components/ui/image-upload.tsx</span>
+<span class="keyword">const</span> data = <span class="keyword">await</span> response.json();
+<span class="keyword">const</span> { url } = data;
 
-// 상대 경로를 절대 URL로 변환
-const fullUrl = url.startsWith('http') ? url : `https://nuvio.kr${url}`;
+<span class="comment">// 상대 경로를 절대 URL로 변환</span>
+<span class="keyword">const</span> fullUrl = url.startsWith(<span class="string">'http'</span>) ? url : <span class="string">`https://nuvio.kr${url}`</span>;
 
 setPreview(fullUrl);
-onChange(fullUrl);</code></pre>
+onChange(fullUrl);
+                </div>
 
                 <h4>3.3 Next.js 이미지 도메인 설정</h4>
 
                 <p><strong>next.config.ts 수정:</strong></p>
-                <pre><code class="language-typescript">// frontend/next.config.ts
-const nextConfig: NextConfig = {
-  // ... 기존 설정
+                <div class="code-block">
+<span class="comment">// frontend/next.config.ts</span>
+<span class="keyword">const</span> nextConfig: NextConfig = {
+  <span class="comment">// ... 기존 설정</span>
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'nuvio.kr',
-        port: '',
-        pathname: '/uploads/images/**',
+        protocol: <span class="string">'https'</span>,
+        hostname: <span class="string">'nuvio.kr'</span>,
+        port: <span class="string">''</span>,
+        pathname: <span class="string">'/uploads/images/**'</span>,
       },
       {
-        protocol: 'https',
-        hostname: 'www.nuvio.kr',
-        port: '',
-        pathname: '/uploads/images/**',
+        protocol: <span class="string">'https'</span>,
+        hostname: <span class="string">'www.nuvio.kr'</span>,
+        port: <span class="string">''</span>,
+        pathname: <span class="string">'/uploads/images/**'</span>,
       },
     ],
   },
-};</code></pre>
+};
+                </div>
 
                 <h4>3.4 Nginx 이미지 서빙 설정</h4>
 
                 <p><strong>nginx.conf 수정:</strong></p>
-                <pre><code class="language-nginx"># nginx/nginx.conf
+                <div class="code-block">
+<span class="comment"># nginx/nginx.conf</span>
 location /uploads/ {
     alias /var/www/uploads/;
     expires 1y;
-    add_header Cache-Control "public, immutable";
+    add_header Cache-Control <span class="string">"public, immutable"</span>;
     
-    # 이미지 파일 MIME 타입 설정
+    <span class="comment"># 이미지 파일 MIME 타입 설정</span>
     location ~* \.(jpg|jpeg|png|gif|webp|svg)$ {
         add_header Content-Type image/jpeg;
         add_header Content-Type image/png;
@@ -289,7 +308,8 @@ location /uploads/ {
         add_header Content-Type image/webp;
         add_header Content-Type image/svg+xml;
     }
-}</code></pre>
+}
+                </div>
 
                 <div class="result-box">
                     <h4>✅ 결과</h4>
@@ -309,14 +329,16 @@ location /uploads/ {
                 <h3>해결 과정</h3>
 
                 <p><strong>ProgramsService 수정:</strong></p>
-                <pre><code class="language-typescript">// backend/src/programs/programs.service.ts
-async create(createProgramDto: CreateProgramDto, user: User): Promise<Program> {
-  // 권한 확인: 관리자, 운영자, 직원만 프로그램 생성 가능
-  if (user.role !== UserRole.ADMIN && user.role !== UserRole.OPERATOR && user.role !== UserRole.STAFF) {
-    throw new ForbiddenException('프로그램 생성 권한이 없습니다.');
+                <div class="code-block">
+<span class="comment">// backend/src/programs/programs.service.ts</span>
+<span class="keyword">async</span> create(createProgramDto: CreateProgramDto, user: User): Promise&lt;Program&gt; {
+  <span class="comment">// 권한 확인: 관리자, 운영자, 직원만 프로그램 생성 가능</span>
+  <span class="keyword">if</span> (user.role !== UserRole.ADMIN && user.role !== UserRole.OPERATOR && user.role !== UserRole.STAFF) {
+    <span class="keyword">throw new</span> ForbiddenException(<span class="string">'프로그램 생성 권한이 없습니다.'</span>);
   }
-  // ...
-}</code></pre>
+  <span class="comment">// ...</span>
+}
+                </div>
 
                 <div class="result-box">
                     <h4>✅ 결과</h4>
@@ -328,32 +350,36 @@ async create(createProgramDto: CreateProgramDto, user: User): Promise<Program> {
                 <h2>🚀 5. 배포 및 운영</h2>
 
                 <h3>배포 스크립트</h3>
-                <pre><code class="language-bash">#!/bin/bash
-# deploy.sh
+                <div class="code-block">
+<span class="comment">#!/bin/bash</span>
+<span class="comment"># deploy.sh</span>
 
-echo "🚀 프로덕션 배포 시작..."
+echo <span class="string">"🚀 프로덕션 배포 시작..."</span>
 
-# 최신 코드 가져오기
+<span class="comment"># 최신 코드 가져오기</span>
 git pull origin main
 
-# 기존 컨테이너 정리
+<span class="comment"># 기존 컨테이너 정리</span>
 docker-compose -f docker-compose.prod.yml --env-file .env.production down
 
-# 새 컨테이너 빌드 및 실행
+<span class="comment"># 새 컨테이너 빌드 및 실행</span>
 docker-compose -f docker-compose.prod.yml --env-file .env.production up -d --build
 
-echo "✅ 배포 완료!"</code></pre>
+echo <span class="string">"✅ 배포 완료!"</span>
+                </div>
 
                 <h3>서버 명령어</h3>
-                <pre><code class="language-bash"># 최신 코드 가져오기
+                <div class="code-block">
+<span class="comment"># 최신 코드 가져오기</span>
 git pull origin main
 
-# 컨테이너 재시작
+<span class="comment"># 컨테이너 재시작</span>
 docker-compose -f docker-compose.prod.yml --env-file .env.production down
 docker-compose -f docker-compose.prod.yml --env-file .env.production up -d
 
-# 특정 서비스만 재빌드
-docker-compose -f docker-compose.prod.yml --env-file .env.production up -d --build frontend</code></pre>
+<span class="comment"># 특정 서비스만 재빌드</span>
+docker-compose -f docker-compose.prod.yml --env-file .env.production up -d --build frontend
+                </div>
 
                 <hr>
 
