@@ -3,225 +3,327 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DBP-myBinaryWriter&Reader 구현하기</title>
+    <title>💾 DBP-myBinaryWriter&Reader 구현하기 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header class="post-header">
-            <h1>DBP-myBinaryWriter&Reader 구현하기</h1>
-            <div class="post-meta">
-                <span class="date">2025년 9월 23일</span>
-                <span class="category">데이터베이스 프로그래밍</span>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
             </div>
-        </header>
-
-        <article class="post-content">
-            <h2>프로젝트 개요</h2>
-            <p>이번 포스트에서는 C#에서 파일에 데이터를 바이너리 형식으로 직접 쓰고 읽는 사용자 정의 클래스인 <code>myBinaryWriter</code>와 <code>myBinaryReader</code>를 구현하는 과정을 다룹니다. 기존 .NET 프레임워크에서 제공하는 BinaryWriter 및 BinaryReader 클래스 없이 FileStream, BitConverter, 그리고 Encoding.UTF8을 사용하여 기본적인 데이터 타입을 바이트 배열로 변환하여 처리하는 방식을 이해하고 직접 구현하는 데 중점을 두었습니다.</p>
-
-            <h2>주요 학습 목표</h2>
-            <ul>
-                <li><strong>바이너리 입출력의 이해</strong>: 데이터를 파일에 바이트 단위로 저장하고 읽는 과정을 직접 구현</li>
-                <li><strong>BitConverter 활용</strong>: C#의 기본 데이터 타입을 바이트 배열로 변환하는 방법 학습</li>
-                <li><strong>FileStream 직접 접근</strong>: FileStream을 사용하여 파일에 직접 접근하는 방법 익히기</li>
-                <li><strong>자원 관리</strong>: IDisposable 인터페이스 구현을 통한 안전한 자원 해제</li>
-                <li><strong>문자열 인코딩</strong>: UTF-8 인코딩을 사용한 문자열 처리</li>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
             </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
 
-            <h2>myBinaryWriter 클래스 구현</h2>
-            <p>myBinaryWriter 클래스는 FileStream을 사용하여 정수(int), 실수(double), 문자열(string), ushort 값을 바이트 배열로 변환한 뒤 파일에 기록하도록 구현되었습니다. 특히 문자열은 UTF-8 인코딩으로 변환하고, 길이를 먼저 저장하여 나중에 읽을 때 구분할 수 있도록 했습니다.</p>
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">💾 DBP-myBinaryWriter&Reader 구현하기</h1>
+                    
+                    <div class="post-meta">
+                        <div class="post-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>2025년 9월 23일</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>약 6분 읽기</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>김민재</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post-tags">
+                        <span class="tag">C#</span>
+                        <span class="tag">FileStream</span>
+                        <span class="tag">BinaryWriter</span>
+                        <span class="tag">BinaryReader</span>
+                        <span class="tag">BitConverter</span>
+                        <span class="tag">UTF-8</span>
+                        <span class="tag">IDisposable</span>
+                    </div>
+                </header>
+                
+                <div class="post-body">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                        <h3 style="color: white; margin-bottom: 1rem;">📝 2025년 9월 23일 학습 활동</h3>
+                        <p style="color: white; line-height: 1.6; margin-bottom: 0;">
+                            안녕하세요! 오늘은 C#에서 파일에 데이터를 바이너리 형식으로 직접 쓰고 읽는 사용자 정의 클래스인 
+                            myBinaryWriter와 myBinaryReader를 구현하는 과정을 학습했습니다.
+                        </p>
+                    </div>
 
-            <pre><code class="language-csharp">using System;
-using System.IO;
-using System.Text;
+                    <h2>프로젝트 개요</h2>
+                    <p>이번 포스트에서는 C#에서 파일에 데이터를 바이너리 형식으로 직접 쓰고 읽는 사용자 정의 클래스인 <code>myBinaryWriter</code>와 <code>myBinaryReader</code>를 구현하는 과정을 다룹니다. 기존 .NET 프레임워크에서 제공하는 BinaryWriter 및 BinaryReader 클래스 없이 FileStream, BitConverter, 그리고 Encoding.UTF8을 사용하여 기본적인 데이터 타입을 바이트 배열로 변환하여 처리하는 방식을 이해하고 직접 구현하는 데 중점을 두었습니다.</p>
 
-namespace mybinary_5701576
+                    <h2>주요 학습 목표</h2>
+                    <ul>
+                        <li><strong>바이너리 입출력의 이해</strong>: 데이터를 파일에 바이트 단위로 저장하고 읽는 과정을 직접 구현</li>
+                        <li><strong>BitConverter 활용</strong>: C#의 기본 데이터 타입을 바이트 배열로 변환하는 방법 학습</li>
+                        <li><strong>FileStream 직접 접근</strong>: FileStream을 사용하여 파일에 직접 접근하는 방법 익히기</li>
+                        <li><strong>자원 관리</strong>: IDisposable 인터페이스 구현을 통한 안전한 자원 해제</li>
+                        <li><strong>문자열 인코딩</strong>: UTF-8 인코딩을 사용한 문자열 처리</li>
+                    </ul>
+
+                    <h2>myBinaryWriter 클래스 구현</h2>
+                    <p>myBinaryWriter 클래스는 FileStream을 사용하여 정수(int), 실수(double), 문자열(string), ushort 값을 바이트 배열로 변환한 뒤 파일에 기록하도록 구현되었습니다. 특히 문자열은 UTF-8 인코딩으로 변환하고, 길이를 먼저 저장하여 나중에 읽을 때 구분할 수 있도록 했습니다.</p>
+
+                    <div class="code-block">
+<span class="comment">// MyBinaryWriter 클래스 구현</span>
+<span class="keyword">using</span> System;
+<span class="keyword">using</span> System.IO;
+<span class="keyword">using</span> System.Text;
+
+<span class="keyword">namespace</span> mybinary_5701576
 {
-    public class MyBinaryWriter : IDisposable
+    <span class="keyword">public class</span> MyBinaryWriter : IDisposable
     {
-        private FileStream fs;
+        <span class="keyword">private</span> FileStream fs;
 
-        public MyBinaryWriter(string filePath)
+        <span class="keyword">public</span> MyBinaryWriter(<span class="keyword">string</span> filePath)
         {
-            // 파일을 새로 생성하여 쓰기 모드로 열기
-            fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+            <span class="comment">// 파일을 새로 생성하여 쓰기 모드로 열기</span>
+            fs = <span class="keyword">new</span> FileStream(filePath, FileMode.Create, FileAccess.Write);
         }
 
-        // int 형식 쓰기 (4바이트)
-        public void WriteInt(int value)
+        <span class="comment">// int 형식 쓰기 (4바이트)</span>
+        <span class="keyword">public void</span> WriteInt(<span class="keyword">int</span> value)
         {
-            byte[] bytes = BitConverter.GetBytes(value);
-            fs.Write(bytes, 0, bytes.Length);
+            <span class="keyword">byte</span>[] bytes = BitConverter.GetBytes(value);
+            fs.Write(bytes, <span class="number">0</span>, bytes.Length);
         }
 
-        // double 형식 쓰기 (8바이트)
-        public void WriteDouble(double value)
+        <span class="comment">// double 형식 쓰기 (8바이트)</span>
+        <span class="keyword">public void</span> WriteDouble(<span class="keyword">double</span> value)
         {
-            byte[] bytes = BitConverter.GetBytes(value);
-            fs.Write(bytes, 0, bytes.Length);
+            <span class="keyword">byte</span>[] bytes = BitConverter.GetBytes(value);
+            fs.Write(bytes, <span class="number">0</span>, bytes.Length);
         }
 
-        // 문자열 쓰기 (길이 먼저 기록 후 내용 기록)
-        public void WriteString(string value)
+        <span class="comment">// 문자열 쓰기 (길이 먼저 기록 후 내용 기록)</span>
+        <span class="keyword">public void</span> WriteString(<span class="keyword">string</span> value)
         {
-            byte[] strBytes = Encoding.UTF8.GetBytes(value);
-            WriteInt(strBytes.Length); // 문자열 길이
-            fs.Write(strBytes, 0, strBytes.Length);
+            <span class="keyword">byte</span>[] strBytes = Encoding.UTF8.GetBytes(value);
+            WriteInt(strBytes.Length); <span class="comment">// 문자열 길이</span>
+            fs.Write(strBytes, <span class="number">0</span>, strBytes.Length);
         }
 
-        // ushort 형식 쓰기 (2바이트)
-        public void WriteUInt16(ushort value)
+        <span class="comment">// ushort 형식 쓰기 (2바이트)</span>
+        <span class="keyword">public void</span> WriteUInt16(<span class="keyword">ushort</span> value)
         {
-            byte[] bytes = BitConverter.GetBytes(value);
-            fs.Write(bytes, 0, bytes.Length);
+            <span class="keyword">byte</span>[] bytes = BitConverter.GetBytes(value);
+            fs.Write(bytes, <span class="number">0</span>, bytes.Length);
         }
 
-        public void Dispose()
+        <span class="keyword">public void</span> Dispose()
         {
             fs.Close();
             fs.Dispose();
         }
     }
-}</code></pre>
+}
+                    </div>
 
-            <h3>myBinaryWriter의 핵심 특징</h3>
-            <ul>
-                <li><strong>파일 생성 모드</strong>: FileMode.Create를 사용하여 새 파일 생성</li>
-                <li><strong>BitConverter 활용</strong>: 기본 데이터 타입을 바이트 배열로 변환</li>
-                <li><strong>문자열 처리</strong>: UTF-8 인코딩과 길이 정보 저장</li>
-                <li><strong>자원 관리</strong>: IDisposable 패턴으로 안전한 파일 닫기</li>
-            </ul>
+                    <h3>myBinaryWriter의 핵심 특징</h3>
+                    <ul>
+                        <li><strong>파일 생성 모드</strong>: FileMode.Create를 사용하여 새 파일 생성</li>
+                        <li><strong>BitConverter 활용</strong>: 기본 데이터 타입을 바이트 배열로 변환</li>
+                        <li><strong>문자열 처리</strong>: UTF-8 인코딩과 길이 정보 저장</li>
+                        <li><strong>자원 관리</strong>: IDisposable 패턴으로 안전한 파일 닫기</li>
+                    </ul>
 
-            <h2>myBinaryReader 클래스 구현</h2>
-            <p>myBinaryReader 클래스는 FileStream에서 데이터를 읽어와 BitConverter와 Encoding.UTF8을 사용하여 원래의 데이터 타입으로 복원하도록 구현되었습니다. 문자열은 앞에서 저장된 길이를 먼저 읽고, 그 길이만큼 바이트를 읽어 문자열로 변환합니다.</p>
+                    <h2>myBinaryReader 클래스 구현</h2>
+                    <p>myBinaryReader 클래스는 FileStream에서 데이터를 읽어와 BitConverter와 Encoding.UTF8을 사용하여 원래의 데이터 타입으로 복원하도록 구현되었습니다. 문자열은 앞에서 저장된 길이를 먼저 읽고, 그 길이만큼 바이트를 읽어 문자열로 변환합니다.</p>
 
-            <pre><code class="language-csharp">using System;
-using System.IO;
-using System.Text;
+                    <div class="code-block">
+<span class="comment">// MyBinaryReader 클래스 구현</span>
+<span class="keyword">using</span> System;
+<span class="keyword">using</span> System.IO;
+<span class="keyword">using</span> System.Text;
 
-namespace mybinary_5701576
+<span class="keyword">namespace</span> mybinary_5701576
 {
-    public class MyBinaryReader : IDisposable
+    <span class="keyword">public class</span> MyBinaryReader : IDisposable
     {
-        private FileStream fs;
+        <span class="keyword">private</span> FileStream fs;
 
-        public MyBinaryReader(string filePath)
+        <span class="keyword">public</span> MyBinaryReader(<span class="keyword">string</span> filePath)
         {
-            // 파일을 읽기 모드로 열기
-            fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            <span class="comment">// 파일을 읽기 모드로 열기</span>
+            fs = <span class="keyword">new</span> FileStream(filePath, FileMode.Open, FileAccess.Read);
         }
 
-        // int 읽기 (4바이트)
-        public int ReadInt()
+        <span class="comment">// int 읽기 (4바이트)</span>
+        <span class="keyword">public int</span> ReadInt()
         {
-            byte[] bytes = new byte[4];
-            fs.Read(bytes, 0, 4);
-            return BitConverter.ToInt32(bytes, 0);
+            <span class="keyword">byte</span>[] bytes = <span class="keyword">new byte</span>[<span class="number">4</span>];
+            fs.Read(bytes, <span class="number">0</span>, <span class="number">4</span>);
+            <span class="keyword">return</span> BitConverter.ToInt32(bytes, <span class="number">0</span>);
         }
 
-        // double 읽기 (8바이트)
-        public double ReadDouble()
+        <span class="comment">// double 읽기 (8바이트)</span>
+        <span class="keyword">public double</span> ReadDouble()
         {
-            byte[] bytes = new byte[8];
-            fs.Read(bytes, 0, 8);
-            return BitConverter.ToDouble(bytes, 0);
+            <span class="keyword">byte</span>[] bytes = <span class="keyword">new byte</span>[<span class="number">8</span>];
+            fs.Read(bytes, <span class="number">0</span>, <span class="number">8</span>);
+            <span class="keyword">return</span> BitConverter.ToDouble(bytes, <span class="number">0</span>);
         }
 
-        // 문자열 읽기 (길이 먼저 읽고, 그 길이만큼 문자열 읽음)
-        public string ReadString()
+        <span class="comment">// 문자열 읽기 (길이 먼저 읽고, 그 길이만큼 문자열 읽음)</span>
+        <span class="keyword">public string</span> ReadString()
         {
-            int length = ReadInt(); // 저장된 문자열 길이 읽기
-            byte[] strBytes = new byte[length];
-            fs.Read(strBytes, 0, length);
-            return Encoding.UTF8.GetString(strBytes);
+            <span class="keyword">int</span> length = ReadInt(); <span class="comment">// 저장된 문자열 길이 읽기</span>
+            <span class="keyword">byte</span>[] strBytes = <span class="keyword">new byte</span>[length];
+            fs.Read(strBytes, <span class="number">0</span>, length);
+            <span class="keyword">return</span> Encoding.UTF8.GetString(strBytes);
         }
 
-        // ushort 읽기 (2바이트)
-        public ushort ReadUInt16()
+        <span class="comment">// ushort 읽기 (2바이트)</span>
+        <span class="keyword">public ushort</span> ReadUInt16()
         {
-            byte[] bytes = new byte[2];
-            fs.Read(bytes, 0, 2);
-            return BitConverter.ToUInt16(bytes, 0);
+            <span class="keyword">byte</span>[] bytes = <span class="keyword">new byte</span>[<span class="number">2</span>];
+            fs.Read(bytes, <span class="number">0</span>, <span class="number">2</span>);
+            <span class="keyword">return</span> BitConverter.ToUInt16(bytes, <span class="number">0</span>);
         }
 
-        public void Dispose()
+        <span class="keyword">public void</span> Dispose()
         {
             fs.Close();
             fs.Dispose();
         }
     }
-}</code></pre>
+}
+                    </div>
 
-            <h3>myBinaryReader의 핵심 특징</h3>
-            <ul>
-                <li><strong>파일 읽기 모드</strong>: FileMode.Open을 사용하여 기존 파일 열기</li>
-                <li><strong>고정 크기 데이터</strong>: int(4바이트), double(8바이트), ushort(2바이트) 처리</li>
-                <li><strong>가변 길이 문자열</strong>: 길이 정보를 먼저 읽고 해당 길이만큼 문자열 읽기</li>
-                <li><strong>UTF-8 디코딩</strong>: 바이트 배열을 다시 문자열로 변환</li>
-            </ul>
+                    <h3>myBinaryReader의 핵심 특징</h3>
+                    <ul>
+                        <li><strong>파일 읽기 모드</strong>: FileMode.Open을 사용하여 기존 파일 열기</li>
+                        <li><strong>고정 크기 데이터</strong>: int(4바이트), double(8바이트), ushort(2바이트) 처리</li>
+                        <li><strong>가변 길이 문자열</strong>: 길이 정보를 먼저 읽고 해당 길이만큼 문자열 읽기</li>
+                        <li><strong>UTF-8 디코딩</strong>: 바이트 배열을 다시 문자열로 변환</li>
+                    </ul>
 
-            <h2>사용 예제</h2>
-            <pre><code class="language-csharp">// 데이터 쓰기
-using (var writer = new MyBinaryWriter("data.bin"))
+                    <h2>사용 예제</h2>
+                    <div class="code-block">
+<span class="comment">// 데이터 쓰기</span>
+<span class="keyword">using</span> (<span class="keyword">var</span> writer = <span class="keyword">new</span> MyBinaryWriter(<span class="string">"data.bin"</span>))
 {
-    writer.WriteInt(42);
-    writer.WriteDouble(3.14159);
-    writer.WriteString("Hello, World!");
-    writer.WriteUInt16(1000);
+    writer.WriteInt(<span class="number">42</span>);
+    writer.WriteDouble(<span class="number">3.14159</span>);
+    writer.WriteString(<span class="string">"Hello, World!"</span>);
+    writer.WriteUInt16(<span class="number">1000</span>);
 }
 
-// 데이터 읽기
-using (var reader = new MyBinaryReader("data.bin"))
+<span class="comment">// 데이터 읽기</span>
+<span class="keyword">using</span> (<span class="keyword">var</span> reader = <span class="keyword">new</span> MyBinaryReader(<span class="string">"data.bin"</span>))
 {
-    int intValue = reader.ReadInt();
-    double doubleValue = reader.ReadDouble();
-    string stringValue = reader.ReadString();
-    ushort ushortValue = reader.ReadUInt16();
+    <span class="keyword">int</span> intValue = reader.ReadInt();
+    <span class="keyword">double</span> doubleValue = reader.ReadDouble();
+    <span class="keyword">string</span> stringValue = reader.ReadString();
+    <span class="keyword">ushort</span> ushortValue = reader.ReadUInt16();
     
-    Console.WriteLine($"Int: {intValue}");
-    Console.WriteLine($"Double: {doubleValue}");
-    Console.WriteLine($"String: {stringValue}");
-    Console.WriteLine($"UShort: {ushortValue}");
-}</code></pre>
+    Console.WriteLine($<span class="string">"Int: {intValue}"</span>);
+    Console.WriteLine($<span class="string">"Double: {doubleValue}"</span>);
+    Console.WriteLine($<span class="string">"String: {stringValue}"</span>);
+    Console.WriteLine($<span class="string">"UShort: {ushortValue}"</span>);
+}
+                    </div>
 
-            <h2>학습 성과</h2>
-            <p>이 프로젝트를 통해 다음과 같은 중요한 개념들을 실습할 수 있었습니다:</p>
+                    <h2>학습 성과</h2>
+                    <p>이 프로젝트를 통해 다음과 같은 중요한 개념들을 실습할 수 있었습니다:</p>
 
-            <h3>1. 바이너리 입출력의 이해</h3>
-            <p>데이터를 파일에 바이트 단위로 저장하고 읽는 과정을 직접 구현함으로써 파일 구조 설계의 중요성을 체감했습니다. 특히 가변 길이 데이터(문자열) 처리 시 길이 정보를 먼저 기록하는 방식의 필요성을 경험했습니다.</p>
+                    <h3>1. 바이너리 입출력의 이해</h3>
+                    <p>데이터를 파일에 바이트 단위로 저장하고 읽는 과정을 직접 구현함으로써 파일 구조 설계의 중요성을 체감했습니다. 특히 가변 길이 데이터(문자열) 처리 시 길이 정보를 먼저 기록하는 방식의 필요성을 경험했습니다.</p>
 
-            <h3>2. BitConverter 활용</h3>
-            <p>C#의 기본 데이터 타입을 바이트 배열로 변환하는 BitConverter 클래스의 동작 원리를 명확하게 이해했습니다.</p>
+                    <h3>2. BitConverter 활용</h3>
+                    <p>C#의 기본 데이터 타입을 바이트 배열로 변환하는 BitConverter 클래스의 동작 원리를 명확하게 이해했습니다.</p>
 
-            <h3>3. FileStream 직접 접근</h3>
-            <p>FileStream을 사용하여 파일에 직접 접근하고 데이터를 쓰고 읽는 방법을 익혔습니다.</p>
+                    <h3>3. FileStream 직접 접근</h3>
+                    <p>FileStream을 사용하여 파일에 직접 접근하고 데이터를 쓰고 읽는 방법을 익혔습니다.</p>
 
-            <h3>4. 자원 관리 (IDisposable 패턴)</h3>
-            <p>FileStream과 같은 시스템 자원을 안전하게 해제하기 위해 IDisposable 인터페이스를 구현하고 Dispose() 메서드를 사용하여 자원 누수를 방지하는 방법을 적용했습니다.</p>
+                    <h3>4. 자원 관리 (IDisposable 패턴)</h3>
+                    <p>FileStream과 같은 시스템 자원을 안전하게 해제하기 위해 IDisposable 인터페이스를 구현하고 Dispose() 메서드를 사용하여 자원 누수를 방지하는 방법을 적용했습니다.</p>
 
-            <h3>5. 문자열 인코딩 (Encoding.UTF8)</h3>
-            <p>문자열 데이터를 파일에 기록할 때는 UTF-8 인코딩을 사용하여 바이트 배열로 변환하고, 읽을 때는 다시 UTF-8 디코딩을 통해 문자열로 복원하는 과정을 처리했습니다.</p>
+                    <h3>5. 문자열 인코딩 (Encoding.UTF8)</h3>
+                    <p>문자열 데이터를 파일에 기록할 때는 UTF-8 인코딩을 사용하여 바이트 배열로 변환하고, 읽을 때는 다시 UTF-8 디코딩을 통해 문자열로 복원하는 과정을 처리했습니다.</p>
 
-            <h2>결론</h2>
-            <p>이 프로젝트는 바이너리 파일 입출력의 기본 원리를 깊이 있게 학습하고, 시스템 자원 관리 및 데이터 인코딩/디코딩의 중요성을 실습하는 데 기여했습니다. myBinaryWriter와 myBinaryReader를 통해 데이터를 파일에 효율적으로 저장하고 정확히 읽어올 수 있는 기능을 구현할 수 있었습니다.</p>
+                    <h2>결론</h2>
+                    <p>이 프로젝트는 바이너리 파일 입출력의 기본 원리를 깊이 있게 학습하고, 시스템 자원 관리 및 데이터 인코딩/디코딩의 중요성을 실습하는 데 기여했습니다. myBinaryWriter와 myBinaryReader를 통해 데이터를 파일에 효율적으로 저장하고 정확히 읽어올 수 있는 기능을 구현할 수 있었습니다.</p>
 
-            <p>이러한 경험을 통해 파일 입출력의 저수준 동작 원리를 이해하고, 실제 애플리케이션에서 데이터를 안전하고 효율적으로 처리하는 방법을 익힐 수 있었습니다.</p>
-        </article>
+                    <p>이러한 경험을 통해 파일 입출력의 저수준 동작 원리를 이해하고, 실제 애플리케이션에서 데이터를 안전하고 효율적으로 처리하는 방법을 익힐 수 있었습니다.</p>
 
-        <footer class="post-footer">
-            <div class="tags">
-                <span class="tag">C#</span>
-                <span class="tag">FileStream</span>
-                <span class="tag">BinaryWriter</span>
-                <span class="tag">BinaryReader</span>
-                <span class="tag">BitConverter</span>
-                <span class="tag">UTF-8</span>
-                <span class="tag">IDisposable</span>
+                    <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 2rem; margin: 3rem 0; border-radius: 0 8px 8px 0;">
+                        <h3 style="color: #2563eb; margin-top: 0;">💭 학습을 마치며 느낀 점</h3>
+                        <p>바이너리 입출력의 기본 원리를 직접 구현해보면서 파일 시스템과 데이터 처리에 대한 이해가 깊어졌습니다. 
+                        앞으로도 이러한 저수준 프로그래밍 경험을 통해 더 견고한 시스템을 구축할 수 있을 것입니다.</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="../index.html">블로그</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
             </div>
-        </footer>
-    </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
+    <script src="../script.js"></script>
     <script src="../post-script.js"></script>
 </body>
 </html>

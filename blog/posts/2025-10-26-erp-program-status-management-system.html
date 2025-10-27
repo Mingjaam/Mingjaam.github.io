@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intu ERP 시스템 개발 일지: 프로그램 상태 관리 시스템 개선 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">🚀 Intu ERP 시스템 개발 일지: 프로그램 상태 관리 시스템 개선</h1>
+                    
+                    <div class="post-meta">
+                        <div class="post-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>2025년 10월 26일</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>약 12분 읽기</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>김민재</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post-tags">
+                        <span class="tag">NestJS</span>
+                        <span class="tag">Next.js</span>
+                        <span class="tag">TypeScript</span>
+                        <span class="tag">상태관리</span>
+                        <span class="tag">시간대처리</span>
+                        <span class="tag">실시간계산</span>
+                        <span class="tag">하위호환성</span>
+                        <span class="tag">UI/UX</span>
+                    </div>
+                </header>
+                
+                <div class="post-body">
+                <div class="post-intro">
+                    <p>최근 17개의 커밋을 통해 Intu ERP 시스템의 프로그램 상태 관리 시스템을 대폭 개선했습니다. 이번 업데이트에서는 한국 시간대 기반의 실시간 상태 계산, 하위 호환성을 보장하는 상태 체계 통합, 그리고 사용자 경험 개선에 중점을 두었습니다.</p>
+                    
+                    <p>기존의 UTC 기반 시간 관리에서 한국 시간대(Asia/Seoul)를 기준으로 한 정확한 상태 계산 시스템을 구현하고, 실시간으로 상태를 계산하여 사용자에게 표시하는 기능을 추가했습니다. 또한 기존 데이터와의 호환성을 보장하면서 새로운 상태 체계를 도입했습니다.</p>
+                </div>
+
+                <h2>📅 2025년 10월 26일 개발 작업 내용</h2>
+
+                <h3>🎯 오늘의 주요 작업</h3>
+                <ol>
+                    <li><strong>한국 시간대 기반 상태 관리 시스템 구현</strong></li>
+                    <li><strong>실시간 상태 계산 및 표시 기능 추가</strong></li>
+                    <li><strong>하위 호환성을 보장하는 상태 체계 통합</strong></li>
+                    <li><strong>UI/UX 개선 및 접근 권한 개선</strong></li>
+                    <li><strong>Next.js 호환성 개선</strong></li>
+                </ol>
+
+                <hr>
+
+                <h2>🕐 1. 한국 시간대 기반 상태 관리 시스템</h2>
+
+                <h3>문제 상황</h3>
+                <ul>
+                    <li>기존 UTC 기반 시간 관리로 인한 상태 계산 오류</li>
+                    <li>한국 사용자에게 부정확한 시간 정보 제공</li>
+                    <li>프론트엔드와 백엔드 간의 시간대 처리 불일치</li>
+                </ul>
+
+                <h3>해결 과정</h3>
+
+                <h4>1.1 새로운 상태 체계 도입</h4>
+
+                <p><strong>ProgramStatus 열거형 확장:</strong></p>
+                <div class="code-block">
+<span class="comment">// backend/src/programs/enums/program-status.enum.ts</span>
+<span class="keyword">export enum</span> ProgramStatus {
+  <span class="comment">// 기존 상태들 (하위 호환성)</span>
+  DRAFT = <span class="string">'draft'</span>,
+  OPEN = <span class="string">'open'</span>,
+  CLOSED = <span class="string">'closed'</span>,
+  ONGOING = <span class="string">'ongoing'</span>,
+  COMPLETED = <span class="string">'completed'</span>,
+  ARCHIVED = <span class="string">'archived'</span>,
+  
+  <span class="comment">// 새로운 상태들</span>
+  BEFORE_APPLICATION = <span class="string">'before_application'</span>,
+  APPLICATION_OPEN = <span class="string">'application_open'</span>,
+  IN_PROGRESS = <span class="string">'in_progress'</span>,
+}
+                </div>
+
+                <h4>1.2 실시간 상태 계산 로직 구현</h4>
+
+                <p><strong>한국 시간대 기반 상태 계산 함수:</strong></p>
+                <div class="code-block">
+<span class="comment">// backend/src/programs/utils/program-status.util.ts</span>
+<span class="keyword">export function</span> calculateProgramStatus(
+  applyStart: <span class="keyword">string</span>,
+  applyEnd: <span class="keyword">string</span>,
+  programStart: <span class="keyword">string</span>,
+  programEnd: <span class="keyword">string</span>
+): <span class="keyword">'draft'</span> | <span class="keyword">'open'</span> | <span class="keyword">'closed'</span> | <span class="keyword">'ongoing'</span> | <span class="keyword">'completed'</span> | <span class="keyword">'before_application'</span> | <span class="keyword">'application_open'</span> | <span class="keyword">'in_progress'</span> {
+  <span class="comment">// 한국 시간 기준 현재 시간</span>
+  <span class="keyword">const</span> now = <span class="keyword">new</span> Date(<span class="keyword">new</span> Date().toLocaleString(<span class="string">'en-US'</span>, { timeZone: <span class="string">'Asia/Seoul'</span> }));
+  <span class="keyword">const</span> applyStartDate = <span class="keyword">new</span> Date(applyStart);
+  <span class="keyword">const</span> applyEndDate = <span class="keyword">new</span> Date(applyEnd);
+  <span class="keyword">const</span> programStartDate = <span class="keyword">new</span> Date(programStart);
+  <span class="keyword">const</span> programEndDate = <span class="keyword">new</span> Date(programEnd);
+
+  <span class="comment">// 신청 기간 전</span>
+  <span class="keyword">if</span> (now < applyStartDate) {
+    <span class="keyword">return</span> <span class="string">'before_application'</span>;
+  }
+  
+  <span class="comment">// 신청 기간 중</span>
+  <span class="keyword">if</span> (now >= applyStartDate && now <= applyEndDate) {
+    <span class="keyword">return</span> <span class="string">'application_open'</span>;
+  }
+  
+  <span class="comment">// 신청 기간 종료 후, 활동 시작 전</span>
+  <span class="keyword">if</span> (now > applyEndDate && programStartDate && now < programStartDate) {
+    <span class="keyword">return</span> <span class="string">'in_progress'</span>;
+  }
+  
+  <span class="comment">// 활동 기간 중</span>
+  <span class="keyword">if</span> (programStartDate && programEndDate && now >= programStartDate && now <= programEndDate) {
+    <span class="keyword">return</span> <span class="string">'in_progress'</span>;
+  }
+  
+  <span class="comment">// 활동 종료 후</span>
+  <span class="keyword">if</span> (programEndDate && now > programEndDate) {
+    <span class="keyword">return</span> <span class="string">'completed'</span>;
+  }
+  
+  <span class="keyword">return</span> <span class="string">'in_progress'</span>;
+}
+                </div>
+
+                <h4>1.3 한국 시간대 유틸리티 함수 구현</h4>
+
+                <p><strong>시간 변환 유틸리티 함수들:</strong></p>
+                <div class="code-block">
+<span class="comment">// backend/src/common/utils/time.util.ts</span>
+<span class="comment">// 한국 시간대 기준으로 현재 날짜를 YYYY-MM-DD 형식으로 반환</span>
+<span class="keyword">export function</span> getKoreanDateString(date?: Date): <span class="keyword">string</span> {
+  <span class="keyword">const</span> now = date || <span class="keyword">new</span> Date();
+  <span class="keyword">const</span> koreanTime = <span class="keyword">new</span> Date(now.getTime() + (<span class="number">9</span> * <span class="number">60</span> * <span class="number">60</span> * <span class="number">1000</span>)); <span class="comment">// UTC+9</span>
+  <span class="keyword">return</span> koreanTime.toISOString().split(<span class="string">'T'</span>)[<span class="number">0</span>];
+}
+
+<span class="comment">// 한국 날짜시간 문자열을 UTC Date 객체로 변환</span>
+<span class="keyword">export function</span> koreanDateTimeStringToUTC(dateTimeString: <span class="keyword">string</span>): Date {
+  <span class="keyword">const</span> koreanDate = <span class="keyword">new</span> Date(dateTimeString);
+  <span class="keyword">return</span> <span class="keyword">new</span> Date(koreanDate.getTime() - (<span class="number">9</span> * <span class="number">60</span> * <span class="number">60</span> * <span class="number">1000</span>)); <span class="comment">// UTC로 변환</span>
+}
+                </div>
+
+                <div class="result-box">
+                    <h4>✅ 결과</h4>
+                    <p>한국 시간대 기준으로 정확한 상태 계산 및 시간 처리</p>
+                </div>
+
+                <hr>
+
+                <h2>⚡ 2. 실시간 상태 표시 UI 구현</h2>
+
+                <h3>문제 상황</h3>
+                <ul>
+                    <li>사용자가 날짜를 입력할 때 실시간으로 상태를 확인할 수 없음</li>
+                    <li>프로그램 등록/수정 시 현재 상태를 즉시 파악하기 어려움</li>
+                    <li>정적 상태 표시로 인한 사용자 경험 저하</li>
+                </ul>
+
+                <h3>해결 과정</h3>
+
+                <h4>2.1 실시간 시간 표시 구현</h4>
+
+                <p><strong>현재 시간 실시간 업데이트:</strong></p>
+                <div class="code-block">
+<span class="comment">// frontend/src/app/admin/programs/create/page.tsx</span>
+<span class="keyword">const</span> [currentTime, setCurrentTime] = useState(<span class="keyword">new</span> Date());
+
+useEffect(() => {
+  <span class="keyword">const</span> timer = setInterval(() => {
+    setCurrentTime(<span class="keyword">new</span> Date());
+  }, <span class="number">1000</span>);
+  <span class="keyword">return</span> () => clearInterval(timer);
+}, []);
+                </div>
+
+                <h4>2.2 실시간 상태 계산 및 표시</h4>
+
+                <p><strong>React Hook Form의 watch 기능 활용:</strong></p>
+                <div class="code-block">
+<span class="comment">// 실시간 상태 계산</span>
+<span class="keyword">const</span> watchedValues = watch();
+<span class="keyword">const</span> realTimeStatus = useMemo(() => {
+  <span class="keyword">if</span> (watchedValues.applyStart && watchedValues.applyEnd && 
+      watchedValues.programStart && watchedValues.programEnd) {
+    <span class="keyword">return</span> calculateProgramStatus(
+      watchedValues.applyStart,
+      watchedValues.applyEnd,
+      watchedValues.programStart,
+      watchedValues.programEnd
+    );
+  }
+  <span class="keyword">return</span> <span class="keyword">null</span>;
+}, [watchedValues]);
+
+<span class="comment">// 상태 표시 UI</span>
+{realTimeStatus && (
+  <div className="status-preview">
+    <h4>현재 상태 미리보기</h4>
+    <Badge variant="secondary" className="border-0">
+      {getStatusLabel(realTimeStatus)}
+    </Badge>
+  </div>
+)}
+                </div>
+
+                <h4>2.3 상태별 색상 구분</h4>
+
+                <p><strong>직관적인 색상 시스템:</strong></p>
+                <div class="code-block">
+<span class="comment">// frontend/src/utils/status.util.ts</span>
+<span class="keyword">const</span> getStatusColor = (status: <span class="keyword">string</span>) => {
+  <span class="keyword">switch</span> (status) {
+    <span class="keyword">case</span> <span class="string">'before_application'</span>: <span class="keyword">return</span> <span class="string">'bg-gray-100 text-gray-800'</span>;
+    <span class="keyword">case</span> <span class="string">'application_open'</span>: <span class="keyword">return</span> <span class="string">'bg-green-100 text-green-800'</span>;
+    <span class="keyword">case</span> <span class="string">'in_progress'</span>: <span class="keyword">return</span> <span class="string">'bg-blue-100 text-blue-800'</span>;
+    <span class="keyword">case</span> <span class="string">'completed'</span>: <span class="keyword">return</span> <span class="string">'bg-purple-100 text-purple-800'</span>;
+    <span class="keyword">default</span>: <span class="keyword">return</span> <span class="string">'bg-gray-100 text-gray-800'</span>;
+  }
+};
+                </div>
+
+                <div class="result-box">
+                    <h4>✅ 결과</h4>
+                    <p>사용자가 날짜 입력 시 실시간으로 상태를 확인할 수 있는 직관적인 UI 제공</p>
+                </div>
+
+                <hr>
+
+                <h2>🔄 3. 하위 호환성 보장</h2>
+
+                <h3>문제 상황</h3>
+                <ul>
+                    <li>기존 데이터와 새로운 상태 체계 간의 호환성 문제</li>
+                    <li>기존 상태를 새로운 상태로 변환하는 로직 필요</li>
+                    <li>데이터 마이그레이션 없이 점진적 전환 필요</li>
+                </ul>
+
+                <h3>해결 과정</h3>
+
+                <h4>3.1 백엔드 상태 변환 로직</h4>
+
+                <p><strong>기존 상태를 새로운 상태로 변환:</strong></p>
+                <div class="code-block">
+<span class="comment">// backend/src/programs/programs.service.ts</span>
+<span class="keyword">private</span> calculateProgramStatus(program: Program): ProgramStatus {
+  <span class="keyword">const</span> now = <span class="keyword">new</span> Date(<span class="keyword">new</span> Date().toLocaleString(<span class="string">'en-US'</span>, { timeZone: <span class="string">'Asia/Seoul'</span> }));
+  
+  <span class="comment">// 기존 상태가 있으면 새로운 상태로 변환</span>
+  <span class="keyword">if</span> (program.status === ProgramStatus.OPEN) {
+    <span class="keyword">return</span> ProgramStatus.APPLICATION_OPEN;
+  }
+  <span class="keyword">if</span> (program.status === ProgramStatus.CLOSED) {
+    <span class="keyword">return</span> ProgramStatus.IN_PROGRESS;
+  }
+  <span class="keyword">if</span> (program.status === ProgramStatus.ONGOING) {
+    <span class="keyword">return</span> ProgramStatus.IN_PROGRESS;
+  }
+  
+  <span class="comment">// 날짜 기반 상태 계산</span>
+  <span class="keyword">if</span> (program.applyStart && program.applyEnd && 
+      program.programStart && program.programEnd) {
+    <span class="keyword">return</span> calculateProgramStatus(
+      program.applyStart,
+      program.applyEnd,
+      program.programStart,
+      program.programEnd
+    );
+  }
+  
+  <span class="keyword">return</span> program.status;
+}
+                </div>
+
+                <h4>3.2 프론트엔드 상태 매핑</h4>
+
+                <p><strong>상태 라벨 매핑 함수:</strong></p>
+                <div class="code-block">
+<span class="comment">// frontend/src/utils/status.util.ts</span>
+<span class="keyword">export const</span> getStatusLabel = (status: <span class="keyword">string</span>): <span class="keyword">string</span> => {
+  <span class="keyword">const</span> statusLabels: Record&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt; = {
+    <span class="string">'draft'</span>: <span class="string">'초안'</span>,
+    <span class="string">'open'</span>: <span class="string">'신청 가능'</span>,
+    <span class="string">'closed'</span>: <span class="string">'신청 마감'</span>,
+    <span class="string">'ongoing'</span>: <span class="string">'진행 중'</span>,
+    <span class="string">'completed'</span>: <span class="string">'완료'</span>,
+    <span class="string">'archived'</span>: <span class="string">'보관'</span>,
+    <span class="string">'before_application'</span>: <span class="string">'신청 전'</span>,
+    <span class="string">'application_open'</span>: <span class="string">'신청 가능'</span>,
+    <span class="string">'in_progress'</span>: <span class="string">'진행 중'</span>,
+  };
+  
+  <span class="keyword">return</span> statusLabels[status] || status;
+};
+                </div>
+
+                <div class="result-box">
+                    <h4>✅ 결과</h4>
+                    <p>기존 데이터와 새로운 상태 체계 간의 완벽한 호환성 보장</p>
+                </div>
+
+                <hr>
+
+                <h2>🎨 4. UI/UX 개선사항</h2>
+
+                <h3>4.1 배지 스타일 통일</h3>
+
+                <p><strong>일관된 배지 디자인:</strong></p>
+                <div class="code-block">
+<span class="comment">// 모든 Badge 컴포넌트에 border-0 클래스 추가</span>
+&lt;Badge variant="secondary" className="border-0"&gt;
+  {getStatusLabel(status)}
+&lt;/Badge&gt;
+                </div>
+
+                <h3>4.2 접근 권한 개선</h3>
+
+                <p><strong>프로그램 상세 페이지 접근 권한 확대:</strong></p>
+                <div class="code-block">
+<span class="comment">// backend/src/programs/programs.controller.ts</span>
+<span class="keyword">@Get</span>(<span class="string">':id'</span>)
+<span class="keyword">@ApiOperation</span>({ summary: <span class="string">'프로그램 상세 조회'</span> })
+<span class="keyword">async</span> findOne(<span class="keyword">@Param</span>(<span class="string">'id'</span>) id: <span class="keyword">string</span>): Promise&lt;ApiResponseDto&lt;Program&gt;&gt; {
+  <span class="keyword">const</span> program = <span class="keyword">await this</span>.programsService.findOne(id);
+  <span class="keyword">return new</span> ApiResponseDto(program, <span class="keyword">true</span>, <span class="string">'프로그램을 조회했습니다.'</span>);
+}
+                </div>
+
+                <p><strong>백엔드 권한 체크 수정:</strong></p>
+                <div class="code-block">
+<span class="comment">// backend/src/programs/programs.service.ts</span>
+<span class="keyword">async</span> findOne(id: <span class="keyword">string</span>): Promise&lt;Program&gt; {
+  <span class="keyword">const</span> program = <span class="keyword">await this</span>.programRepository.findOne({
+    where: { id },
+    relations: [<span class="string">'organizer'</span>],
+  });
+
+  <span class="keyword">if</span> (!program) {
+    <span class="keyword">throw new</span> NotFoundException(<span class="string">'프로그램을 찾을 수 없습니다.'</span>);
+  }
+
+  <span class="comment">// 모든 사용자가 접근 가능하도록 권한 체크 제거</span>
+  <span class="keyword">return</span> program;
+}
+                </div>
+
+                <div class="result-box">
+                    <h4>✅ 결과</h4>
+                    <p>비로그인 사용자와 신청자도 모든 프로그램 상세 페이지에 접근 가능</p>
+                </div>
+
+                <hr>
+
+                <h2>⚛️ 5. Next.js 호환성 개선</h2>
+
+                <h3>문제 상황</h3>
+                <ul>
+                    <li>Next.js 15의 Suspense boundary 요구사항 미준수</li>
+                    <li>useSearchParams 사용 시 빌드 오류 발생</li>
+                    <li>클라이언트 컴포넌트와 서버 컴포넌트 분리 필요</li>
+                </ul>
+
+                <h3>해결 과정</h3>
+
+                <h4>5.1 Suspense Boundary 구현</h4>
+
+                <p><strong>useSearchParams를 Suspense로 감싸기:</strong></p>
+                <div class="code-block">
+<span class="comment">// frontend/src/app/auth/login/page.tsx</span>
+<span class="keyword">export default function</span> LoginPage() {
+  <span class="keyword">return</span> (
+    &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+      &lt;LoginPageContent /&gt;
+    &lt;/Suspense&gt;
+  );
+}
+
+<span class="keyword">function</span> LoginPageContent() {
+  <span class="keyword">const</span> searchParams = useSearchParams();
+  <span class="comment">// ... 나머지 로직</span>
+}
+                </div>
+
+                <h4>5.2 클라이언트 컴포넌트 분리</h4>
+
+                <p><strong>동적 기능을 클라이언트 컴포넌트로 분리:</strong></p>
+                <div class="code-block">
+<span class="comment">// frontend/src/components/auth/login-form.tsx</span>
+<span class="string">'use client'</span>;
+
+<span class="keyword">import</span> { useSearchParams } <span class="keyword">from</span> <span class="string">'next/navigation'</span>;
+
+<span class="keyword">export default function</span> LoginForm() {
+  <span class="keyword">const</span> searchParams = useSearchParams();
+  <span class="comment">// ... 로그인 폼 로직</span>
+}
+                </div>
+
+                <div class="result-box">
+                    <h4>✅ 결과</h4>
+                    <p>Next.js 15 호환성 확보 및 빌드 오류 해결</p>
+                </div>
+
+                <hr>
+
+                <h2>📊 6. 개발 통계 및 성과</h2>
+
+                <h3>커밋 통계</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">17</div>
+                        <div class="stat-label">총 커밋</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">기능 추가</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">버그 수정</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">리팩토링</div>
+                    </div>
+                </div>
+
+                <h3>주요 성과</h3>
+                <div class="success-box">
+                    <h4>✅ 달성한 기능들</h4>
+                    <ul>
+                        <li><strong>한국 시간대 기반 정확한 상태 관리</strong></li>
+                        <li><strong>실시간 상태 계산 및 표시</strong></li>
+                        <li><strong>하위 호환성 보장</strong></li>
+                        <li><strong>일관된 UI/UX 제공</strong></li>
+                        <li><strong>접근 권한 개선</strong></li>
+                        <li><strong>Next.js 호환성 확보</strong></li>
+                    </ul>
+                </div>
+
+                <hr>
+
+                <h2>🚀 7. 기술적 도전과 해결책</h2>
+
+                <h3>1. 시간대 불일치 문제</h3>
+                <div class="problem-solution">
+                    <div class="problem">
+                        <h4>❌ 문제 상황</h4>
+                        <p>프론트엔드와 백엔드 간의 시간대 처리 불일치로 인한 상태 계산 오류</p>
+                    </div>
+                    <div class="solution">
+                        <h4>✅ 해결 방법</h4>
+                        <p>한국 시간대 기준으로 통일하고 UTC 변환 함수를 구현</p>
+                    </div>
+                </div>
+
+                <h3>2. 하위 호환성 유지</h3>
+                <div class="problem-solution">
+                    <div class="problem">
+                        <h4>❌ 문제 상황</h4>
+                        <p>기존 데이터와 새로운 상태 체계 간의 호환성 문제</p>
+                    </div>
+                    <div class="solution">
+                        <h4>✅ 해결 방법</h4>
+                        <p>기존 상태를 새로운 상태로 변환하는 로직 구현</p>
+                    </div>
+                </div>
+
+                <h3>3. 실시간 UI 업데이트</h3>
+                <div class="problem-solution">
+                    <div class="problem">
+                        <h4>❌ 문제 상황</h4>
+                        <p>사용자가 날짜를 입력할 때 실시간으로 상태를 확인할 수 없는 문제</p>
+                    </div>
+                    <div class="solution">
+                        <h4>✅ 해결 방법</h4>
+                        <p>React Hook Form의 watch 기능과 useEffect를 활용한 실시간 상태 계산</p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <h2>🔮 8. 향후 개선 계획</h2>
+
+                <h3>단기 계획</h3>
+                <ul>
+                    <li><strong>상태 변경 이벤트 알림 시스템</strong>: 프로그램 상태 변경 시 관련자에게 알림</li>
+                    <li><strong>상태별 통계 대시보드</strong>: 각 상태별 프로그램 수 및 통계 정보 제공</li>
+                    <li><strong>실시간 알림 기능</strong>: 웹소켓을 활용한 실시간 상태 업데이트</li>
+                </ul>
+
+                <h3>장기 계획</h3>
+                <ul>
+                    <li><strong>모바일 최적화</strong>: 모바일 환경에서의 상태 관리 개선</li>
+                    <li><strong>AI 기반 상태 예측</strong>: 과거 데이터를 바탕으로 한 상태 예측 기능</li>
+                    <li><strong>고급 분석 기능</strong>: 상태별 트렌드 분석 및 인사이트 제공</li>
+                </ul>
+
+                <hr>
+
+                <h2>💡 9. 개발 팁 및 인사이트</h2>
+
+                <h3>1. 시간대 처리</h3>
+                <div class="code-block">
+<span class="comment">// 한국 시간대 기준 현재 시간 가져오기</span>
+<span class="keyword">const</span> getKoreanTime = () => {
+  <span class="keyword">return new</span> Date(<span class="keyword">new</span> Date().toLocaleString(<span class="string">'en-US'</span>, { 
+    timeZone: <span class="string">'Asia/Seoul'</span> 
+  }));
+};
+                </div>
+
+                <h3>2. 실시간 상태 계산</h3>
+                <div class="code-block">
+<span class="comment">// React Hook Form과 함께 사용하는 실시간 계산</span>
+<span class="keyword">const</span> watchedValues = watch();
+<span class="keyword">const</span> realTimeStatus = useMemo(() => {
+  <span class="keyword">if</span> (watchedValues.applyStart && watchedValues.applyEnd) {
+    <span class="keyword">return</span> calculateProgramStatus(
+      watchedValues.applyStart,
+      watchedValues.applyEnd,
+      watchedValues.programStart,
+      watchedValues.programEnd
+    );
+  }
+  <span class="keyword">return</span> <span class="keyword">null</span>;
+}, [watchedValues]);
+                </div>
+
+                <h3>3. 하위 호환성 보장</h3>
+                <div class="code-block">
+<span class="comment">// 기존 상태를 새로운 상태로 변환</span>
+<span class="keyword">const</span> mapLegacyStatus = (oldStatus: <span class="keyword">string</span>) => {
+  <span class="keyword">const</span> statusMap = {
+    <span class="string">'open'</span>: <span class="string">'application_open'</span>,
+    <span class="string">'closed'</span>: <span class="string">'in_progress'</span>,
+    <span class="string">'ongoing'</span>: <span class="string">'in_progress'</span>,
+  };
+  <span class="keyword">return</span> statusMap[oldStatus] || oldStatus;
+};
+                </div>
+
+                <hr>
+
+                <h2>📝 결론</h2>
+
+                <p>이번 업데이트를 통해 Intu ERP 시스템의 프로그램 상태 관리가 크게 개선되었습니다. 한국 시간대 기반의 정확한 상태 계산, 실시간 UI 업데이트, 그리고 하위 호환성 보장을 통해 사용자 경험이 향상되었습니다.</p>
+
+                <p>특히 실시간 상태 계산 기능은 사용자가 프로그램을 등록하거나 수정할 때 즉시 현재 상태를 확인할 수 있게 해주어, 더욱 직관적이고 효율적인 워크플로우를 제공합니다. 또한 하위 호환성을 보장하면서 새로운 상태 체계를 도입함으로써 기존 데이터의 안정성을 유지하면서도 시스템의 기능을 확장할 수 있었습니다.</p>
+
+                <p>앞으로도 지속적인 개선을 통해 더 나은 시스템을 만들어가겠습니다. 상태 변경 알림, 통계 대시보드, 모바일 최적화 등 사용자에게 더 큰 가치를 제공할 수 있는 기능들을 단계적으로 구현해 나갈 예정입니다.</p>
+
+                <div class="post-footer">
+                    <div class="post-navigation">
+                        <a href="2025-10-10-erp-system-optimization-problem-solving.html" class="nav-link prev">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>이전 포스트</span>
+                        </a>
+                        <a href="../index.html" class="nav-link home">
+                            <i class="fas fa-home"></i>
+                            <span>블로그 홈</span>
+                        </a>
+                        <div class="nav-link next disabled">
+                            <span>다음 포스트</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                        <li><a href="https://linkedin.com/in/민재-김-209b0533b" target="_blank">LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../post-script.js"></script>
+</body>
+</html>
