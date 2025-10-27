@@ -17,7 +17,7 @@ let outerMoveSpeed, innerMoveSpeed; // resizeCanvas에서 초기화됨
 
 // 게임 상수
 const INITIAL_SPEED = 0.05; // 초기 속도
-const SPEED_INCREASE = 0.001; // 속도 증가량
+const SPEED_INCREASE = 0.0015; // 속도 증가량
 
 // 변수 선언 (resizeCanvas에서 초기화됨)
 let centerX, centerY, outerRadius, innerRadius;
@@ -95,8 +95,8 @@ function resizeCanvas() {
     outerRadius = canvas.width * 0.35; // 큰 원 (바깥쪽)
     innerRadius = canvas.width * 0.15; // 작은 원 (안쪽)
     
-    // 속도 재계산 (반지름이 변경되었으므로)
-    outerMoveSpeed = speed * (innerRadius / outerRadius);
+    // 속도 재계산 (바깥쪽 원이 안쪽 원보다 0.6배 느리게)
+    outerMoveSpeed = speed * 0.6;
     innerMoveSpeed = speed;
 }
 
@@ -565,8 +565,8 @@ function update() {
 
     angle += speed * normalizedDeltaTime;
     
-    // 속도가 변경될 때마다 실제 이동 속도 재계산
-    outerMoveSpeed = speed * (innerRadius / outerRadius);
+    // 속도가 변경될 때마다 실제 이동 속도 재계산 (바깥쪽 원이 안쪽 원보다 0.6배 느리게)
+    outerMoveSpeed = speed * 0.6;
     innerMoveSpeed = speed;
 
     // 플레이어가 원을 따라 움직임 (원의 반지름에 따라 속도 조정)
