@@ -62,7 +62,7 @@
             color: white;
             position: relative;
             z-index: 2;
-            width: 180px;
+            width: 200px;
             transition: all 0.3s ease;
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
@@ -101,27 +101,6 @@
             color: rgba(255,255,255,0.7);
             font-size: 0.8rem;
         }
-        .navigation {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-        }
-        .nav-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-        .nav-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
     </style>
 </head>
 <body>
@@ -133,32 +112,26 @@
         <div class="process-timeline">
             <div class="process-step">
                 <div class="step-number">1</div>
-                <div class="step-title">서류 접수</div>
+                <div class="step-title">서류 전형</div>
                 <div class="step-duration">1-2주</div>
             </div>
 
             <div class="process-step">
                 <div class="step-number">2</div>
-                <div class="step-title">직무 인터뷰</div>
+                <div class="step-title">코딩테스트</div>
                 <div class="step-duration">1주</div>
             </div>
 
             <div class="process-step">
                 <div class="step-number">3</div>
-                <div class="step-title">문화적합성 인터뷰</div>
+                <div class="step-title">기술 면접</div>
                 <div class="step-duration">1주</div>
             </div>
 
             <div class="process-step">
                 <div class="step-number">4</div>
-                <div class="step-title">레퍼런스 체크</div>
+                <div class="step-title">최종 면접</div>
                 <div class="step-duration">1주</div>
-            </div>
-
-            <div class="process-step">
-                <div class="step-number">5</div>
-                <div class="step-title">처우 협의</div>
-                <div class="step-duration">즉시</div>
             </div>
         </div>
     </div>
@@ -167,13 +140,5 @@
         출처: 토스 채용 공고, 토스 공식 홈페이지, 잡플래닛
     </div>
 
-    <div class="navigation">
-        <button class="nav-btn" onclick="window.parent.postMessage('prev', '*')">
-            <i class="fas fa-arrow-left"></i> 이전
-        </button>
-        <button class="nav-btn" onclick="window.parent.postMessage('next', '*')">
-            <i class="fas fa-arrow-right"></i> 다음
-        </button>
-    </div>
 </body>
 </html>

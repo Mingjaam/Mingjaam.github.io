@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WinForms + MySQL 학생 관리 프로젝트 정리 (블로그 글)</title>
+  <style>
+    :root{
+      --bg:#f7fafc; --card:#ffffff; --accent:#2563eb; --muted:#6b7280; --code:#0f172a;
+    }
+    body{font-family:Inter, "Noto Sans KR", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:#0b1220; line-height:1.65; margin:0; padding:32px;}
+    .wrap{max-width:1000px;margin:0 auto;}
+    header{margin-bottom:28px;}
+    h1{font-size:28px;margin:0 0 6px;color:var(--code);}
+    p.lead{margin:0;color:var(--muted);}
+    article.card{background:var(--card);padding:22px;border-radius:12px;box-shadow:0 6px 18px rgba(12,15,30,0.06);}
+    h2{color:var(--accent);margin-top:20px;font-size:20px;}
+    h3{margin-top:16px;color:#0b1220;}
+    pre{background:#0b12202b;padding:14px;border-radius:8px;overflow:auto;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Noto Sans Mono", monospace; font-size:13px;}
+    code{background:#eef2ff;padding:2px 6px;border-radius:4px;font-family:ui-monospace, monospace;}
+    ul{padding-left:1.1rem;}
+    .note{background:#fff8db;border-left:4px solid #f59e0b;padding:10px 12px;border-radius:6px;margin:12px 0;color:#663c00;}
+    .ok{background:#ecfdf5;border-left:4px solid #10b981;padding:10px 12px;border-radius:6px;margin:12px 0;color:#064e3b;}
+    .meta{font-size:13px;color:var(--muted);margin-bottom:12px;}
+    .run{display:inline-block;background:var(--accent);color:white;padding:8px 12px;border-radius:8px;text-decoration:none;}
+    footer{margin-top:24px;font-size:13px;color:var(--muted);}
+    table{border-collapse:collapse;width:100%;margin:12px 0}
+    th,td{border:1px solid #e6eef6;padding:8px;text-align:left}
+    .kbd{background:#111827;color:white;padding:2px 6px;border-radius:4px;font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>WinForms + MySQL: 전공 &amp; 학생(최대3명) 관리 앱 — 구현 정리</h1>
+      <p class="lead">C# WinForms로 MySQL에 접속해 전공을 관리하고, 한 전공 당 최대 3명의 학생을 등록/수정/삭제하는 간단한 과제형 프로젝트를 블로그 형식으로 정리합니다. (Database 싱글턴 적용, 시작 시 자동 로드 옵션 포함)</p>
+      <div class="meta">작성: 김민재님 요청에 따른 정리 • 플랫폼: Windows / Visual Studio / MySql</div>
+    </header>
+
+    <article class="card">
+      <h2>목차</h2>
+      <ul>
+        <li>요구사항 요약</li>
+        <li>데이터베이스 테이블 (SQL)</li>
+        <li>DB 매니저 (싱글턴) — DBManager.cs</li>
+        <li>UI + 로직 — Form1.cs (전체 코드)</li>
+        <li>핵심 동작(한줄 요약)과 주요 포인트 설명</li>
+        <li>프로젝트 실행/테스트 체크리스트</li>
+      </ul>
+
+      <h2>요구사항 요약</h2>
+      <ul>
+        <li>MySQL에 접속해서 전공(major) 목록을 조회/추가</li>
+        <li>전공 선택 시 오른쪽에 그 전공 소속 학생 최대 3명 표시</li>
+        <li>각 학생 슬롯(1~3)에 이름/학번/성별 입력 → 저장/삭제 가능</li>
+        <li>앱 시작 시 옵션으로 <em>자동 학생로드</em>와 <em>최근 사용 전공 불러오기</em>을 켜/끌 수 있음</li>
+        <li>DB 연결 관리는 싱글턴(DBManager)으로 처리</li>
+      </ul>
+
+      <h2>데이터베이스 테이블 (SQL)</h2>
+      <p>학교 서버 권한 때문에 외래키 제약을 바로 못 쓸 수도 있으므로 간단히 <code>major</code>와 <code>student</code> 테이블을 생성합니다.</p>
+      <pre><code>CREATE DATABASE IF NOT EXISTS schooldb;
+USE schooldb;
+
+CREATE TABLE major (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE student (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    student_id VARCHAR(20) NOT NULL,
+    gender VARCHAR(10),
+    major_id INT
+);</code></pre>
+
+      <div class="note">참고: 외래키(REFERENCES) 권한이 없는 환경이면 위처럼 외래키 제약을 생략하세요. 앱에서는 <code>major_id</code>로 직접 연결합니다.</div>
+
+      <h2>DB 매니저 (싱글턴) — DBManager.cs</h2>
+      <p>DB 연결 객체를 전역으로 하나만 유지하려면 싱글턴 패턴을 사용합니다. Visual Studio에 <code>DBManager.cs</code> 파일을 추가하고 아래 코드를 넣으세요.</p>
+      <pre><code>using System;
+using System.Data;
+using MySql.Data.MySqlClient;
+
+namespace ManageStudents
+{
+    public class DBManager
+    {
+        private static DBManager instance_ = new DBManager();
+        private string connectionString = "Server=223.130.151.111;Database=s5701576;Uid=s5701576;Pwd=s5701576;";
+        private MySqlConnection connection;
+
+        private DBManager()
+        {
+            connection = new MySqlConnection(connectionString);
+        }
+
+        public static DBManager GetInstance() => instance_;
+
+        public MySqlConnection GetConnection() => connection;
+
+        public void Open()
+        {
+            if (connection.State == ConnectionState.Closed)
+                connection.Open();
+        }
+
+        public void Close()
+        {
+            if (connection.State == ConnectionState.Open)
+                connection.Close();
+        }
+
+        public void ExecuteNonQuery(string query, params MySqlParameter[] parameters)
+        {
+            Open();
+            using (var cmd = new MySqlCommand(query, connection))
+            {
+                if (parameters != null) cmd.Parameters.AddRange(parameters);
+                cmd.ExecuteNonQuery();
+            }
+            Close();
+        }
+
+        public DataTable ExecuteQuery(string query, params MySqlParameter[] parameters)
+        {
+            Open();
+            using (var cmd = new MySqlCommand(query, connection))
+            {
+                if (parameters != null) cmd.Parameters.AddRange(parameters);
+                var adapter = new MySqlDataAdapter(cmd);
+                var dt = new DataTable();
+                adapter.Fill(dt);
+                Close();
+                return dt;
+            }
+        }
+    }
+}</code></pre>
+
+      <h3>왜 싱글턴인가?</h3>
+      <ul>
+        <li>DB 연결 객체를 여러 개 만들면 리소스 낭비와 커넥션 관리 문제가 생깁니다.</li>
+        <li>프로그램 전체에서 동일한 DB 연결/설정(접속 문자열)을 공유하려면 싱글턴이 편리합니다.</li>
+      </ul>
+
+      <h2>UI + 로직 — Form1.cs (전체 코드)</h2>
+      <p>아래는 WinForms 폼 코드 전체 예시입니다. Form 디자이너에서 컨트롤 이름을 다음과 같이 맞추세요:</p>
+      <table>
+        <tr><th>컨트롤</th><th>이름(Name)</th></tr>
+        <tr><td>전공 리스트(리스트박스)</td><td><code>majorListBox</code></td></tr>
+        <tr><td>새 전공 입력</td><td><code>txtNewMajor</code></td></tr>
+        <tr><td>학생 이름/학번/성별(각 3세트)</td><td><code>txtStudent1Name, txtStudent1Id, cmbStudent1Gender</code> ...</td></tr>
+        <tr><td>저장 버튼</td><td><code>btnSaveStudent</code></td></tr>
+        <tr><td>삭제 버튼</td><td><code>btnDeleteStudent</code></td></tr>
+        <tr><td>체크박스(자동 로드)</td><td><code>chkAutoLoadStudent</code></td></tr>
+        <tr><td>체크박스(최근 전공)</td><td><code>chkLoadLastMajor</code></td></tr>
+      </table>
+
+      <p>Form1.cs 전체 코드 (복사해서 사용 가능):</p>
+      <pre><code>using System;
+using System.Data;
+using System.Windows.Forms;
+using MySql.Data.MySqlClient;
+
+namespace ManageStudents
+{
+    public partial class Form1 : Form
+    {
+        private DBManager db;
+        private int currentMajorId;
+
+        public Form1()
+        {
+            InitializeComponent();
+            db = DBManager.GetInstance();
+            LoadMajorList();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            // Settings (Properties → Settings) 에 AutoLoadStudent, LoadLastMajor, LastMajorId 추가되어 있어야 함
+            chkAutoLoadStudent.Checked = Properties.Settings.Default.AutoLoadStudent;
+            chkLoadLastMajor.Checked = Properties.Settings.Default.LoadLastMajor;
+
+            if (chkAutoLoadStudent.Checked)
+                LoadStudentInfo();
+
+            if (chkLoadLastMajor.Checked)
+                LoadLastUsedMajor();
+        }
+
+        #region Major
+        private void LoadMajorList()
+        {
+            majorListBox.Items.Clear();
+            string query = "SELECT * FROM major";
+            DataTable dt = db.ExecuteQuery(query);
+            foreach (DataRow r in dt.Rows) majorListBox.Items.Add(r["name"].ToString());
+        }
+
+        private void btnAddMajor_Click(object sender, EventArgs e)
+        {
+            string newMajor = txtNewMajor.Text.Trim();
+            if (string.IsNullOrEmpty(newMajor)) return;
+            string insert = "INSERT INTO major (name) VALUES (@name)";
+            db.ExecuteNonQuery(insert, new MySqlParameter("@name", newMajor));
+            txtNewMajor.Clear();
+            LoadMajorList();
+        }
+
+        private void majorListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (majorListBox.SelectedItem == null) return;
+            string selectedMajor = majorListBox.SelectedItem.ToString();
+            DataTable dt = db.ExecuteQuery("SELECT id FROM major WHERE name = @name", new MySqlParameter("@name", selectedMajor));
+            if (dt.Rows.Count == 0) return;
+            currentMajorId = Convert.ToInt32(dt.Rows[0]["id"]);
+
+            // 마지막 사용 전공 저장
+            Properties.Settings.Default.LastMajorId = currentMajorId;
+            Properties.Settings.Default.Save();
+
+            LoadStudentInfo(currentMajorId);
+        }
+        #endregion
+
+        #region Student
+        private void LoadStudentInfo()
+        {
+            if (majorListBox.SelectedItem == null) return;
+            string majorName = majorListBox.SelectedItem.ToString();
+            DataTable dt = db.ExecuteQuery("SELECT id FROM major WHERE name = @name", new MySqlParameter("@name", majorName));
+            if (dt.Rows.Count == 0) return;
+            int majorId = Convert.ToInt32(dt.Rows[0]["id"]);
+            LoadStudentInfo(majorId);
+        }
+
+        private void LoadStudentInfo(int majorId)
+        {
+            DataTable dt = db.ExecuteQuery("SELECT * FROM student WHERE major_id = @major_id LIMIT 3", new MySqlParameter("@major_id", majorId));
+            ClearStudentFields();
+            for (int i = 0; i &lt; dt.Rows.Count; i++)
+            {
+                var r = dt.Rows[i];
+                string name = r["name"].ToString();
+                string sid = r["student_id"].ToString();
+                string gender = r["gender"].ToString();
+
+                if (i == 0) { txtStudent1Name.Text = name; txtStudent1Id.Text = sid; cmbStudent1Gender.Text = gender; }
+                else if (i == 1) { txtStudent2Name.Text = name; txtStudent2Id.Text = sid; cmbStudent2Gender.Text = gender; }
+                else if (i == 2) { txtStudent3Name.Text = name; txtStudent3Id.Text = sid; cmbStudent3Gender.Text = gender; }
+            }
+        }
+
+        private void ClearStudentFields()
+        {
+            txtStudent1Name.Clear(); txtStudent1Id.Clear(); cmbStudent1Gender.SelectedIndex = -1;
+            txtStudent2Name.Clear(); txtStudent2Id.Clear(); cmbStudent2Gender.SelectedIndex = -1;
+            txtStudent3Name.Clear(); txtStudent3Id.Clear(); cmbStudent3Gender.SelectedIndex = -1;
+        }
+
+        private void btnSaveStudent_Click(object sender, EventArgs e)
+        {
+            // 슬롯별로 저장(새로 추가 또는 수정)
+            SaveOrUpdateStudent(txtStudent1Name, txtStudent1Id, cmbStudent1Gender);
+            SaveOrUpdateStudent(txtStudent2Name, txtStudent2Id, cmbStudent2Gender);
+            SaveOrUpdateStudent(txtStudent3Name, txtStudent3Id, cmbStudent3Gender);
+            LoadStudentInfo(currentMajorId);
+        }
+
+        private void SaveOrUpdateStudent(TextBox nameBox, TextBox idBox, ComboBox genderBox)
+        {
+            if (currentMajorId == 0) { MessageBox.Show("전공을 선택하세요."); return; }
+            string name = nameBox.Text.Trim();
+            string sid = idBox.Text.Trim();
+            string gender = genderBox.Text;
+
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(sid)) return;
+
+            // 이미 존재하는 학번인지 확인 (동일 major_id)
+            DataTable exist = db.ExecuteQuery("SELECT COUNT(*) cnt FROM student WHERE student_id = @sid AND major_id = @mid", new MySqlParameter("@sid", sid), new MySqlParameter("@mid", currentMajorId));
+            int e = Convert.ToInt32(exist.Rows[0]["cnt"]);
+            if (e &gt; 0)
+            {
+                // update
+                db.ExecuteNonQuery("UPDATE student SET name=@n, gender=@g WHERE student_id=@sid AND major_id=@mid",
+                    new MySqlParameter("@n", name),
+                    new MySqlParameter("@g", gender),
+                    new MySqlParameter("@sid", sid),
+                    new MySqlParameter("@mid", currentMajorId));
+            }
+            else
+            {
+                // count check
+                DataTable cnt = db.ExecuteQuery("SELECT COUNT(*) cnt FROM student WHERE major_id = @mid", new MySqlParameter("@mid", currentMajorId));
+                int count = Convert.ToInt32(cnt.Rows[0]["cnt"]);
+                if (count &gt;= 3) { MessageBox.Show("최대 3명까지만 등록 가능합니다."); return; }
+
+                db.ExecuteNonQuery("INSERT INTO student (name, student_id, gender, major_id) VALUES (@n, @sid, @g, @mid)",
+                    new MySqlParameter("@n", name),
+                    new MySqlParameter("@sid", sid),
+                    new MySqlParameter("@g", gender),
+                    new MySqlParameter("@mid", currentMajorId));
+            }
+        }
+
+        private void btnDeleteStudent_Click(object sender, EventArgs e)
+        {
+            DeleteStudentById(txtStudent1Id);
+            DeleteStudentById(txtStudent2Id);
+            DeleteStudentById(txtStudent3Id);
+            LoadStudentInfo(currentMajorId);
+        }
+
+        private void DeleteStudentById(TextBox idBox)
+        {
+            if (currentMajorId == 0) return;
+            string sid = idBox.Text.Trim(); if (string.IsNullOrEmpty(sid)) return;
+            db.ExecuteNonQuery("DELETE FROM student WHERE student_id=@sid AND major_id=@mid", new MySqlParameter("@sid", sid), new MySqlParameter("@mid", currentMajorId));
+        }
+        #endregion
+
+        #region Settings (체크박스)
+        private void chkAutoLoadStudent_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.AutoLoadStudent = chkAutoLoadStudent.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void chkLoadLastMajor_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.LoadLastMajor = chkLoadLastMajor.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void LoadLastUsedMajor()
+        {
+            int lastId = Properties.Settings.Default.LastMajorId;
+            if (lastId == 0) return;
+            DataTable dt = db.ExecuteQuery("SELECT name FROM major WHERE id=@id", new MySqlParameter("@id", lastId));
+            if (dt.Rows.Count == 0) return;
+            string name = dt.Rows[0]["name"].ToString();
+            for (int i = 0; i &lt; majorListBox.Items.Count; i++)
+            {
+                if (majorListBox.Items[i].ToString() == name)
+                {
+                    majorListBox.SelectedIndex = i;
+                    break;
+                }
+            }
+        }
+        #endregion
+    }
+}</code></pre>
+
+      <h2>한 줄씩 핵심 설명 (요약)</h2>
+      <ul>
+        <li><code>DBManager</code>: 싱글턴 객체. 하나의 MySqlConnection을 만들어 재사용.</li>
+        <li><code>Form1()</code>: 폼 초기화 후 DBManager 인스턴스 얻고 전공 목록 로드.</li>
+        <li><code>LoadMajorList()</code>: 전공 테이블에서 모든 행을 가져와 리스트박스에 추가.</li>
+        <li><code>majorListBox_SelectedIndexChanged</code>: 전공이 선택되면 그 전공의 id를 얻고 <code>currentMajorId</code> 저장, 학생 로드.</li>
+        <li><code>SaveOrUpdateStudent()</code>: 학번 기준으로 있으면 UPDATE, 없으면 COUNT 검사 후 INSERT.</li>
+        <li>체크박스 상태는 <code>Properties.Settings.Default</code>에 저장 → 앱 재실행 시 그대로 복원.</li>
+      </ul>
+
+      <h2>실행 &amp; 테스트 체크리스트</h2>
+      <ol>
+        <li>MySQL 서버가 가동 중인지 확인 (IP/포트/접속정보 확인)</li>
+        <li>SQL로 데이터베이스와 테이블을 생성했는지 확인</li>
+        <li>Visual Studio에서 NuGet으로 <code>MySql.Data</code> 패키지 설치</li>
+        <li>Form 디자이너에서 컨트롤 이름을 정확히 맞춤</li>
+        <li><span class="kbd">F5</span>로 실행 → 전공 추가 / 전공 선택 → 학생 저장 / 삭제 동작 확인</li>
+      </ol>
+
+      <div class="ok">문제 발생 시 우선 체크: (1) 버튼 이벤트 연결 확인 (디자이너-번개 아이콘) (2) currentMajorId 값이 0인지 확인 (전공 클릭 필요) (3) DB 연결 문자열/권한</div>
+
+      <h2>마무리</h2>
+      <p>이 글은 시험장에서 그대로 설명하고 코드를 붙여 실행할 수 있도록 핵심 코드와 동작 원리를 한 페이지에 모아 정리한 것입니다. 필요하면 이 파일을 그대로 복사해 블로그에 올리셔도 됩니다. 추가로 한 줄씩 더 자세한 주석 버전이나, 질문하신 특정 줄에 대한 “왜 필요한가?” 설명을 원하시면 그 부분만 더 상세히 풀어드릴게요.</p>
+
+      <footer>
+        © 정리 완료 — 필요하면 이 코드 그대로 Visual Studio에 붙여넣을 수 있습니다. 질문: “특정 줄을 시험장에서 어떻게 말로 설명할지”를 연습해 드릴까요?
+      </footer>
+    </article>
+  </div>
+</body>
+</html>
