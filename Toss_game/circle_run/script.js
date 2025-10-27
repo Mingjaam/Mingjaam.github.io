@@ -77,23 +77,32 @@ function updateHighScoreDisplay() {
         highScoreDisplay.textContent = `최고 기록: ${highScore}`;
     }
 }
-// 캔버스 크기 설정 - 모바일 친화적 정사각형으로 고정
+// 캔버스 크기 설정 - 모바일 친화적 정사각형으로 고정 (고해상도 지원)
 function resizeCanvas() {
     const minDimension = Math.min(window.innerWidth, window.innerHeight);
     const size = Math.floor(minDimension * 0.9); // 화면의 90% 사용
     
-    canvas.width = size;
-    canvas.height = size;
+    // 고해상도 디스플레이 지원 (Retina, 고밀도 화면)
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    const canvasSize = size * devicePixelRatio;
     
-    // 캔버스 스타일도 동일하게 설정
+    // 캔버스 실제 해상도 설정 (고해상도)
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
+    
+    // 캔버스 스타일 크기 설정 (표시 크기)
     canvas.style.width = size + 'px';
     canvas.style.height = size + 'px';
     
-    // 중심점과 반지름 재계산
-    centerX = canvas.width / 2;
-    centerY = canvas.height / 2;
-    outerRadius = canvas.width * 0.35; // 큰 원 (바깥쪽)
-    innerRadius = canvas.width * 0.15; // 작은 원 (안쪽)
+    // 고해상도 스케일링 적용
+    const ctx = canvas.getContext('2d');
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+    
+    // 중심점과 반지름 재계산 (표시 크기 기준)
+    centerX = size / 2;
+    centerY = size / 2;
+    outerRadius = size * 0.35; // 큰 원 (바깥쪽)
+    innerRadius = size * 0.15; // 작은 원 (안쪽)
     
     // 속도 재계산 (바깥쪽 원이 안쪽 원보다 0.6배 느리게)
     outerMoveSpeed = speed;
