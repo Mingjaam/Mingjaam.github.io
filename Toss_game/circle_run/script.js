@@ -31,6 +31,52 @@ let level = 1;
 
 // 프레임레이트 독립적인 속도를 위한 변수
 let lastTime = 0;
+
+// 최고 기록 관련 변수
+let highScore = 0;
+
+// 쿠키 관련 함수들
+function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+// 최고 기록 로드
+function loadHighScore() {
+    const savedHighScore = getCookie('circleRunHighScore');
+    if (savedHighScore) {
+        highScore = parseInt(savedHighScore);
+    }
+}
+
+// 최고 기록 저장
+function saveHighScore() {
+    if (score > highScore) {
+        highScore = score;
+        setCookie('circleRunHighScore', highScore.toString(), 365); // 1년간 저장
+        updateHighScoreDisplay();
+    }
+}
+
+// 최고 기록 표시 업데이트
+function updateHighScoreDisplay() {
+    const highScoreDisplay = document.getElementById('high-score-display');
+    if (highScoreDisplay) {
+        highScoreDisplay.textContent = `최고 기록: ${highScore}`;
+    }
+}
 // 캔버스 크기 설정 - 모바일 친화적 정사각형으로 고정
 function resizeCanvas() {
     const minDimension = Math.min(window.innerWidth, window.innerHeight);
@@ -373,10 +419,12 @@ function checkCollision() {
             // 플레이어가 큰 원에 있고, 큰 원 장애물과 충돌
             if (player.isOnOuterCircle && o.onOuterCircle && !player.switching) {
                 gameOver = true;
+                saveHighScore(); // 최고 기록 저장
             }
             // 플레이어가 작은 원에 있고, 작은 원 장애물과 충돌
             if (!player.isOnOuterCircle && o.onInnerCircle && !player.switching) {
                 gameOver = true;
+                saveHighScore(); // 최고 기록 저장
             }
         }
     }
@@ -413,7 +461,6 @@ function checkObstaclePassing() {
             // 이미 지나간 장애물이면 제거 (속도에 비례한 범위에서 체크)
             if (o.passed && normalizedDiff < removalRange && normalizedDiff > -removalRange) {
                 obstacles.splice(i, 1);
-                console.log(`장애물 제거됨 - 현재 개수: ${obstacles.length}`);
                 
                 // 장애물이 제거되면 새로운 장애물 추가
                 addNewObstacleBehindPlayer();
@@ -429,9 +476,7 @@ function checkObstaclePassing() {
                 const currentMultiple = Math.floor(score / OBSTACLE_INCREASE_INTERVAL);
                 
                 if (currentMultiple > previousMultiple) {
-                    console.log(`30점 배수 달성! 점수: ${score}, 현재 장애물 개수: ${obstacles.length}`);
                     addNewObstacleBehindPlayer();
-                    console.log(`장애물 추가 후 개수: ${obstacles.length}`);
                 }
             }
         }
@@ -440,11 +485,8 @@ function checkObstaclePassing() {
 
 // 플레이어 뒤쪽에 새로운 장애물 추가
 function addNewObstacleBehindPlayer() {
-    console.log(`addNewObstacleBehindPlayer 호출됨 - 현재 장애물 개수: ${obstacles.length}, 최대: ${MAX_TOTAL_OBSTACLES}`);
-    
     // 전체 최대 개수 제한만 체크
     if (obstacles.length >= MAX_TOTAL_OBSTACLES) {
-        console.log("최대 장애물 개수에 도달하여 추가하지 않음");
         return;
     }
     
@@ -487,7 +529,6 @@ function addNewObstacleBehindPlayer() {
                 onInnerCircle: !isOuterCircle,
                 passed: false
             });
-            console.log(`장애물 추가 완료 - 새 장애물 개수: ${obstacles.length}`);
             return; // 성공적으로 추가했으면 함수 종료
         }
     }
@@ -502,7 +543,6 @@ function addNewObstacleBehindPlayer() {
         onInnerCircle: !isOuterCircle,
         passed: false
     });
-    console.log(`Fallback으로 장애물 추가 완료 - 새 장애물 개수: ${obstacles.length}`);
 }
 
 // 속도 표시 업데이트
@@ -610,6 +650,8 @@ loop();
 function handleInput() {
     if (!running) {
         running = true;
+        loadHighScore(); // 최고 기록 로드
+        updateHighScoreDisplay(); // 최고 기록 표시 업데이트
         createObstacles(); // 게임 시작 시 장애물 생성
         overlay.innerText = score;
         overlay.style.pointerEvents = "none";
@@ -652,7 +694,6 @@ document.addEventListener("keydown", (e) => {
     else if (e.code === "KeyD") {
         e.preventDefault();
         debugMode = !debugMode;
-        console.log(`디버깅 모드: ${debugMode ? 'ON' : 'OFF'}`);
     }
 });
 
@@ -666,3 +707,9 @@ function gameOverScreen() {
     requestAnimationFrame(gameOverScreen);
 }
 gameOverScreen();
+
+// 페이지 로드 시 초기화
+window.addEventListener("load", () => {
+    loadHighScore(); // 최고 기록 로드
+    updateHighScoreDisplay(); // 최고 기록 표시 업데이트
+});
