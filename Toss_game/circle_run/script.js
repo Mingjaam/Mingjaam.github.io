@@ -13,9 +13,21 @@ const OBSTACLE_SIZE = isMobile ? 8 : 12;
 const PLAYER_DISTANCE_FROM_CIRCLE = isMobile ? 15 : 20;
 
 // 원의 반지름에 따른 속도 조정
-const baseMoveSpeed = 0.05;
 let outerMoveSpeed, innerMoveSpeed; // resizeCanvas에서 초기화됨
 
+// 게임 상수
+const INITIAL_SPEED = 0.05; // 초기 속도
+const SPEED_INCREASE = 0.001; // 속도 증가량
+
+// 변수 선언 (resizeCanvas에서 초기화됨)
+let centerX, centerY, outerRadius, innerRadius;
+
+// 게임 상태 변수들
+let running = false; 
+let angle = 0;
+let speed = INITIAL_SPEED;
+let score = 0;
+let level = 1;
 // 캔버스 크기 설정 - 모바일 친화적 정사각형으로 고정
 function resizeCanvas() {
     const minDimension = Math.min(window.innerWidth, window.innerHeight);
@@ -35,18 +47,12 @@ function resizeCanvas() {
     innerRadius = canvas.width * 0.15; // 작은 원 (안쪽)
     
     // 속도 재계산 (반지름이 변경되었으므로)
-    outerMoveSpeed = baseMoveSpeed * (innerRadius / outerRadius);
-    innerMoveSpeed = baseMoveSpeed;
+    outerMoveSpeed = speed * (innerRadius / outerRadius);
+    innerMoveSpeed = speed;
 }
 
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
-
-let running = false;
-let angle = 0;
-let speed = 0.02;
-let score = 0;
-let level = 1;
 
 let player = {
     angle: -Math.PI / 2, // 상단에서 시작 (12시 방향)
@@ -58,6 +64,9 @@ let player = {
 
 let obstacles = [];
 let gameOver = false;
+
+// 디버깅 모드 (히트박스 표시)
+let debugMode = false;
 
 // 장애물 개수 시스템 (30점마다 증가)
 const INITIAL_OBSTACLE_COUNT = 3; // 초기 장애물 개수
@@ -223,6 +232,32 @@ function drawPlayer() {
     ctx.lineWidth = 3;
     ctx.strokeStyle = "black";
     ctx.stroke();
+    
+    // 디버깅 모드: 히트박스 표시
+    if (debugMode) {
+        // 플레이어 히트박스 (각도 범위)
+        const hitboxAngle = 0.2; // 충돌 감지 각도
+        const startAngle = player.angle - hitboxAngle;
+        const endAngle = player.angle + hitboxAngle;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, PLAYER_RADIUS + 5, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // 각도 히트박스 표시
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(centerX + Math.cos(startAngle) * (r + PLAYER_RADIUS + 10), 
+                   centerY + Math.sin(startAngle) * (r + PLAYER_RADIUS + 10));
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(centerX + Math.cos(endAngle) * (r + PLAYER_RADIUS + 10), 
+                   centerY + Math.sin(endAngle) * (r + PLAYER_RADIUS + 10));
+        ctx.strokeStyle = "rgba(255, 0, 0, 0.7)";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+    }
 }
 
 function drawObstacles() {
@@ -248,6 +283,32 @@ function drawObstacles() {
             ctx.strokeStyle = "darkred";
             ctx.stroke();
             ctx.restore();
+            
+            // 디버깅 모드: 장애물 히트박스 표시
+            if (debugMode) {
+                const hitboxAngle = 0.2; // 충돌 감지 각도
+                const startAngle = o.angle - hitboxAngle;
+                const endAngle = o.angle + hitboxAngle;
+                
+                // 장애물 히트박스 원
+                ctx.beginPath();
+                ctx.arc(x, y, OBSTACLE_SIZE + 5, 0, Math.PI * 2);
+                ctx.strokeStyle = "rgba(0, 255, 0, 0.5)";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 각도 히트박스 표시
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + Math.cos(startAngle) * (r + OBSTACLE_SIZE + 10), 
+                           centerY + Math.sin(startAngle) * (r + OBSTACLE_SIZE + 10));
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + Math.cos(endAngle) * (r + OBSTACLE_SIZE + 10), 
+                           centerY + Math.sin(endAngle) * (r + OBSTACLE_SIZE + 10));
+                ctx.strokeStyle = "rgba(0, 255, 0, 0.7)";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
         }
         
         // 작은 원 바깥쪽 장애물 그리기
@@ -271,6 +332,32 @@ function drawObstacles() {
             ctx.strokeStyle = "darkred"; // 색상 통일
             ctx.stroke();
             ctx.restore();
+            
+            // 디버깅 모드: 장애물 히트박스 표시
+            if (debugMode) {
+                const hitboxAngle = 0.2; // 충돌 감지 각도
+                const startAngle = o.angle - hitboxAngle;
+                const endAngle = o.angle + hitboxAngle;
+                
+                // 장애물 히트박스 원
+                ctx.beginPath();
+                ctx.arc(x, y, OBSTACLE_SIZE + 5, 0, Math.PI * 2);
+                ctx.strokeStyle = "rgba(0, 255, 0, 0.5)";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 각도 히트박스 표시
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + Math.cos(startAngle) * (r + OBSTACLE_SIZE + 10), 
+                           centerY + Math.sin(startAngle) * (r + OBSTACLE_SIZE + 10));
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + Math.cos(endAngle) * (r + OBSTACLE_SIZE + 10), 
+                           centerY + Math.sin(endAngle) * (r + OBSTACLE_SIZE + 10));
+                ctx.strokeStyle = "rgba(0, 255, 0, 0.7)";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
         }
     });
 }
@@ -279,7 +366,7 @@ function checkCollision() {
     for (let o of obstacles) {
         const diff = Math.abs(((player.angle - o.angle) + Math.PI * 2) % (Math.PI * 2));
         
-        if (diff < 0.2) {
+        if (diff < 0.1) { // 충돌 감지 범위를 0.2에서 0.1로 줄임 (더 정확한 충돌 감지)
             // 플레이어가 큰 원에 있고, 큰 원 장애물과 충돌
             if (player.isOnOuterCircle && o.onOuterCircle && !player.switching) {
                 gameOver = true;
@@ -315,16 +402,21 @@ function checkObstaclePassing() {
                                (o.onInnerCircle && actualPlayerOnOuterCircle);
         
         if (isCorrectPassing) {
-            // 이미 지나간 장애물이면 제거 (더 넓은 범위에서 체크)
-            if (o.passed && normalizedDiff < 0.2 && normalizedDiff > -0.2) {
+            // 속도에 비례한 감지 범위 계산
+            const speedMultiplier = Math.max(1, speed / INITIAL_SPEED); // 속도 배수
+            const removalRange = 0.2 * speedMultiplier; // 제거 범위
+            const passingRange = 0.05 * speedMultiplier; // 통과 감지 범위
+            
+            // 이미 지나간 장애물이면 제거 (속도에 비례한 범위에서 체크)
+            if (o.passed && normalizedDiff < removalRange && normalizedDiff > -removalRange) {
                 obstacles.splice(i, 1);
                 console.log(`장애물 제거됨 - 현재 개수: ${obstacles.length}`);
                 
                 // 장애물이 제거되면 새로운 장애물 추가
                 addNewObstacleBehindPlayer();
             }
-            // 처음 지나가는 장애물이면 통과 표시하고 점수 추가 (더 좁은 범위에서 체크)
-            else if (!o.passed && normalizedDiff < 0.05 && normalizedDiff > -0.05) {
+            // 처음 지나가는 장애물이면 통과 표시하고 점수 추가 (속도에 비례한 범위에서 체크)
+            else if (!o.passed && normalizedDiff < passingRange && normalizedDiff > -passingRange) {
                 o.passed = true;
                 const previousScore = score;
                 score++;
@@ -421,6 +513,10 @@ function update() {
     if (gameOver) return;
 
     angle += speed;
+    
+    // 속도가 변경될 때마다 실제 이동 속도 재계산
+    outerMoveSpeed = speed * (innerRadius / outerRadius);
+    innerMoveSpeed = speed;
 
     // 플레이어가 원을 따라 움직임 (원의 반지름에 따라 속도 조정)
     let currentMoveSpeed;
@@ -437,7 +533,7 @@ function update() {
 
     // 원 전환 중일 때 처리
     if (player.switching) {
-        player.switchProgress += 0.1; // 전환 속도
+        player.switchProgress += 0.3; // 전환 속도 (더 빠르게)
         if (player.switchProgress >= 1) {
             player.switchProgress = 0;
             player.switching = false;
@@ -449,7 +545,7 @@ function update() {
     if (player.angle >= Math.PI * 1.5) { // 270도 지점에서 체크
         player.angle = -Math.PI / 2; // 상단으로 즉시 리셋
         level = Math.floor(score / 3) + 1; // 3점마다 레벨업
-        speed += 0.005; // 속도 증가량을 0.001에서 0.005로 증가
+        speed += SPEED_INCREASE; // 속도 증가량
         // createObstacles() 제거 - 이제 장애물은 동적으로 추가됨
     }
     
@@ -472,6 +568,23 @@ function draw() {
     drawCircles();
     drawObstacles();
     drawPlayer();
+    
+    // 디버깅 모드: 정보 표시
+    if (debugMode) {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+        ctx.fillRect(10, 10, 250, 140);
+        
+        ctx.fillStyle = "white";
+        ctx.font = "14px Arial";
+        ctx.fillText(`디버깅 모드 ON`, 20, 30);
+        ctx.fillText(`플레이어 각도: ${player.angle.toFixed(2)}`, 20, 50);
+        ctx.fillText(`장애물 개수: ${obstacles.length}`, 20, 70);
+        ctx.fillText(`점수: ${score}`, 20, 90);
+        ctx.fillText(`기본 속도: ${speed.toFixed(3)}`, 20, 110);
+        ctx.fillText(`바깥쪽 속도: ${outerMoveSpeed.toFixed(4)}`, 20, 130);
+        ctx.fillText(`안쪽 속도: ${innerMoveSpeed.toFixed(4)}`, 20, 150);
+        ctx.fillText(`D키로 토글`, 20, 170);
+    }
 }
 
 function loop() {
@@ -496,7 +609,7 @@ function handleInput() {
         score = 0;
         level = 1;
         angle = 0;
-        speed = 0.02;
+        speed = INITIAL_SPEED; // 초기 속도로 초기화
         player.angle = -Math.PI / 2; // 상단에서 시작
         player.isOnOuterCircle = true;
         player.switching = false;
@@ -523,6 +636,12 @@ document.addEventListener("keydown", (e) => {
     if (e.code === "Space") {
         e.preventDefault(); // 스페이스바로 페이지 스크롤 방지
         handleInput();
+    }
+    // 디버깅 모드 토글 (D 키)
+    else if (e.code === "KeyD") {
+        e.preventDefault();
+        debugMode = !debugMode;
+        console.log(`디버깅 모드: ${debugMode ? 'ON' : 'OFF'}`);
     }
 });
 
