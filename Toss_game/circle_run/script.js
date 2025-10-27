@@ -119,9 +119,9 @@ let debugMode = false;
 
 // 장애물 개수 시스템 (30점마다 증가)
 const INITIAL_OBSTACLE_COUNT = 3; // 초기 장애물 개수
-const OBSTACLE_INCREASE_INTERVAL = 30; // 30점마다 장애물 증가
-const MAX_OBSTACLE_COUNT = 6; // 최대 장애물 개수 제한
-const MAX_TOTAL_OBSTACLES = 6; // 전체 최대 장애물 개수 제한
+const OBSTACLE_INCREASE_INTERVAL = 25; // 30점마다 장애물 증가
+const MAX_OBSTACLE_COUNT = 10; // 최대 장애물 개수 제한
+const MAX_TOTAL_OBSTACLES = 10; // 전체 최대 장애물 개수 제한
 
 function createObstacles() {
     obstacles = [];
