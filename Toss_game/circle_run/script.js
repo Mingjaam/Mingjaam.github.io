@@ -28,6 +28,9 @@ let angle = 0;
 let speed = INITIAL_SPEED;
 let score = 0;
 let level = 1;
+
+// 프레임레이트 독립적인 속도를 위한 변수
+let lastTime = 0;
 // 캔버스 크기 설정 - 모바일 친화적 정사각형으로 고정
 function resizeCanvas() {
     const minDimension = Math.min(window.innerWidth, window.innerHeight);
@@ -512,7 +515,15 @@ function update() {
     if (!running) return;
     if (gameOver) return;
 
-    angle += speed;
+    // 프레임레이트 독립적인 속도 계산
+    const currentTime = performance.now();
+    const deltaTime = lastTime === 0 ? 16.67 : currentTime - lastTime; // 60fps 기준
+    lastTime = currentTime;
+    
+    // deltaTime을 60fps 기준으로 정규화 (16.67ms = 1프레임)
+    const normalizedDeltaTime = deltaTime / 16.67;
+
+    angle += speed * normalizedDeltaTime;
     
     // 속도가 변경될 때마다 실제 이동 속도 재계산
     outerMoveSpeed = speed * (innerRadius / outerRadius);
@@ -529,7 +540,7 @@ function update() {
         // 일반 상태일 때는 현재 원에 맞는 속도 사용
         currentMoveSpeed = player.isOnOuterCircle ? outerMoveSpeed : innerMoveSpeed;
     }
-    player.angle += currentMoveSpeed;
+    player.angle += currentMoveSpeed * normalizedDeltaTime;
 
     // 원 전환 중일 때 처리
     if (player.switching) {
