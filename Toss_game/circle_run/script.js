@@ -16,7 +16,7 @@ const PLAYER_DISTANCE_FROM_CIRCLE = isMobile ? 15 : 20;
 let outerMoveSpeed, innerMoveSpeed; // resizeCanvas에서 초기화됨
 
 // 게임 상수
-const INITIAL_SPEED = 0.05; // 초기 속도
+const INITIAL_SPEED = 0.040; // 초기 속도
 const SPEED_INCREASE = 0.0015; // 속도 증가량
 
 // 변수 선언 (resizeCanvas에서 초기화됨)
@@ -96,7 +96,7 @@ function resizeCanvas() {
     innerRadius = canvas.width * 0.15; // 작은 원 (안쪽)
     
     // 속도 재계산 (바깥쪽 원이 안쪽 원보다 0.6배 느리게)
-    outerMoveSpeed = speed * 0.6;
+    outerMoveSpeed = speed;
     innerMoveSpeed = speed;
 }
 
@@ -521,7 +521,7 @@ function addNewObstacleBehindPlayer() {
         
         if (isValidPosition) {
             // 랜덤하게 바깥쪽 또는 안쪽 원에 장애물 추가
-            const isOuterCircle = Math.random() < 0.6; // 60% 확률로 바깥쪽 원
+            const isOuterCircle = Math.random() < 0.5; // 60% 확률로 바깥쪽 원
             
             obstacles.push({
                 angle: normalizedAngle,
