@@ -1,0 +1,38 @@
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body {
+    background: white;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    touch-action: manipulation;
+}
+
+canvas {
+    background: white;
+    display: block;
+    margin: 0 auto;
+}
+
+#overlay {
+    position: absolute;
+    font-family: 'Arial', sans-serif;
+    color: black;
+    font-size: 32px;
+    font-weight: 900;
+    user-select: none;
+    pointer-events: none;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 480px) {
+    #overlay {
+        font-size: 28px;
+    }
+}
