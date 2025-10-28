@@ -2,133 +2,28 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>KIM MIN JAE → 김민재 랜덤 모핑</title>
+<title>KIM MIN JAE → 김민재 포트폴리오</title>
 <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
-<style>
-  body { margin:0; background:black; overflow:hidden; cursor:pointer; }
-</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<script>
-let font;
-let particles = [];
-let state = 'eng'; // 'eng' 또는 'kor'
-const POINT_SIZE = 5;
-const GRID_STEP = 6;
-let engPoints = [];
-let korPoints = [];
+<div class="portfolio-section">
+  <div class="portfolio-content" style="text-align: center;">
+    <h1>김민재의 포트폴리오</h1>
+    <p style="font-size: 1.2rem; margin-top: 2rem;">스크롤을 내려보세요!</p>
+    <div style="margin-top: 3rem;">
+      <h2>프로젝트</h2>
+      <ul style="list-style: none; padding: 0;">
+        <li style="margin: 1rem 0;">🎨 인터랙티브 아트 프로젝트</li>
+        <li style="margin: 1rem 0;">💻 웹 개발 포트폴리오</li>
+        <li style="margin: 1rem 0;">🎮 게임 개발 프로젝트</li>
+        <li style="margin: 1rem 0;">📱 모바일 앱 개발</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
-function preload(){
-  font = loadFont('NotoSansKR-Bold.ttf');
-}
-
-function setup(){
-  createCanvas(windowWidth, windowHeight);
-  noStroke();
-  fill(255);
-
-  // offscreen graphics 생성
-  let gfxEng = createGraphics(width, height);
-  gfxEng.pixelDensity(1);
-  gfxEng.background(0);
-  gfxEng.fill(255);
-  gfxEng.textFont(font);
-  gfxEng.textSize(width*0.12);
-  gfxEng.textAlign(CENTER, CENTER);
-  gfxEng.text('KIM MIN JAE', width/2, height/2);
-
-  let gfxKor = createGraphics(width, height);
-  gfxKor.pixelDensity(1);
-  gfxKor.background(0);
-  gfxKor.fill(255);
-  gfxKor.textFont(font);
-  gfxKor.textSize(width*0.12);
-  gfxKor.textAlign(CENTER, CENTER);
-  gfxKor.text('김민재', width/2, height/2);
-
-  // 영어 점 추출
-  for(let y=0;y<height;y+=GRID_STEP){
-    for(let x=0;x<width;x+=GRID_STEP){
-      if(gfxEng.get(x,y)[0] >127){
-        engPoints.push({x:x,y:y});
-      }
-    }
-  }
-
-  // 한글 점 추출
-  for(let y=0;y<height;y+=GRID_STEP){
-    for(let x=0;x<width;x+=GRID_STEP){
-      if(gfxKor.get(x,y)[0] >127){
-        korPoints.push({x:x,y:y});
-      }
-    }
-  }
-
-  // 초기 particles 생성 (영어 글자 위치)
-  for(let i=0;i<engPoints.length;i++){
-    let p = engPoints[i];
-    particles.push({
-      x:p.x, y:p.y,
-      tx:p.x, ty:p.y
-    });
-  }
-
-  // 페이지 로드 후 자동 모핑 시작 (1.5초 후 첫 모핑)
-  setTimeout(() => morphToKor(), 2000);
-}
-
-function draw(){
-  background(0,50);
-  fill(255);
-  let step = 0.05;
-
-  for(let p of particles){
-    p.x = lerp(p.x, p.tx, step);
-    p.y = lerp(p.y, p.ty, step);
-    ellipse(p.x,p.y,POINT_SIZE,POINT_SIZE);
-  }
-}
-
-// 영어 → 한글 모핑
-function morphToKor(){
-  let shuffled = shuffleArray(korPoints.slice());
-  for(let i=0;i<particles.length;i++){
-    let target = shuffled[i % shuffled.length];
-    particles[i].tx = target.x + random(-GRID_STEP/2, GRID_STEP/2);
-    particles[i].ty = target.y + random(-GRID_STEP/2, GRID_STEP/2);
-  }
-  state='kor';
-
-  // 1.5초 후 다시 영어로 모핑
-  setTimeout(morphToEng, 2500);
-}
-
-// 한글 → 영어 모핑
-function morphToEng(){
-  let shuffled = shuffleArray(engPoints.slice());
-  for(let i=0;i<particles.length;i++){
-    let target = shuffled[i % shuffled.length];
-    particles[i].tx = target.x + random(-GRID_STEP/2, GRID_STEP/2);
-    particles[i].ty = target.y + random(-GRID_STEP/2, GRID_STEP/2);
-  }
-  state='eng';
-
-  // 1.5초 후 다시 한글로 모핑
-  setTimeout(morphToKor, 2500);
-}
-
-// 배열 랜덤 섞기 (Fisher-Yates)
-function shuffleArray(array){
-  for(let i=array.length-1;i>0;i--){
-    let j = floor(random(i+1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-function windowResized(){
-  resizeCanvas(windowWidth, windowHeight);
-}
-</script>
+<script src="script.js"></script>
 </body>
 </html>
