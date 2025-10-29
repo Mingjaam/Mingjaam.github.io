@@ -779,12 +779,13 @@ function windowResized(){
 function initPortfolioPages() {
   portfolioPages = document.querySelectorAll('.portfolio-page');
   currentPortfolioPage = 0;
-  
-  // 모든 페이지를 숨기고 첫 번째 페이지만 활성화
+
   portfolioPages.forEach((page, index) => {
     page.classList.remove('active', 'prev', 'next');
     if (index === 0) {
       page.classList.add('active');
+    } else {
+      page.classList.add('next');
     }
   });
   
