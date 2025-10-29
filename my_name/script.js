@@ -79,8 +79,8 @@ function setup(){
 
   // 모바일/PC에 따른 점 크기와 그리드 설정
   if (windowWidth < 768) {
-    POINT_SIZE = 5;
-    GRID_STEP = 6;
+    POINT_SIZE = 3;
+    GRID_STEP = 3;
   } else {
     POINT_SIZE = 10;
     GRID_STEP = 10;
