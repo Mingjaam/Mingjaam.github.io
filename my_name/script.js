@@ -359,10 +359,10 @@ function createPortfolioBodies() {
   const activePage = document.querySelector('.portfolio-page.active');
   if (!activePage) return;
   
-  const textElements = activePage.querySelectorAll('h1, h2, p, li');
-  for (let i = 0; i < textElements.length; i++) {
-    const el = textElements[i];
-    const rect = el.getBoundingClientRect();
+  // 제목 (h2)을 별도로 처리
+  const titleElement = activePage.querySelector('h2');
+  if (titleElement) {
+    const rect = titleElement.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     const w = Math.max(PHYSICS.OBSTACLE.HITBOX_MIN, rect.width) + PHYSICS.OBSTACLE.HITBOX_PADDING;
@@ -376,7 +376,28 @@ function createPortfolioBodies() {
     });
     
     portfolioBodies.push(body);
-    portfolioElements.push(el);
+    portfolioElements.push(titleElement);
+    portfolioSizes.push({ w, h });
+  }
+  
+  // 내용 박스를 하나의 큰 충돌체로 처리
+  const contentBox = activePage.querySelector('.content-box');
+  if (contentBox) {
+    const rect = contentBox.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const w = Math.max(PHYSICS.OBSTACLE.HITBOX_MIN, rect.width) + PHYSICS.OBSTACLE.HITBOX_PADDING;
+    const h = Math.max(PHYSICS.OBSTACLE.HITBOX_MIN, rect.height) + PHYSICS.OBSTACLE.HITBOX_PADDING;
+    
+    const body = Matter.Bodies.rectangle(centerX, centerY, w, h, {
+      isStatic: true,
+      friction: PHYSICS.OBSTACLE.FRICTION,
+      restitution: PHYSICS.OBSTACLE.RESTITUTION,
+      render: { visible: false }
+    });
+    
+    portfolioBodies.push(body);
+    portfolioElements.push(contentBox);
     portfolioSizes.push({ w, h });
   }
   
@@ -798,6 +819,9 @@ function nextPortfolioPage() {
   if (currentPortfolioPage >= portfolioPages.length - 1) return false;
 
   isTransitioning = true;
+  
+  // 페이지 전환 시작 시 즉시 물리 바디 제거
+  if (physicsEnabled) clearPortfolioBodies();
 
   portfolioPages[currentPortfolioPage].classList.remove('active');
   portfolioPages[currentPortfolioPage].classList.add('prev');
@@ -820,6 +844,9 @@ function prevPortfolioPage() {
   if (currentPortfolioPage <= 0) return false;
 
   isTransitioning = true;
+  
+  // 페이지 전환 시작 시 즉시 물리 바디 제거
+  if (physicsEnabled) clearPortfolioBodies();
 
   portfolioPages[currentPortfolioPage].classList.remove('active');
   portfolioPages[currentPortfolioPage].classList.add('next');

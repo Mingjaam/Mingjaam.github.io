@@ -122,3 +122,13 @@ body {
 .portfolio-page.next {
   transform: translateY(100vh);
 }
+
+.content-box {
+  margin-top: 2rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  display: inline-block;
+  width: auto;
+  max-width: none;
+}
