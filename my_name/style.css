@@ -21,17 +21,21 @@ body {
 }
 
 .name-text {
-  font-size: 3rem;
+  font-size: 10rem;
   font-weight: bold;
   color: white;
   font-family: Arial, sans-serif;
   position: absolute;
   opacity: 0;
   bottom: -200px;
-  left: 25%;
-  transform: translateX(-50%);
+
   transition: bottom 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  @media (max-width: 768px) {
+    font-size: 3rem;
+  }
+
 }
 
 .name-text.visible {
@@ -40,10 +44,24 @@ body {
 
 #name-text.visible {
   bottom: 60%;
+  left: 25%;
+  transform: translateX(-50%);
+  @media (max-width: 768px) {
+    bottom: 55%;
+    left: 25%;
+    transform: translateX(-50%);
+  }
 }
 
 #name-text-2.visible {
-  bottom: 30%;
+  bottom: 15%;
+  left: 75%;
+  transform: translateX(0%);
+  @media (max-width: 768px) {
+    bottom: 37.5%;
+    left: 75%;
+    transform: translateX(0%);
+  }
 }
 
 .portfolio-section {

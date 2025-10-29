@@ -111,13 +111,9 @@ function setup(){
   fill(255);
 
   // 모바일/PC에 따른 점 크기와 그리드 설정
-  if (windowWidth < 768) {
-    POINT_SIZE = 3;
-    GRID_STEP = 6;
-  } else {
-    POINT_SIZE = 10;
-    GRID_STEP = 10;
-  }
+  const sizeConfig = computeSizing(windowWidth, width);
+  POINT_SIZE = sizeConfig.pointSize;
+  GRID_STEP = sizeConfig.gridStep;
 
   // Matter.js 물리 엔진 초기화
   engine = Matter.Engine.create();
@@ -176,7 +172,7 @@ function setup(){
   gfxEng.background(0);
   gfxEng.fill(255);
   gfxEng.textFont(font);
-  gfxEng.textSize(width*0.12);
+  gfxEng.textSize(sizeConfig.textSizeEng);
   gfxEng.textAlign(CENTER, CENTER);
   gfxEng.text('KIM MIN JAE', width/2, height/2);
 
@@ -185,7 +181,7 @@ function setup(){
   gfxKor.background(0);
   gfxKor.fill(255);
   gfxKor.textFont(font);
-  gfxKor.textSize(width*0.12);
+  gfxKor.textSize(sizeConfig.textSizeKor);
   gfxKor.textAlign(CENTER, CENTER);
   gfxKor.text('김민재', width/2, height/2);
 
@@ -305,6 +301,25 @@ function resumeMorphLoop(nextTarget){
       morphToEng();
     }
   }
+}
+
+function computeSizing(windowW, canvasW) {
+  const minW = 400;
+  const maxW = 1600;
+  const clampW = Math.max(minW, Math.min(maxW, windowW));
+  const t = (clampW - minW) / (maxW - minW);
+
+  const pointSize = lerp(4, 12, t);
+  const gridStep = lerp(3, 12, t);
+  const textSizeEng = lerp(canvasW * 0.12, canvasW * 0.15, t);
+  const textSizeKor = lerp(canvasW * 0.15, canvasW * 0.18, t);
+
+  return {
+    pointSize,
+    gridStep,
+    textSizeEng,
+    textSizeKor
+  };
 }
 
 function morphToKor(){
@@ -604,12 +619,11 @@ function enterStep2(prevStep) {
     enablePhysics({ includePortfolio: true });
     createPortfolioBodies();
 
-    // 애니메이션 진행 중에도 충돌체를 최신 상태로 유지하기 위해 한 번 더 확인
     setTimeout(() => {
       if (interactionStep === 2 && physicsEnabled) {
         createPortfolioBodies();
       }
-    }, 300);
+    }, 180);
   });
 }
 
@@ -732,14 +746,9 @@ function disablePhysics() {
 function windowResized(){
   resizeCanvas(windowWidth, windowHeight);
   
-  // 창 크기 변경 시 점 크기와 그리드 재설정
-  if (windowWidth < 768) {
-    POINT_SIZE = 5;
-    GRID_STEP = 6;
-  } else {
-    POINT_SIZE = 10;
-    GRID_STEP = 10;
-  }
+  const sizeConfig = computeSizing(windowWidth, width);
+  POINT_SIZE = sizeConfig.pointSize;
+  GRID_STEP = sizeConfig.gridStep;
 
   // 캔버스 고정 레이어 스타일 유지
   if (canvasLayer) {
