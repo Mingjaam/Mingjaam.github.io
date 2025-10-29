@@ -1,29 +1,106 @@
 body {
   margin: 0;
   background: black;
-  overflow-x: hidden;
+  overflow: hidden;
   cursor: pointer;
-  height: 200vh; /* 스크롤 가능하도록 높이 증가 */
+  height: 100vh;
 }
 
-.portfolio-section {
-  position: absolute;
-  top: 100vh;
+.name-section {
+  position: fixed;
+  top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  background: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2; /* 캔버스 위, 포트폴리오 아래 */
+  pointer-events: none;
+}
+
+.name-text {
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  font-family: Arial, sans-serif;
+  position: absolute;
+  opacity: 0;
+  bottom: -200px;
+  left: 25%;
+  transform: translateX(-50%);
+  transition: bottom 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.name-text.visible {
+  opacity: 1;
+}
+
+#name-text.visible {
+  bottom: 60%;
+}
+
+#name-text-2.visible {
+  bottom: 30%;
+}
+
+.portfolio-section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: transparent; /* 배경 투명하게 */
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-family: Arial, sans-serif;
   font-size: 2rem;
+  overflow: hidden; /* 페이지 전환 효과를 위해 */
+  z-index: 3; /* 캔버스 위에 텍스트가 오도록 */
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
 }
 
-.portfolio-content {
-  position: relative;
-  z-index: 3; /* 텍스트는 캔버스(2) 위에 오도록 */
+.portfolio-section.active {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
+.portfolio-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(100vh);
+  transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  visibility: hidden;
+}
 
+.portfolio-page.active {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.portfolio-page.prev {
+  transform: translateY(-100vh);
+}
+
+.portfolio-page.next {
+  transform: translateY(100vh);
+}

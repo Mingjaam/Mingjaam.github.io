@@ -15,8 +15,35 @@ let korPoints = [];
 let canvasLayer; // 포트폴리오 배경 위, 텍스트 아래에 두기 위한 캔버스 레이어
 let portfolioElements = [];
 let portfolioSizes = [];
-let lastScrollY = 0;
 let groundBody = null;
+
+// 이름 섹션 관련
+let nameTextBodies = []; // 이름 텍스트 물리 바디들
+let nameTextElements = [];
+let nameTextSizes = [];
+let nameTextsVisible = false;
+
+// 상호작용 단계 (스크롤 횟수 기반)
+let interactionStep = 0; // 0: 기본, 1: 이름 텍스트, 2: 포트폴리오/물리
+const MAX_INTERACTION_STEP = 2;
+let lastScrollTime = 0;
+let scrollDebounceDelay = 300; // 0.3초 디바운스
+let nameStageMorphTimeout = null;
+let interactionLockTimeout = null;
+let interactionLocked = false;
+
+// 모핑 루프 제어
+let morphLoopEnabled = true;
+let morphTimeout = null;
+let currentMorphState = 'eng';
+
+// 물리 상태 제어
+let physicsMorphMode = false; // true면 물리 상태에서도 목표 위치로 끌어당김
+
+// 포트폴리오 페이지 전환
+let currentPortfolioPage = 0;
+let portfolioPages = [];
+let isTransitioning = false;
 
 // Matter.js 물리 엔진
 let engine;
@@ -24,7 +51,6 @@ let world;
 let bodies = [];
 let portfolioBodies = []; // 포트폴리오 텍스트 바디들
 let physicsEnabled = false;
-let scrollThreshold = 100; // 스크롤 임계값
 
 // 물리 상수 (공/장애물/중력 등)
 // - 값 조절로 낙하 속도, 탄성, 마찰, 정확도 등을 쉽게 변경합니다.
@@ -48,7 +74,7 @@ const PHYSICS = {
     FRICTION: 0.2,      // 접촉 마찰
     RESTITUTION: 0.01,   // 탄성(튕김 정도)
     HITBOX_MIN: 10,     // 텍스트 히트박스 최소 크기(px)
-    HITBOX_PADDING: 8,  // 텍스트 히트박스 여유(px)
+    HITBOX_PADDING: 15,  // 텍스트 히트박스 여유(px)
   },
 
   // 바닥 물성치
@@ -58,6 +84,13 @@ const PHYSICS = {
     THICKNESS: 40,      // 바닥 두께(px, 보이지 않음)
     WIDTH_MULTIPLIER: 2,// 창 너비 대비 바닥 폭 배수
     WIDTH_TOLERANCE: 1, // 바닥 폭 보정 허용 오차(px)
+  },
+
+  // 모핑 시 물리 바디를 목표 지점으로 끌어당기는 힘 계수
+  MORPH: {
+
+    FORCE: 0.0006,      // 목표 지점으로 당기는 기본 힘 계수
+    MAX_FORCE: 0.004,   // 한 프레임당 적용할 수 있는 최대 힘
   },
 };
 
@@ -72,7 +105,7 @@ function setup(){
   canvasLayer.style('position', 'fixed');
   canvasLayer.style('top', '0');
   canvasLayer.style('left', '0');
-  canvasLayer.style('z-index', '2');
+  canvasLayer.style('z-index', '1');
   canvasLayer.style('pointer-events', 'none');
   noStroke();
   fill(255);
@@ -80,7 +113,7 @@ function setup(){
   // 모바일/PC에 따른 점 크기와 그리드 설정
   if (windowWidth < 768) {
     POINT_SIZE = 3;
-    GRID_STEP = 3;
+    GRID_STEP = 6;
   } else {
     POINT_SIZE = 10;
     GRID_STEP = 10;
@@ -95,6 +128,44 @@ function setup(){
   engine.positionIterations = PHYSICS.POSITION_ITER;
   engine.velocityIterations = PHYSICS.VELOCITY_ITER;
   engine.constraintIterations = PHYSICS.CONSTRAINT_ITER;
+  
+  // 충돌 이벤트 리스너 추가 (공과 텍스트 충돌 시 퍼지는 효과)
+  Matter.Events.on(engine, 'collisionStart', function(event) {
+    const pairs = event.pairs;
+    for (let i = 0; i < pairs.length; i++) {
+      const pair = pairs[i];
+      const bodyA = pair.bodyA;
+      const bodyB = pair.bodyB;
+      
+      // 공과 텍스트 충돌 감지
+      let ballBody = null;
+      let textBody = null;
+      
+      // 공 바디 찾기
+      for (let j = 0; j < bodies.length; j++) {
+        if (bodies[j] === bodyA || bodies[j] === bodyB) {
+          ballBody = bodies[j];
+          break;
+        }
+      }
+      
+      // 텍스트 바디 찾기 (이름 텍스트 또는 포트폴리오 텍스트)
+      if (nameTextBodies.includes(bodyA) || nameTextBodies.includes(bodyB)) {
+        textBody = nameTextBodies.includes(bodyA) ? bodyA : bodyB;
+      } else if (portfolioBodies.includes(bodyA) || portfolioBodies.includes(bodyB)) {
+        textBody = portfolioBodies.includes(bodyA) ? bodyA : bodyB;
+      }
+      
+      // 충돌 시 공에 임펄스 추가 (퍼지는 효과)
+      if (ballBody && textBody) {
+        const impulse = {
+          x: (Math.random() - 0.5) * 0.1,
+          y: (Math.random() - 0.5) * 0.1
+        };
+        Matter.Body.applyForce(ballBody, ballBody.position, impulse);
+      }
+    }
+  });
   
   // 포트폴리오 텍스트를 물리 바디로 생성
   createPortfolioBodies();
@@ -136,6 +207,11 @@ function setup(){
     }
   }
 
+  // 정렬된 모핑을 위해 포인트를 행(y) 우선, 열(x) 순으로 정렬
+  const pointSorter = (a, b) => (a.y - b.y) || (a.x - b.x);
+  engPoints.sort(pointSorter);
+  korPoints.sort(pointSorter);
+
   // 초기 particles 생성 (영어 글자 위치)
   for(let i=0;i<engPoints.length;i++){
     let p = engPoints[i];
@@ -146,12 +222,15 @@ function setup(){
     });
   }
 
-  // 스크롤 이벤트 리스너 추가
-  window.addEventListener('scroll', handleScroll);
-  lastScrollY = window.scrollY || 0;
+  // 전역 휠/키 입력으로 단계 전환
+  window.addEventListener('wheel', handleInteractionWheel, { passive: false });
+  window.addEventListener('keydown', handleInteractionKey);
 
-  // 페이지 로드 후 자동 모핑 시작 (1초 후 첫 모핑)
-  setTimeout(() => morphToKor(), 1000);
+  // 포트폴리오 페이지 초기화
+  initPortfolioPages();
+
+  // 초기 모핑 시작 (영어 → 한글)
+  scheduleMorphTransition(() => morphToKor(), 1000);
 }
 
 function draw(){
@@ -160,8 +239,17 @@ function draw(){
   fill(255);
   
   if(physicsEnabled) {
+    // 모핑 유지 모드면 목표 지점으로 끌어당기는 힘 적용
+    if (physicsMorphMode) {
+      applyMorphForces();
+    }
+
     // 물리 엔진 업데이트 (더 작은 타임스텝)
     Matter.Engine.update(engine, PHYSICS.TIMESTEP_MS);
+
+    // DOM 요소와 물리 바디 동기화
+    syncNameTextBodiesToDOM();
+    syncPortfolioBodiesToDOM();
     
     // 물리 바디 위치로 점 그리기
     for(let p of particles){
@@ -183,67 +271,112 @@ function draw(){
 }
 
 // 영어 → 한글 모핑
+function scheduleMorphTransition(fn, delay){
+  if (morphTimeout) {
+    clearTimeout(morphTimeout);
+    morphTimeout = null;
+  }
+  if (!morphLoopEnabled) return;
+  morphTimeout = setTimeout(() => {
+    morphTimeout = null;
+    if (morphLoopEnabled) fn();
+  }, delay);
+}
+
+function pauseMorphLoop(){
+  morphLoopEnabled = false;
+  if (morphTimeout) {
+    clearTimeout(morphTimeout);
+    morphTimeout = null;
+  }
+}
+
+function resumeMorphLoop(nextTarget){
+  if (morphLoopEnabled) return;
+  morphLoopEnabled = true;
+  if (nextTarget === 'kor') {
+    morphToKor();
+  } else if (nextTarget === 'eng') {
+    morphToEng();
+  } else {
+    if (currentMorphState === 'eng') {
+      morphToKor();
+    } else {
+      morphToEng();
+    }
+  }
+}
+
 function morphToKor(){
-  let shuffled = shuffleArray(korPoints.slice());
+  if (!morphLoopEnabled) return;
+  const targets = shuffleArray(korPoints.slice()); // 정렬된 포인트의 랜덤 매핑
   for(let i=0;i<particles.length;i++){
-    let target = shuffled[i % shuffled.length];
-    particles[i].tx = target.x + random(-GRID_STEP/2, GRID_STEP/2);
-    particles[i].ty = target.y + random(-GRID_STEP/2, GRID_STEP/2);
+    let target = targets[i % targets.length];
+    particles[i].tx = target.x; // 정렬된 좌표 그대로 (노 지터)
+    particles[i].ty = target.y;
   }
   state='kor';
+  currentMorphState = 'kor';
 
-  // 1.5초 후 다시 영어로 모핑
-  setTimeout(morphToEng, 2500);
+  scheduleMorphTransition(morphToEng, 2500);
 }
 
 // 한글 → 영어 모핑
 function morphToEng(){
-  let shuffled = shuffleArray(engPoints.slice());
+  if (!morphLoopEnabled) return;
+  const targets = shuffleArray(engPoints.slice()); // 정렬된 포인트의 랜덤 매핑
   for(let i=0;i<particles.length;i++){
-    let target = shuffled[i % shuffled.length];
-    particles[i].tx = target.x + random(-GRID_STEP/2, GRID_STEP/2);
-    particles[i].ty = target.y + random(-GRID_STEP/2, GRID_STEP/2);
+    let target = targets[i % targets.length];
+    particles[i].tx = target.x; // 정렬된 좌표 그대로 (노 지터)
+    particles[i].ty = target.y;
   }
   state='eng';
+  currentMorphState = 'eng';
 
-  // 1.5초 후 다시 한글로 모핑
-  setTimeout(morphToKor, 2500);
+  scheduleMorphTransition(morphToKor, 2500);
 }
 
 // 포트폴리오 텍스트를 물리 바디로 생성
 function createPortfolioBodies() {
-  // 기존 바디 제거
-  for (let i = 0; i < portfolioBodies.length; i++) {
-    Matter.World.remove(world, portfolioBodies[i]);
-  }
-  portfolioBodies = [];
-  portfolioElements = [];
-  portfolioSizes = [];
+  clearPortfolioBodies();
 
-  // DOM에서 실제 텍스트 요소들의 위치/크기를 가져와 바디 생성
-  const elements = document.querySelectorAll('.portfolio-section h1, .portfolio-section h2, .portfolio-section p, .portfolio-section li');
-  elements.forEach((el) => {
+  // 활성 페이지의 텍스트 요소들을 충돌체로 생성
+  const activePage = document.querySelector('.portfolio-page.active');
+  if (!activePage) return;
+  
+  const textElements = activePage.querySelectorAll('h1, h2, p, li');
+  for (let i = 0; i < textElements.length; i++) {
+    const el = textElements[i];
     const rect = el.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;           // viewport 기준 X
-    const centerY = rect.top + rect.height / 2;           // viewport 기준 Y (고정 캔버스와 동일 좌표계)
-    const w = Math.max(PHYSICS.OBSTACLE.HITBOX_MIN, rect.width) + PHYSICS.OBSTACLE.HITBOX_PADDING;               // 약간 여유
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const w = Math.max(PHYSICS.OBSTACLE.HITBOX_MIN, rect.width) + PHYSICS.OBSTACLE.HITBOX_PADDING;
     const h = Math.max(PHYSICS.OBSTACLE.HITBOX_MIN, rect.height) + PHYSICS.OBSTACLE.HITBOX_PADDING;
-
+    
     const body = Matter.Bodies.rectangle(centerX, centerY, w, h, {
       isStatic: true,
       friction: PHYSICS.OBSTACLE.FRICTION,
       restitution: PHYSICS.OBSTACLE.RESTITUTION,
       render: { visible: false }
     });
+    
     portfolioBodies.push(body);
     portfolioElements.push(el);
     portfolioSizes.push({ w, h });
-  });
-  if (portfolioBodies.length) {
-    Matter.World.add(world, portfolioBodies);
+  }
+  
+  Matter.World.add(world, portfolioBodies);
+  console.log('포트폴리오 텍스트 충돌체 생성 완료:', portfolioBodies.length);
+}
+
+function clearPortfolioBodies() {
+  if (portfolioBodies.length && world) {
+    portfolioBodies.forEach(body => Matter.World.remove(world, body));
   }
 
-  console.log('포트폴리오 텍스트 DOM 기준 물리 바디 생성 수:', portfolioBodies.length);
+  portfolioBodies = [];
+  portfolioElements = [];
+  portfolioSizes = [];
 }
 
 function syncPortfolioBodiesToDOM() {
@@ -278,32 +411,219 @@ function shuffleArray(array){
   return array;
 }
 
-// 스크롤 이벤트 핸들러
-function handleScroll() {
-  let scrollY = window.scrollY || 0;
-  const deltaY = scrollY - lastScrollY;
-  
-  if(scrollY > scrollThreshold && !physicsEnabled) {
-    enablePhysics();
-  } else if(scrollY <= scrollThreshold && physicsEnabled) {
+function handleInteractionWheel(e) {
+  const dy = e.deltaY || 0;
+  if (Math.abs(dy) < 5) return;
+
+  if (interactionLocked) {
+    e.preventDefault();
+    return;
+  }
+
+  const now = Date.now();
+  if (now - lastScrollTime < scrollDebounceDelay) {
+    e.preventDefault();
+    return;
+  }
+
+  let handled = false;
+  if (interactionStep === 2) {
+    handled = processPortfolioWheel(dy);
+  }
+
+  if (!handled) {
+    if (dy > 0) {
+      advanceInteractionStep();
+    } else {
+      retreatInteractionStep();
+    }
+  }
+
+  lastScrollTime = now;
+  e.preventDefault();
+}
+
+function handleInteractionKey(e) {
+  const key = e.key;
+  const now = Date.now();
+
+  if (interactionLocked) {
+    e.preventDefault();
+    return;
+  }
+
+  if (key === 'ArrowDown' || key === 'PageDown' || key === ' ') {
+    e.preventDefault();
+    if (now - lastScrollTime < scrollDebounceDelay) return;
+
+    if (interactionStep === 2) {
+      const handled = processPortfolioWheel(120);
+      if (handled) {
+        lastScrollTime = now;
+        return;
+      }
+    }
+
+    advanceInteractionStep();
+    lastScrollTime = now;
+  } else if (key === 'ArrowUp' || key === 'PageUp') {
+    e.preventDefault();
+    if (now - lastScrollTime < scrollDebounceDelay) return;
+
+    if (interactionStep === 2) {
+      const handled = processPortfolioWheel(-120);
+      if (handled) {
+        lastScrollTime = now;
+        return;
+      }
+    }
+
+    retreatInteractionStep();
+    lastScrollTime = now;
+  }
+}
+
+function advanceInteractionStep() {
+  if (interactionStep >= MAX_INTERACTION_STEP) return;
+  setInteractionStep(interactionStep + 1);
+}
+
+function retreatInteractionStep() {
+  if (interactionStep <= 0) return;
+  setInteractionStep(interactionStep - 1);
+}
+
+function setInteractionStep(step) {
+  const target = Math.max(0, Math.min(MAX_INTERACTION_STEP, step));
+  if (target === interactionStep) return;
+
+  const previous = interactionStep;
+  interactionStep = target;
+
+  switch (interactionStep) {
+    case 0:
+      enterStep0(previous);
+      break;
+    case 1:
+      enterStep1(previous);
+      break;
+    case 2:
+      enterStep2(previous);
+      break;
+  }
+}
+
+function cleanupNameStageTimeout() {
+  if (nameStageMorphTimeout) {
+    clearTimeout(nameStageMorphTimeout);
+    nameStageMorphTimeout = null;
+  }
+}
+
+function lockInteraction(duration) {
+  if (interactionLockTimeout) {
+    clearTimeout(interactionLockTimeout);
+  }
+  interactionLocked = true;
+  interactionLockTimeout = setTimeout(() => {
+    interactionLocked = false;
+    interactionLockTimeout = null;
+  }, duration);
+}
+
+function enterStep0(prevStep) {
+  cleanupNameStageTimeout();
+  lockInteraction(350);
+  hideNameTexts();
+
+  const portfolioSection = document.querySelector('.portfolio-section');
+  if (portfolioSection) {
+    portfolioSection.classList.remove('active');
+  }
+
+  physicsMorphMode = false;
+  resumeMorphLoop();
+
+  if (physicsEnabled) {
+    disablePhysics();
+  }
+}
+
+function enterStep1(prevStep) {
+  cleanupNameStageTimeout();
+  lockInteraction(1600);
+
+  const portfolioSection = document.querySelector('.portfolio-section');
+  if (portfolioSection) {
+    portfolioSection.classList.remove('active');
+  }
+
+  if (physicsEnabled) {
     disablePhysics();
   }
 
-  // 물리 활성 상태에서는 스크롤 양만큼 모든 물리 바디를 반대 방향으로 이동시켜
-  // 캔버스(고정)와 DOM(뷰포트 기준) 좌표계를 일치시킴
-  if (physicsEnabled && deltaY !== 0) {
-    const translateBy = { x: 0, y: -deltaY };
-    for (let i = 0; i < bodies.length; i++) {
-      Matter.Body.translate(bodies[i], translateBy);
+  physicsMorphMode = false;
+  hideNameTexts();
+
+  pauseMorphLoop();
+
+  requestAnimationFrame(() => {
+    if (interactionStep !== 1) return;
+    showNameTexts();
+    enablePhysics({ includePortfolio: false });
+    physicsMorphMode = true;
+  });
+
+  nameStageMorphTimeout = setTimeout(() => {
+    if (interactionStep === 1) {
+      physicsMorphMode = false;
+      if (physicsEnabled) {
+        disablePhysics();
+      }
+      resumeMorphLoop();
     }
-    for (let i = 0; i < portfolioBodies.length; i++) {
-      Matter.Body.translate(portfolioBodies[i], translateBy);
-    }
-    // 바닥은 절대 위치로 업데이트 (페이지 최하단 기준)
-    updateGroundPosition();
+    nameStageMorphTimeout = null;
+  }, 2000);
+}
+
+function enterStep2(prevStep) {
+  cleanupNameStageTimeout();
+  lockInteraction(600);
+  hideNameTexts();
+
+  pauseMorphLoop();
+  physicsMorphMode = false;
+
+  const portfolioSection = document.querySelector('.portfolio-section');
+  if (portfolioSection) {
+    portfolioSection.classList.add('active');
   }
 
-  lastScrollY = scrollY;
+  requestAnimationFrame(() => {
+    if (interactionStep !== 2) return;
+    enablePhysics({ includePortfolio: true });
+    createPortfolioBodies();
+
+    // 애니메이션 진행 중에도 충돌체를 최신 상태로 유지하기 위해 한 번 더 확인
+    setTimeout(() => {
+      if (interactionStep === 2 && physicsEnabled) {
+        createPortfolioBodies();
+      }
+    }, 300);
+  });
+}
+
+function processPortfolioWheel(deltaY) {
+  if (!physicsEnabled) return false;
+  if (Math.abs(deltaY) < 5) return false;
+
+  if (deltaY > 0) {
+    return nextPortfolioPage();
+  }
+  if (deltaY < 0) {
+    return prevPortfolioPage();
+  }
+  return false;
 }
 
 function updateGroundPosition() {
@@ -325,70 +645,87 @@ function updateGroundPosition() {
 }
 
 // 물리 효과 활성화
-function enablePhysics() {
+function enablePhysics(options = {}) {
+  const { includePortfolio = true } = options;
+
+  if (physicsEnabled) {
+    if (includePortfolio) {
+      createPortfolioBodies();
+    } else {
+      clearPortfolioBodies();
+    }
+
+    if (nameTextsVisible) createNameTextBodies();
+    updateGroundPosition();
+    return;
+  }
+
   physicsEnabled = true;
-  
-  // 포트폴리오 바디들 다시 생성
-  createPortfolioBodies();
+
+  if (includePortfolio) {
+    createPortfolioBodies();
+  }
 
   // 바닥(페이지 최하단) 생성
   const thickness = PHYSICS.GROUND.THICKNESS;
-  groundBody = Matter.Bodies.rectangle(window.innerWidth/2, window.innerHeight + thickness, window.innerWidth * PHYSICS.GROUND.WIDTH_MULTIPLIER, thickness, {
-    isStatic: true,
-    friction: PHYSICS.GROUND.FRICTION,
-    restitution: PHYSICS.GROUND.RESTITUTION,
-    render: { visible: false }
-  });
+  groundBody = Matter.Bodies.rectangle(
+    window.innerWidth / 2,
+    window.innerHeight + thickness,
+    window.innerWidth * PHYSICS.GROUND.WIDTH_MULTIPLIER,
+    thickness,
+    {
+      isStatic: true,
+      friction: PHYSICS.GROUND.FRICTION,
+      restitution: PHYSICS.GROUND.RESTITUTION,
+      render: { visible: false }
+    }
+  );
   Matter.World.add(world, groundBody);
   updateGroundPosition();
-  
+
   // 모든 점에 물리 바디 생성
-  for(let i = 0; i < particles.length; i++) {
+  for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
-    
-    // 원형 물리 바디 생성
-    let body = Matter.Bodies.circle(p.x, p.y, POINT_SIZE/2, {
+
+    let body = Matter.Bodies.circle(p.x, p.y, POINT_SIZE / 2, {
       restitution: PHYSICS.BALL.RESTITUTION,
       friction: PHYSICS.BALL.FRICTION,
       frictionAir: PHYSICS.BALL.FRICTION_AIR,
       density: PHYSICS.BALL.DENSITY,
     });
-    
+
     p.body = body;
     bodies.push(body);
     Matter.World.add(world, body);
   }
-  
+
+  if (nameTextsVisible) {
+    createNameTextBodies();
+  }
+
   console.log('물리 효과 활성화! 모든 점이 떨어집니다.');
 }
 
 // 물리 효과 비활성화
 function disablePhysics() {
   physicsEnabled = false;
-  
-  // 모든 물리 바디 제거
-  for(let i = 0; i < bodies.length; i++) {
-    Matter.World.remove(world, bodies[i]);
-  }
-  bodies = [];
-  
-  // 포트폴리오 바디들도 제거
-  for(let i = 0; i < portfolioBodies.length; i++) {
-    Matter.World.remove(world, portfolioBodies[i]);
-  }
-  portfolioBodies = [];
 
-  // 바닥 제거
+  bodies.forEach(body => Matter.World.remove(world, body));
+  bodies = [];
+
+  clearPortfolioBodies();
+
+  removeNameTextBodies();
+
   if (groundBody) {
     Matter.World.remove(world, groundBody);
     groundBody = null;
   }
-  
-  // 파티클의 물리 바디 참조 제거
-  for(let i = 0; i < particles.length; i++) {
-    particles[i].body = null;
-  }
-  
+
+  particles.forEach(p => {
+    p.body = null;
+  });
+
   console.log('물리 효과 비활성화! 점들이 다시 글씨로 모핑됩니다.');
 }
 
@@ -410,14 +747,204 @@ function windowResized(){
     canvasLayer.style('position', 'fixed');
     canvasLayer.style('top', '0');
     canvasLayer.style('left', '0');
-    canvasLayer.style('z-index', '2');
+    canvasLayer.style('z-index', '1');
     canvasLayer.style('pointer-events', 'none');
   }
 
-  // 포트폴리오 텍스트 바디 재계산 (레이아웃 변화 대응)
-  if (physicsEnabled) createPortfolioBodies();
+  if (physicsEnabled) {
+    if (interactionStep === 2) {
+      createPortfolioBodies();
+    } else {
+      clearPortfolioBodies();
+    }
+
+    if (nameTextsVisible) {
+      createNameTextBodies();
+    }
+  }
 
   updateGroundPosition();
 }
 
+// 포트폴리오 페이지 초기화
+function initPortfolioPages() {
+  portfolioPages = document.querySelectorAll('.portfolio-page');
+  currentPortfolioPage = 0;
+  
+  // 모든 페이지를 숨기고 첫 번째 페이지만 활성화
+  portfolioPages.forEach((page, index) => {
+    page.classList.remove('active', 'prev', 'next');
+    if (index === 0) {
+      page.classList.add('active');
+    }
+  });
+  
+  console.log('포트폴리오 페이지 초기화 완료:', portfolioPages.length, '페이지');
+}
 
+function nextPortfolioPage() {
+  if (!portfolioPages || portfolioPages.length === 0) return false;
+  if (isTransitioning) return true;
+  if (currentPortfolioPage >= portfolioPages.length - 1) return false;
+
+  isTransitioning = true;
+
+  portfolioPages[currentPortfolioPage].classList.remove('active');
+  portfolioPages[currentPortfolioPage].classList.add('prev');
+
+  currentPortfolioPage++;
+  portfolioPages[currentPortfolioPage].classList.remove('next');
+  portfolioPages[currentPortfolioPage].classList.add('active');
+
+  setTimeout(() => {
+    isTransitioning = false;
+    if (physicsEnabled) createPortfolioBodies();
+  }, 800);
+
+  return true;
+}
+
+function prevPortfolioPage() {
+  if (!portfolioPages || portfolioPages.length === 0) return false;
+  if (isTransitioning) return true;
+  if (currentPortfolioPage <= 0) return false;
+
+  isTransitioning = true;
+
+  portfolioPages[currentPortfolioPage].classList.remove('active');
+  portfolioPages[currentPortfolioPage].classList.add('next');
+
+  currentPortfolioPage--;
+  portfolioPages[currentPortfolioPage].classList.remove('prev');
+  portfolioPages[currentPortfolioPage].classList.add('active');
+
+  setTimeout(() => {
+    isTransitioning = false;
+    if (physicsEnabled) createPortfolioBodies();
+  }, 800);
+
+  return true;
+}
+
+function showNameTexts() {
+  if (nameTextsVisible) return;
+  nameTextsVisible = true;
+
+  const nameText1 = document.getElementById('name-text');
+  const nameText2 = document.getElementById('name-text-2');
+  if (nameText1) nameText1.classList.add('visible');
+  if (nameText2) nameText2.classList.add('visible');
+
+  if (physicsEnabled) {
+    setTimeout(() => {
+      if (!physicsEnabled || !nameTextsVisible) return;
+      createNameTextBodies();
+    }, 120);
+  }
+}
+
+function hideNameTexts() {
+  if (!nameTextsVisible) return;
+  nameTextsVisible = false;
+
+  const nameText1 = document.getElementById('name-text');
+  const nameText2 = document.getElementById('name-text-2');
+  if (nameText1) nameText1.classList.remove('visible');
+  if (nameText2) nameText2.classList.remove('visible');
+
+  removeNameTextBodies();
+}
+
+function createNameTextBodies() {
+  if (!physicsEnabled) return;
+
+  removeNameTextBodies();
+
+  const elements = [
+    document.getElementById('name-text'),
+    document.getElementById('name-text-2')
+  ].filter(Boolean);
+
+  elements.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const w = Math.max(PHYSICS.OBSTACLE.HITBOX_MIN, rect.width) + PHYSICS.OBSTACLE.HITBOX_PADDING;
+    const h = Math.max(PHYSICS.OBSTACLE.HITBOX_MIN, rect.height) + PHYSICS.OBSTACLE.HITBOX_PADDING;
+
+    const body = Matter.Bodies.rectangle(centerX, centerY, w, h, {
+      isStatic: true,
+      friction: PHYSICS.OBSTACLE.FRICTION,
+      restitution: PHYSICS.OBSTACLE.RESTITUTION,
+      render: { visible: false }
+    });
+
+    nameTextBodies.push(body);
+    nameTextElements.push(el);
+    nameTextSizes.push({ w, h });
+  });
+
+  if (nameTextBodies.length > 0) {
+    Matter.World.add(world, nameTextBodies);
+  }
+}
+
+function removeNameTextBodies() {
+  if (nameTextBodies.length && world) {
+    nameTextBodies.forEach(body => Matter.World.remove(world, body));
+  }
+
+  nameTextBodies = [];
+  nameTextElements = [];
+  nameTextSizes = [];
+}
+
+function syncNameTextBodiesToDOM() {
+  if (!nameTextsVisible || !nameTextBodies.length) return;
+
+  for (let i = 0; i < nameTextBodies.length; i++) {
+    const el = nameTextElements[i];
+    if (!el) continue;
+
+    const rect = el.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const body = nameTextBodies[i];
+    Matter.Body.setPosition(body, { x: centerX, y: centerY });
+
+    const newW = Math.max(PHYSICS.OBSTACLE.HITBOX_MIN, rect.width) + PHYSICS.OBSTACLE.HITBOX_PADDING;
+    const newH = Math.max(PHYSICS.OBSTACLE.HITBOX_MIN, rect.height) + PHYSICS.OBSTACLE.HITBOX_PADDING;
+    const prevSize = nameTextSizes[i];
+
+    if (!prevSize) {
+      nameTextSizes[i] = { w: newW, h: newH };
+      continue;
+    }
+
+    if (Math.abs(prevSize.w - newW) > 0.5 || Math.abs(prevSize.h - newH) > 0.5) {
+      const sx = newW / prevSize.w;
+      const sy = newH / prevSize.h;
+      Matter.Body.scale(body, sx, sy);
+      nameTextSizes[i] = { w: newW, h: newH };
+    }
+  }
+}
+
+function applyMorphForces() {
+  if (!physicsMorphMode) return;
+
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+    if (!p.body) continue;
+
+    const body = p.body;
+    const dx = p.tx - body.position.x;
+    const dy = p.ty - body.position.y;
+    const fx = Math.max(-PHYSICS.MORPH.MAX_FORCE, Math.min(PHYSICS.MORPH.MAX_FORCE, dx * PHYSICS.MORPH.FORCE));
+    const fy = Math.max(-PHYSICS.MORPH.MAX_FORCE, Math.min(PHYSICS.MORPH.MAX_FORCE, dy * PHYSICS.MORPH.FORCE));
+
+    if (Math.abs(fx) > 0 || Math.abs(fy) > 0) {
+      Matter.Body.applyForce(body, body.position, { x: fx, y: fy });
+    }
+  }
+}
