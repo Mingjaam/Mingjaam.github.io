@@ -16,6 +16,8 @@ let canvasLayer; // 포트폴리오 배경 위, 텍스트 아래에 두기 위�
 let portfolioElements = [];
 let portfolioSizes = [];
 let groundBody = null;
+let leftWallBody = null;
+let rightWallBody = null;
 
 // 이름 섹션 관련
 let nameTextBodies = []; // 이름 텍스트 물리 바디들
@@ -741,6 +743,26 @@ function updateGroundPosition() {
     const sx = desiredWidth / currentBoundsWidth;
     Matter.Body.scale(groundBody, sx, 1);
   }
+  
+  // 좌우 벽 위치 업데이트
+  if (leftWallBody && rightWallBody) {
+    const wallThickness = thickness;
+    const wallHeight = window.innerHeight * 2;
+    const wallY = window.innerHeight / 2;
+    
+    Matter.Body.setPosition(leftWallBody, { x: -wallThickness / 2, y: wallY });
+    Matter.Body.setPosition(rightWallBody, { x: window.innerWidth + wallThickness / 2, y: wallY });
+    
+    // 벽 높이 업데이트
+    const currentLeftHeight = leftWallBody.bounds.max.y - leftWallBody.bounds.min.y;
+    const currentRightHeight = rightWallBody.bounds.max.y - rightWallBody.bounds.min.y;
+    if (Math.abs(currentLeftHeight - wallHeight) > 1) {
+      Matter.Body.scale(leftWallBody, 1, wallHeight / currentLeftHeight);
+    }
+    if (Math.abs(currentRightHeight - wallHeight) > 1) {
+      Matter.Body.scale(rightWallBody, 1, wallHeight / currentRightHeight);
+    }
+  }
 }
 
 // 물리 효과 활성화
@@ -765,9 +787,20 @@ function enablePhysics(options = {}) {
     createPortfolioBodies();
   }
 
+  // 기존 벽 제거 (중복 생성 방지)
+  if (leftWallBody) {
+    Matter.World.remove(world, leftWallBody);
+    leftWallBody = null;
+  }
+  if (rightWallBody) {
+    Matter.World.remove(world, rightWallBody);
+    rightWallBody = null;
+  }
+  
   // 바닥(페이지 최하단) 생성
   const thickness = PHYSICS.GROUND.THICKNESS;
-  groundBody = Matter.Bodies.rectangle(
+  if (!groundBody) {
+    groundBody = Matter.Bodies.rectangle(
     window.innerWidth / 2,
     window.innerHeight + thickness,
     window.innerWidth * PHYSICS.GROUND.WIDTH_MULTIPLIER,
@@ -778,8 +811,45 @@ function enablePhysics(options = {}) {
       restitution: PHYSICS.GROUND.RESTITUTION,
       render: { visible: false }
     }
+    );
+    Matter.World.add(world, groundBody);
+  }
+  
+  // 좌우 벽 생성
+  const wallThickness = thickness;
+  const wallHeight = window.innerHeight * 2; // 충분히 높게
+  const wallY = window.innerHeight / 2;
+  
+  // 왼쪽 벽
+  leftWallBody = Matter.Bodies.rectangle(
+    -wallThickness / 2,
+    wallY,
+    wallThickness,
+    wallHeight,
+    {
+      isStatic: true,
+      friction: PHYSICS.GROUND.FRICTION,
+      restitution: PHYSICS.GROUND.RESTITUTION,
+      render: { visible: false }
+    }
   );
-  Matter.World.add(world, groundBody);
+  Matter.World.add(world, leftWallBody);
+  
+  // 오른쪽 벽
+  rightWallBody = Matter.Bodies.rectangle(
+    window.innerWidth + wallThickness / 2,
+    wallY,
+    wallThickness,
+    wallHeight,
+    {
+      isStatic: true,
+      friction: PHYSICS.GROUND.FRICTION,
+      restitution: PHYSICS.GROUND.RESTITUTION,
+      render: { visible: false }
+    }
+  );
+  Matter.World.add(world, rightWallBody);
+  
   updateGroundPosition();
 
   // 모든 점에 물리 바디 생성
@@ -819,6 +889,16 @@ function disablePhysics() {
   if (groundBody) {
     Matter.World.remove(world, groundBody);
     groundBody = null;
+  }
+  
+  if (leftWallBody) {
+    Matter.World.remove(world, leftWallBody);
+    leftWallBody = null;
+  }
+  
+  if (rightWallBody) {
+    Matter.World.remove(world, rightWallBody);
+    rightWallBody = null;
   }
 
   particles.forEach(p => {
