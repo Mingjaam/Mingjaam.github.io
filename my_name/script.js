@@ -191,6 +191,19 @@ function setup(){
   gfxEng.textSize(sizeConfig.textSizeEng);
   gfxEng.textAlign(CENTER, CENTER);
   gfxEng.text('KIM MIN JAE', width/2, height/2);
+  
+  // 영어 텍스트의 실제 픽셀 영역 중앙 계산
+  let engMinY = height, engMaxY = 0;
+  for(let y=0;y<height;y+=GRID_STEP){
+    for(let x=0;x<width;x+=GRID_STEP){
+      if(gfxEng.get(x,y)[0] >127){
+        if(y < engMinY) engMinY = y;
+        if(y > engMaxY) engMaxY = y;
+      }
+    }
+  }
+  const engCenterY = (engMinY + engMaxY) / 2;
+  const engOffsetY = height/2 - engCenterY; // 화면 중앙으로 이동하기 위한 오프셋
 
   let gfxKor = createGraphics(width, height);
   gfxKor.pixelDensity(1);
@@ -200,21 +213,34 @@ function setup(){
   gfxKor.textSize(sizeConfig.textSizeKor);
   gfxKor.textAlign(CENTER, CENTER);
   gfxKor.text('김민재', width/2, height/2);
+  
+  // 한글 텍스트의 실제 픽셀 영역 중앙 계산
+  let korMinY = height, korMaxY = 0;
+  for(let y=0;y<height;y+=GRID_STEP){
+    for(let x=0;x<width;x+=GRID_STEP){
+      if(gfxKor.get(x,y)[0] >127){
+        if(y < korMinY) korMinY = y;
+        if(y > korMaxY) korMaxY = y;
+      }
+    }
+  }
+  const korCenterY = (korMinY + korMaxY) / 2;
+  const korOffsetY = height/2 - korCenterY; // 화면 중앙으로 이동하기 위한 오프셋
 
-  // 영어 점 추출
+  // 영어 점 추출 (오프셋 적용하여 화면 중앙에 맞춤)
   for(let y=0;y<height;y+=GRID_STEP){
     for(let x=0;x<width;x+=GRID_STEP){
       if(gfxEng.get(x,y)[0] >127){
-        engPoints.push({x:x,y:y});
+        engPoints.push({x:x, y:y + engOffsetY}); // 오프셋 적용
       }
     }
   }
 
-  // 한글 점 추출
+  // 한글 점 추출 (오프셋 적용하여 화면 중앙에 맞춤)
   for(let y=0;y<height;y+=GRID_STEP){
     for(let x=0;x<width;x+=GRID_STEP){
       if(gfxKor.get(x,y)[0] >127){
-        korPoints.push({x:x,y:y});
+        korPoints.push({x:x, y:y + korOffsetY}); // 오프셋 적용
       }
     }
   }

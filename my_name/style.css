@@ -55,7 +55,7 @@ body {
 }
 
 #name-text.visible {
-  bottom: 65%;
+  bottom: 75%;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -73,26 +73,26 @@ body {
   }
   
   #name-text.visible {
-    bottom: 55%;
+    bottom: 65%;
   }
   
   #name-text-2.visible {
-    bottom: 30%;
+    bottom: 25%;
   }
 }
 
 /* 모바일 사이즈 */
 @media (max-width: 768px) {
   .name-text {
-    font-size: clamp(2rem, 7vw, 2rem);
+    font-size: clamp(3rem, 7vw, 3rem);
   }
   
   #name-text.visible {
-    bottom: 55%;
+    bottom: 65%;
   }
   
   #name-text-2.visible {
-    bottom: 37%;
+    bottom: 25%;
   }
 }
 
