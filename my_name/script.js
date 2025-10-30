@@ -32,6 +32,16 @@ let nameStageMorphTimeout = null;
 let interactionLockTimeout = null;
 let interactionLocked = false;
 
+// 터치 이벤트 관련 변수
+let touchStartY = 0;
+let touchStartX = 0;
+let touchEndY = 0;
+let touchEndX = 0;
+let touchStartTime = 0;
+let minSwipeDistance = 50; // 최소 스와이프 거리
+let maxSwipeTime = 500; // 최대 스와이프 시간 (ms)
+let isScrolling = false;
+
 // 모핑 루프 제어
 let morphLoopEnabled = true;
 let morphTimeout = null;
@@ -221,6 +231,11 @@ function setup(){
   // 전역 휠/키 입력으로 단계 전환
   window.addEventListener('wheel', handleInteractionWheel, { passive: false });
   window.addEventListener('keydown', handleInteractionKey);
+  
+  // 모바일 터치 이벤트 핸들러 추가
+  window.addEventListener('touchstart', handleTouchStart, { passive: true });
+  window.addEventListener('touchmove', handleTouchMove, { passive: false });
+  window.addEventListener('touchend', handleTouchEnd, { passive: true });
 
   // 포트폴리오 페이지 초기화
   initPortfolioPages();
@@ -796,6 +811,7 @@ function windowResized(){
   updateGroundPosition();
 }
 
+
 // 포트폴리오 페이지 초기화
 function initPortfolioPages() {
   portfolioPages = document.querySelectorAll('.portfolio-page');
@@ -984,4 +1000,92 @@ function applyMorphForces() {
       Matter.Body.applyForce(body, body.position, { x: fx, y: fy });
     }
   }
+}
+
+// 터치 시작 이벤트 처리
+function handleTouchStart(e) {
+  if (interactionLocked) return;
+  
+  const touch = e.touches[0];
+  touchStartY = touch.clientY;
+  touchStartX = touch.clientX;
+  touchStartTime = Date.now();
+  isScrolling = false;
+}
+
+// 터치 이동 이벤트 처리
+function handleTouchMove(e) {
+  if (interactionLocked) return;
+  
+  const touch = e.touches[0];
+  const deltaY = touch.clientY - touchStartY;
+  const deltaX = touch.clientX - touchStartX;
+  
+  // 수직 스와이프가 수평 스와이프보다 크면 스크롤로 간주하고 기본 스크롤 방지
+  if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 10) {
+    isScrolling = true;
+    e.preventDefault(); // 기본 스크롤 방지
+  }
+}
+
+// 터치 종료 이벤트 처리
+function handleTouchEnd(e) {
+  if (interactionLocked || !isScrolling) return;
+  
+  const touch = e.changedTouches[0];
+  touchEndY = touch.clientY;
+  touchEndX = touch.clientX;
+  const touchEndTime = Date.now();
+  
+  const deltaY = touchEndY - touchStartY;
+  const deltaX = touchEndX - touchStartX;
+  const deltaTime = touchEndTime - touchStartTime;
+  
+  // 스와이프 조건 확인
+  if (deltaTime <= maxSwipeTime && Math.abs(deltaY) >= minSwipeDistance) {
+    // 수직 스와이프가 수평 스와이프보다 크면
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      const now = Date.now();
+      if (now - lastScrollTime < scrollDebounceDelay) {
+        return;
+      }
+      lastScrollTime = now;
+      
+      if (deltaY > 0) {
+        // 아래로 스와이프 (다음 단계 또는 다음 페이지)
+        let handled = false;
+        if (interactionStep === 2) {
+          handled = processPortfolioWheel(120);
+        }
+        
+        if (!handled) {
+          advanceInteractionStep();
+        }
+      } else {
+        // 위로 스와이프 (이전 단계 또는 이전 페이지)
+        let handled = false;
+        if (interactionStep === 2) {
+          handled = processPortfolioWheel(-120);
+        }
+        
+        if (!handled) {
+          retreatInteractionStep();
+        }
+      }
+    }
+  } else if (deltaTime <= maxSwipeTime && Math.abs(deltaX) >= minSwipeDistance) {
+    // 수평 스와이프 (포트폴리오 페이지 전환) - Step 2에서만 작동
+    if (interactionStep === 2 && physicsEnabled) {
+      if (deltaX > 0) {
+        // 오른쪽으로 스와이프 (이전 페이지)
+        prevPortfolioPage();
+      } else {
+        // 왼쪽으로 스와이프 (다음 페이지)
+        nextPortfolioPage();
+      }
+    }
+  }
+  
+  // 스크롤 상태 리셋
+  isScrolling = false;
 }
