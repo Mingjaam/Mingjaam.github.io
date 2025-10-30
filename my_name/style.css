@@ -84,7 +84,7 @@ body {
 /* 모바일 사이즈 */
 @media (max-width: 768px) {
   .name-text {
-    font-size: clamp(3rem, 7vw, 3rem);
+    font-size: clamp(5rem, 7vw, 5rem);
   }
   
   #name-text.visible {
