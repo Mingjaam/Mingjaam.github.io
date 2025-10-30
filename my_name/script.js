@@ -109,6 +109,12 @@ function preload(){
 }
 
 function setup(){
+  // 실제 보이는 뷰포트 높이 계산 (모바일 주소창/버튼 제외)
+  const actualHeight = window.innerHeight;
+  
+  // CSS 변수로 설정
+  document.documentElement.style.setProperty('--vh', `${actualHeight * 0.01}px`);
+  
   canvasLayer = createCanvas(windowWidth, windowHeight);
   // 캔버스를 화면 고정 레이어로 설정 (배경 위, 텍스트 아래)
   canvasLayer.position(0, 0);
@@ -236,6 +242,23 @@ function setup(){
   window.addEventListener('touchstart', handleTouchStart, { passive: true });
   window.addEventListener('touchmove', handleTouchMove, { passive: false });
   window.addEventListener('touchend', handleTouchEnd, { passive: true });
+  
+  // 모바일에서 뷰포트 높이 변경 감지 (주소창 표시/숨김, 화면 회전 등)
+  let resizeTimer;
+  function handleResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const actualHeight = window.innerHeight;
+      document.documentElement.style.setProperty('--vh', `${actualHeight * 0.01}px`);
+      if (typeof windowResized === 'function') {
+        windowResized();
+      }
+    }, 100);
+  }
+  window.addEventListener('resize', handleResize);
+  window.addEventListener('orientationchange', handleResize);
+  // 초기 로드 후에도 업데이트
+  setTimeout(handleResize, 100);
 
   // 포트폴리오 페이지 초기화
   initPortfolioPages();
@@ -780,6 +803,10 @@ function disablePhysics() {
 }
 
 function windowResized(){
+  // 실제 보이는 뷰포트 높이 다시 계산 (모바일 주소창/버튼 제외)
+  const actualHeight = window.innerHeight;
+  document.documentElement.style.setProperty('--vh', `${actualHeight * 0.01}px`);
+  
   resizeCanvas(windowWidth, windowHeight);
   
   const sizeConfig = computeSizing(windowWidth, width);
