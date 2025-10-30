@@ -84,7 +84,7 @@ body {
 /* 모바일 사이즈 */
 @media (max-width: 768px) {
   .name-text {
-    font-size: clamp(5rem, 7vw, 5rem);
+    font-size: 4rem;
   }
   
   #name-text.visible {
@@ -97,19 +97,7 @@ body {
 }
 
 /* 매우 작은 모바일 */
-@media (max-width: 480px) {
-  .name-text {
-    font-size: clamp(4rem, 6vw, 4rem);
-  }
-  
-  #name-text.visible {
-    bottom: 50%;
-  }
-  
-  #name-text-2.visible {
-    bottom: 40%;
-  }
-}
+
 
 .portfolio-section {
   position: fixed;
