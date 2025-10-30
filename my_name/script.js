@@ -1052,17 +1052,7 @@ function handleTouchEnd(e) {
       lastScrollTime = now;
       
       if (deltaY > 0) {
-        // 아래로 스와이프 (다음 단계 또는 다음 페이지)
-        let handled = false;
-        if (interactionStep === 2) {
-          handled = processPortfolioWheel(120);
-        }
-        
-        if (!handled) {
-          advanceInteractionStep();
-        }
-      } else {
-        // 위로 스와이프 (이전 단계 또는 이전 페이지)
+        // 아래로 스와이프 (이전 단계 또는 이전 페이지)
         let handled = false;
         if (interactionStep === 2) {
           handled = processPortfolioWheel(-120);
@@ -1071,17 +1061,16 @@ function handleTouchEnd(e) {
         if (!handled) {
           retreatInteractionStep();
         }
-      }
-    }
-  } else if (deltaTime <= maxSwipeTime && Math.abs(deltaX) >= minSwipeDistance) {
-    // 수평 스와이프 (포트폴리오 페이지 전환) - Step 2에서만 작동
-    if (interactionStep === 2 && physicsEnabled) {
-      if (deltaX > 0) {
-        // 오른쪽으로 스와이프 (이전 페이지)
-        prevPortfolioPage();
       } else {
-        // 왼쪽으로 스와이프 (다음 페이지)
-        nextPortfolioPage();
+        // 위로 스와이프 (다음 단계 또는 다음 페이지)
+        let handled = false;
+        if (interactionStep === 2) {
+          handled = processPortfolioWheel(120);
+        }
+        
+        if (!handled) {
+          advanceInteractionStep();
+        }
       }
     }
   }

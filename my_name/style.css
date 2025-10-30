@@ -28,7 +28,7 @@ body {
 }
 
 .name-text {
-  font-size: clamp(2rem, 8vw, 10rem);
+  font-size: clamp(5rem, 8vw, 6rem);
   font-weight: bold;
   color: white;
   font-family: Arial, sans-serif;
@@ -57,7 +57,7 @@ body {
 }
 
 #name-text-2.visible {
-  bottom: 0%;
+  bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -73,14 +73,14 @@ body {
   }
   
   #name-text-2.visible {
-    bottom: 0%;
+    bottom: 30%;
   }
 }
 
 /* 모바일 사이즈 */
 @media (max-width: 768px) {
   .name-text {
-    font-size: clamp(1.5rem, 7vw, 3.5rem);
+    font-size: clamp(2rem, 7vw, 2rem);
   }
   
   #name-text.visible {
@@ -88,14 +88,14 @@ body {
   }
   
   #name-text-2.visible {
-    bottom: 30.5%;
+    bottom: 37%;
   }
 }
 
 /* 매우 작은 모바일 */
 @media (max-width: 480px) {
   .name-text {
-    font-size: clamp(1.2rem, 6vw, 2.5rem);
+    font-size: clamp(4rem, 6vw, 4rem);
   }
   
   #name-text.visible {
