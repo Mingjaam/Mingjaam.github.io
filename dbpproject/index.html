@@ -275,25 +275,33 @@
         .schedule-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
-            font-size: 0.9em;
+            margin: 10px 0;
+            font-size: 0.85em;
         }
 
         .schedule-table th,
         .schedule-table td {
-            padding: 10px;
+            padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            vertical-align: top;
         }
 
         .schedule-table th {
             background: #ffd700;
             color: #333;
             font-weight: bold;
+            font-size: 0.9em;
         }
 
         .schedule-table tr:hover {
             background: #fff9e6;
+        }
+
+        .schedule-detail {
+            font-size: 0.85em;
+            color: #555;
+            margin-top: 3px;
         }
 
         .total-points {
@@ -759,36 +767,83 @@
             <table class="schedule-table">
                 <thead>
                     <tr>
-                        <th>단계</th>
-                        <th>기간</th>
+                        <th>주차</th>
                         <th>주요 작업 내용</th>
                         <th>담당자</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>1단계</td>
                         <td>1주차</td>
-                        <td>프로젝트 설계, DB 설계, 기본 환경 구축<br>회원 가입/로그인 기능 구현</td>
-                        <td>전체 팀원<br>김민애, 김영서</td>
+                        <td>
+                            <strong>프로젝트 설계 및 환경 구축</strong>
+                            <div class="schedule-detail">• 프로젝트 구조 설계, 요구사항 분석</div>
+                            <div class="schedule-detail">• DB 스키마 설계 및 ERD 작성</div>
+                            <div class="schedule-detail">• 개발 환경 구축 (Git, IDE, DB)</div>
+                            <div class="schedule-detail" style="margin-top: 8px;"><strong>회원 가입/로그인 기능</strong></div>
+                            <div class="schedule-detail">• 회원 가입 화면 및 로직 구현</div>
+                            <div class="schedule-detail">• 로그인 화면 및 인증 처리</div>
+                            <div class="schedule-detail">• 비밀번호 암호화, ID 중복 확인</div>
+                        </td>
+                        <td>
+                            <strong>전체 팀원</strong>
+                            <div class="schedule-detail" style="margin-top: 8px;"><strong>김민애</strong>: 회원 가입</div>
+                            <div class="schedule-detail"><strong>김영서</strong>: 로그인</div>
+                            <div class="schedule-detail"><strong>이승준</strong>: DB 설계</div>
+                        </td>
                     </tr>
                     <tr>
-                        <td>2단계</td>
                         <td>2주차</td>
-                        <td>대화 상대 관리 기능 구현<br>1:1 채팅 기능 구현</td>
-                        <td>김영서, 김민재<br>이재욱, 김민재</td>
+                        <td>
+                            <strong>대화 상대 관리 기능</strong>
+                            <div class="schedule-detail">• 부서별 TreeView 구성</div>
+                            <div class="schedule-detail">• 직원 검색 기능 (ID/부서/이름)</div>
+                            <div class="schedule-detail">• 즐겨찾기 관리 기능</div>
+                            <div class="schedule-detail" style="margin-top: 8px;"><strong>1:1 채팅 핵심 기능</strong></div>
+                            <div class="schedule-detail">• 메시지 송수신 기능</div>
+                            <div class="schedule-detail">• 알림 기능, 대화 내용 저장</div>
+                            <div class="schedule-detail">• 대화 목록 관리</div>
+                        </td>
+                        <td>
+                            <strong>김영서</strong>: 대화 상대 관리
+                            <div class="schedule-detail" style="margin-top: 8px;"><strong>김민재</strong>: 검색 기능</div>
+                            <div class="schedule-detail" style="margin-top: 8px;"><strong>이재욱</strong>: 채팅 핵심</div>
+                        </td>
                     </tr>
                     <tr>
-                        <td>3단계</td>
                         <td>3주차</td>
-                        <td>관리자 기능 구현<br>멀티 프로필, 권한 관리 등 고급 기능</td>
-                        <td>현지유<br>이재욱, 현지유</td>
+                        <td>
+                            <strong>관리자 기능 구현</strong>
+                            <div class="schedule-detail">• 부서 관리, 사용자 관리</div>
+                            <div class="schedule-detail">• 전체 대화 검색, 로그인 기록</div>
+                            <div class="schedule-detail">• 권한 조정 기능</div>
+                            <div class="schedule-detail" style="margin-top: 8px;"><strong>고급 기능</strong></div>
+                            <div class="schedule-detail">• 멀티 프로필 기능</div>
+                            <div class="schedule-detail">• 채팅 고급 기능 (검색, 이모티콘, 파일)</div>
+                            <div class="schedule-detail">• 평가용 기본 데이터 준비</div>
+                        </td>
+                        <td>
+                            <strong>현지유</strong>: 관리자 기능
+                            <div class="schedule-detail" style="margin-top: 8px;"><strong>이재욱</strong>: 멀티 프로필</div>
+                            <div class="schedule-detail"><strong>김민재</strong>: 채팅 고급</div>
+                        </td>
                     </tr>
                     <tr>
-                        <td>4단계</td>
                         <td>4주차</td>
-                        <td>자유 제안 기능 구현<br>통합 테스트, 최종 테스트, 버그 수정, 발표 준비</td>
-                        <td>김민재, 전체 팀원<br>전체 팀원</td>
+                        <td>
+                            <strong>자유 제안 기능 구현</strong>
+                            <div class="schedule-detail">• 그룹 채팅, 읽음 확인</div>
+                            <div class="schedule-detail">• 메시지 삭제/수정, 출퇴근 상태</div>
+                            <div class="schedule-detail" style="margin-top: 8px;"><strong>통합 및 마무리</strong></div>
+                            <div class="schedule-detail">• 전체 기능 통합 테스트</div>
+                            <div class="schedule-detail">• 버그 수정 및 성능 최적화</div>
+                            <div class="schedule-detail">• 발표 자료 준비 및 리허설</div>
+                        </td>
+                        <td>
+                            <strong>김민재</strong>: 자유 제안 기능
+                            <div class="schedule-detail" style="margin-top: 8px;"><strong>전체 팀원</strong>: 통합 테스트</div>
+                            <div class="schedule-detail"><strong>이승준</strong>: 통합 및 배포</div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
