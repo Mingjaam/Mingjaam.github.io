@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBP talk - 프로젝트 발표</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', Arial, sans-serif;
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            width: 95%;
+            max-width: 1400px;
+            height: 90vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 50px;
+            display: none;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ff8c00;
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 4px solid #ffd700;
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: #ff8c00;
+            margin: 20px 0 15px 0;
+            border-left: 6px solid #ffd700;
+            padding-left: 15px;
+        }
+
+        h3 {
+            font-size: 1.4em;
+            color: #ff8c00;
+            margin: 20px 0 12px 0;
+        }
+
+        h4 {
+            font-size: 1.2em;
+            color: #555;
+            margin: 15px 0 8px 0;
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 15px;
+            right: 25px;
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .team-members {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .member-card {
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .feature-list li {
+            padding: 12px;
+            margin: 8px 0;
+            background: #fff9e6;
+            border-left: 4px solid #ffd700;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .feature-list li strong {
+            color: #ff8c00;
+        }
+
+        .sub-feature {
+            margin-left: 25px;
+            margin-top: 8px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .point-value {
+            color: #ff8c00;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        .difficult {
+            color: #0066ff;
+            font-weight: bold;
+        }
+
+        .task-assignment {
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .task-item {
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #ffd700;
+        }
+
+        .task-item h4 {
+            color: #ff8c00;
+            margin-bottom: 8px;
+        }
+
+        .task-item ul {
+            margin-left: 20px;
+            font-size: 0.95em;
+        }
+
+        .task-item li {
+            margin: 5px 0;
+        }
+
+        .task-item .assignee {
+            color: #ff8c00;
+            font-weight: bold;
+            margin-top: 8px;
+            font-size: 0.95em;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            font-weight: bold;
+            color: #ff8c00;
+        }
+
+        .nav-btn:hover {
+            background: #ffd700;
+            color: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .cover-slide {
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            color: #333;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cover-slide h1 {
+            color: #1a1a1a;
+            border: none;
+            font-size: 4em;
+            margin-bottom: 20px;
+            font-weight: 900;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.5);
+            letter-spacing: 2px;
+        }
+
+        .cover-slide .subtitle {
+            font-size: 3em;
+            margin-top: 20px;
+            color: #ff6600;
+            font-weight: 900;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2), 0 0 15px rgba(255,255,255,0.4);
+            letter-spacing: 3px;
+        }
+
+        .cover-slide .team-info {
+            margin-top: 40px;
+            font-size: 1.4em;
+            color: #1a1a1a;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(255,255,255,0.8);
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+
+        .schedule-table th,
+        .schedule-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .schedule-table th {
+            background: #ffd700;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .schedule-table tr:hover {
+            background: #fff9e6;
+        }
+
+        .total-points {
+            text-align: center;
+            font-size: 1.3em;
+            color: #ff8c00;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fff9e6;
+            border-radius: 10px;
+        }
+
+        .ui-image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .ui-image-container img {
+            max-width: 85%;
+            max-height: 55vh;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 15px;
+        }
+
+        .ui-description {
+            text-align: center;
+            color: #666;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+
+        .compact-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .compact-list li {
+            font-size: 0.95em;
+            padding: 10px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .tech-item {
+            background: #fff9e6;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid #ffd700;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- 슬라이드 1: 표지 -->
+        <div class="slide active cover-slide">
+            <h1>기업용 메신저 시스템</h1>
+            <div class="subtitle">DBP talk</div>
+            <div class="team-info">
+                <div>팀원: 김민재, 김영서, 이재욱, 김민재, 현지유, 이승준</div>
+            </div>
+            <div class="slide-number">1 / 19</div>
+        </div>
+
+        <!-- 슬라이드 2: 프로젝트 개요 -->
+        <div class="slide">
+            <h1>프로젝트 개요</h1>
+            <div style="font-size: 1.2em; line-height: 1.6;">
+                <p style="margin: 15px 0;">
+                    <strong>목표:</strong> 기업 내부 직원 간 효율적인 소통을 위한 메신저 시스템 개발
+                </p>
+                <p style="margin: 15px 0;">
+                    <strong>특징:</strong>
+                </p>
+                <ul class="feature-list">
+                    <li>부서별 조직도 기반 대화 상대 관리</li>
+                    <li>1:1 채팅 및 파일 전송 기능</li>
+                    <li>관리자 권한 관리 시스템</li>
+                    <li>멀티 프로필 및 권한 조정 기능</li>
+                </ul>
+                <div class="total-points">
+                    총 구현 점수: 350점 (필수 300점 + 자유제안 50점)
+                </div>
+            </div>
+            <div class="slide-number">2 / 19</div>
+        </div>
+
+        <!-- 슬라이드 3: 개발 플랫폼 및 환경 -->
+        <div class="slide">
+            <h1>개발 플랫폼 및 환경</h1>
+            <div style="font-size: 1.1em; margin-top: 30px;">
+                <h2>기술 스택</h2>
+                <div class="tech-stack">
+                    <div class="tech-item">C# Winform</div>
+                    <div class="tech-item">RESTful API</div>
+                    <div class="tech-item">SQL Server / MySQL</div>
+                    <div class="tech-item">비밀번호 암호화</div>
+                    <div class="tech-item">주소 검색 API</div>
+                    <div class="tech-item">TreeView 컨트롤</div>
+                </div>
+                <h2 style="margin-top: 30px;">주요 기능</h2>
+                <ul class="feature-list">
+                    <li><strong>백엔드:</strong> C# Winform 기반 데스크톱 애플리케이션</li>
+                    <li><strong>데이터베이스:</strong> 관계형 데이터베이스 활용</li>
+                    <li><strong>보안:</strong> 비밀번호 해시 암호화 처리</li>
+                    <li><strong>인터페이스:</strong> RESTful API 기반 주소 검색 연동</li>
+                </ul>
+            </div>
+            <div class="slide-number">3 / 19</div>
+        </div>
+
+        <!-- 슬라이드 4: 메뉴 구성 -->
+        <div class="slide">
+            <h1>메뉴 구성 및 UI 구성</h1>
+            <div style="font-size: 1.1em; margin-top: 25px;">
+                <h3>주요 메뉴 구성</h3>
+                <ul class="compact-list">
+                    <li><strong>로그인/회원가입</strong><br>사용자 인증 및 계정 관리</li>
+                    <li><strong>대화 상대 관리</strong><br>부서별 조직도, 검색, 즐겨찾기</li>
+                    <li><strong>1:1 채팅</strong><br>실시간 메시지 송수신</li>
+                    <li><strong>대화 목록</strong><br>진행 중인 채팅 리스트</li>
+                    <li><strong>프로필 관리</strong><br>개인정보 수정, 멀티 프로필</li>
+                    <li><strong>관리자 메뉴</strong><br>부서/사용자 관리, 권한 조정</li>
+                </ul>
+                <h3 style="margin-top: 25px;">UI 특징</h3>
+                <ul class="feature-list">
+                    <li>카카오톡 스타일의 직관적인 인터페이스</li>
+                    <li>부서별 TreeView를 활용한 계층적 구조</li>
+                    <li>사용자 친화적인 알림 시스템</li>
+                </ul>
+            </div>
+            <div class="slide-number">4 / 19</div>
+        </div>
+
+        <!-- 슬라이드 5-7: UI 이미지 -->
+        <div class="slide">
+            <h1>주요 UI - 화면 1</h1>
+            <div class="ui-image-container">
+                <img src="assets/1.png" alt="UI 화면 1">
+                <div class="ui-description">
+                    로그인 및 회원가입 화면 - 사용자 인증과 계정 생성 기능
+                </div>
+            </div>
+            <div class="slide-number">5 / 19</div>
+        </div>
+
+        <div class="slide">
+            <h1>주요 UI - 화면 2</h1>
+            <div class="ui-image-container">
+                <img src="assets/2.png" alt="UI 화면 2">
+                <div class="ui-description">
+                    대화 상대 관리 및 채팅 목록 화면 - 부서별 조직도와 채팅 리스트
+                </div>
+            </div>
+            <div class="slide-number">6 / 19</div>
+        </div>
+
+        <div class="slide">
+            <h1>주요 UI - 화면 3</h1>
+            <div class="ui-image-container">
+                <img src="assets/3.png" alt="UI 화면 3">
+                <div class="ui-description">
+                    1:1 채팅 화면 - 실시간 메시지 송수신 및 파일 전송 기능
+                </div>
+            </div>
+            <div class="slide-number">7 / 19</div>
+        </div>
+
+        <!-- 슬라이드 8: 기능 1 - 회원 가입 처리 -->
+        <div class="slide">
+            <h1>1. 회원 가입 처리 <span class="point-value">(50점)</span></h1>
+            <ul class="feature-list">
+                <li>
+                    <strong>A. 기본 정보 입력 (10점)</strong>
+                    <div class="sub-feature">ID/PW/이름/주소/별명 입력, 소속 부서 선택</div>
+                </li>
+                <li>
+                    <strong>B. ID 중복 확인 (10점)</strong>
+                    <div class="sub-feature">회원 가입 시 ID 중복 검사 기능</div>
+                </li>
+                <li>
+                    <strong>C. 프로필 사진 입력 (10점)</strong>
+                    <div class="sub-feature">회원 가입 시 프로필 사진 업로드 기능</div>
+                </li>
+                <li>
+                    <strong>D. 비밀번호 암호화 (10점)</strong>
+                    <div class="sub-feature">PW는 암호화 처리 (해시 알고리즘 사용)</div>
+                </li>
+                <li>
+                    <strong>E. 주소 검색 API (10점)</strong>
+                    <div class="sub-feature">RESTful API 기반 주소 검색, 우편번호 자동 입력</div>
+                </li>
+            </ul>
+            <div class="slide-number">8 / 19</div>
+        </div>
+
+        <!-- 슬라이드 9: 기능 2 - 회원 정보 변경 -->
+        <div class="slide">
+            <h1>2. 회원 정보 변경 기능 <span class="point-value">(30점)</span></h1>
+            <ul class="feature-list">
+                <li>
+                    <strong>A. 기본 정보 변경 (10점)</strong>
+                    <div class="sub-feature">PW/이름/별명/주소 변경, 프로필 사진 변경</div>
+                    <div class="sub-feature">※ 소속 부서는 관리자만 변경 가능</div>
+                </li>
+                <li>
+                    <strong>B. 멀티 프로필 기능 (20점) <span class="difficult">[고난이도]</span></strong>
+                    <div class="sub-feature">대화 상대마다 보여지는 별명/프로필 사진 다르게 연출 가능</div>
+                    <div class="sub-feature">예: A에게는 "개발자 김철수", B에게는 "친구 철수"</div>
+                </li>
+            </ul>
+            <div class="slide-number">9 / 19</div>
+        </div>
+
+        <!-- 슬라이드 10: 기능 3 - 로그인 처리 -->
+        <div class="slide">
+            <h1>3. 로그인 처리 <span class="point-value">(20점)</span></h1>
+            <ul class="feature-list">
+                <li>
+                    <strong>A. 기본 로그인 (10점)</strong>
+                    <div class="sub-feature">ID/PW 입력으로 로그인 처리</div>
+                </li>
+                <li>
+                    <strong>B. 자동 로그인 기능 (10점)</strong>
+                    <div class="sub-feature">ID/PW 자동입력 체크박스 지원</div>
+                    <div class="sub-feature">자동 로그인 기능 (설정/해제 가능)</div>
+                </li>
+            </ul>
+            <div class="slide-number">10 / 19</div>
+        </div>
+
+        <!-- 슬라이드 11: 기능 4 - 대화 상대 관리 -->
+        <div class="slide">
+            <h1>4. 대화 상대 관리 기능 <span class="point-value">(40점)</span></h1>
+            <ul class="feature-list">
+                <li>
+                    <strong>A. 부서별 직원 목록 (10점)</strong>
+                    <div class="sub-feature">모든 부서 내 모든 직원 표시 (TreeView 컨트롤 활용)</div>
+                </li>
+                <li>
+                    <strong>B. 직원 검색 기능 (20점)</strong>
+                    <div class="sub-feature">ID 기반, 부서 기반, 이름 기반 직원 검색</div>
+                    <div class="sub-feature">※ 권한 관리 기능 구현 시, 특정 사용자에게는 검색되지 않음</div>
+                </li>
+                <li>
+                    <strong>C. 즐겨찾기 관리 (10점)</strong>
+                    <div class="sub-feature">즐겨찾기 대화상대 리스트 관리 및 삭제 기능</div>
+                </li>
+            </ul>
+            <div class="slide-number">11 / 19</div>
+        </div>
+
+        <!-- 슬라이드 12: 기능 5 - 1:1 채팅 (상단) -->
+        <div class="slide">
+            <h1>5. 1:1 채팅 기능 <span class="point-value">(60점)</span></h1>
+            <ul class="feature-list">
+                <li>
+                    <strong>A. 메시지 송수신 (10점)</strong>
+                    <div class="sub-feature">대화 송/수신 기능</div>
+                </li>
+                <li>
+                    <strong>B. 알림 기능 (10점)</strong>
+                    <div class="sub-feature">대화 도착 시 알림 (프로그램 구동 중 5초 이내 알림)</div>
+                </li>
+                <li>
+                    <strong>C. 대화 내용 유지 (10점)</strong>
+                    <div class="sub-feature">프로그램 재기동 시에도 기존 대화 내용 유지</div>
+                </li>
+                <li>
+                    <strong>D. 대화 내용 검색 (10점)</strong>
+                    <div class="sub-feature">1:1 채팅창 내부 대화 검색 기능</div>
+                </li>
+                <li>
+                    <strong>E. 이모티콘 전송 (10점)</strong>
+                    <div class="sub-feature">이모티콘 전송 기능</div>
+                </li>
+                <li>
+                    <strong>F. 파일 전송 (10점)</strong>
+                    <div class="sub-feature">파일 전송 기능 (ZIP 파일 압축 해제 데모 필요)</div>
+                </li>
+            </ul>
+            <div class="slide-number">12 / 19</div>
+        </div>
+
+        <!-- 슬라이드 13: 기능 6 - 대화 목록 -->
+        <div class="slide">
+            <h1>6. 대화 목록 리스트 기능 <span class="point-value">(10점)</span></h1>
+            <ul class="feature-list">
+                <li>
+                    <strong>A. 채팅 리스트 관리 (10점)</strong>
+                    <div class="sub-feature">현재 채팅 진행 중인 리스트 관리</div>
+                    <div class="sub-feature">최근 대화 순으로 정렬</div>
+                </li>
+            </ul>
+            <div class="slide-number">13 / 19</div>
+        </div>
+
+        <!-- 슬라이드 14: 기능 7 - 관리자 기능 -->
+        <div class="slide">
+            <h1>7. 관리자 기능 구현 <span class="point-value">(80점)</span></h1>
+            <ul class="compact-list">
+                <li><strong>A. 관리자 로그인 (10점)</strong><br>관리자 전용 로그인 기능</li>
+                <li><strong>B. 부서 관리 (10점)</strong><br>부서 등록/검색/변경</li>
+                <li><strong>C. 사용자 부서 변경 (10점)</strong><br>사용자별 소속 부서 변경</li>
+                <li><strong>D. 전체 대화 검색 (10점)</strong><br>시간별/키워드별/사용자별 검색</li>
+                <li><strong>E. 로그인 기록 검색 (10점)</strong><br>로그인/로그아웃 시간 기록</li>
+                <li><strong>F. 2단계 부서 구성 (10점)</strong><br>2단계 이상 부서 구성 관리</li>
+                <li><strong>G. 직원 보기 권한 조정 (10점) <span class="difficult">[고난이도]</span></strong><br>직원 리스트 보여지는 권한 관리</li>
+                <li><strong>H. 대화 권한 조정 (10점) <span class="difficult">[고난이도]</span></strong><br>특정 사용자간 대화 불가/허용</li>
+            </ul>
+            <div class="slide-number">14 / 19</div>
+        </div>
+
+        <!-- 슬라이드 15: 기능 8 - 기본 데이터 -->
+        <div class="slide">
+            <h1>8. 평가용 기본 데이터 준비 <span class="point-value">(10점)</span></h1>
+            <ul class="feature-list">
+                <li>
+                    <strong>A. 기본 데이터 구성 (10점)</strong>
+                    <div class="sub-feature">부서 3개 이상, 직원 5명 미리 가입</div>
+                    <div class="sub-feature">프로필 사진 구현 시 프로필 사진도 입력 필요</div>
+                </li>
+                <li>
+                    <strong>B. 평가 진행 방식 (0점)</strong>
+                    <div class="sub-feature">평가 진행 시, 신규 사용자 가입부터 시작</div>
+                </li>
+            </ul>
+            <div class="slide-number">15 / 19</div>
+        </div>
+
+        <!-- 슬라이드 16: 기능 9 - 자유 제안 기능 -->
+        <div class="slide">
+            <h1>9. 기타 자유 제안 기능 <span class="point-value">(50점)</span></h1>
+            <div style="font-size: 1.1em; margin-top: 25px;">
+                <p style="margin-bottom: 15px;">
+                    <strong>규칙:</strong> 건당 10점씩, 최대 5건 제안 가능
+                </p>
+                <h3>구현 예정 기능:</h3>
+                <ul class="feature-list">
+                    <li>
+                        <strong>1. 그룹 채팅 기능 (10점)</strong>
+                        <div class="sub-feature">여러 사용자가 참여하는 그룹 채팅방 생성 및 관리</div>
+                    </li>
+                    <li>
+                        <strong>2. 읽음 확인 기능 (10점)</strong>
+                        <div class="sub-feature">메시지 읽음/안읽음 상태 표시 기능</div>
+                    </li>
+                    <li>
+                        <strong>3. 메시지 삭제 기능 (10점)</strong>
+                        <div class="sub-feature">전송한 메시지 삭제 기능</div>
+                    </li>
+                    <li>
+                        <strong>4. 출퇴근 상태 표시 기능 (10점)</strong>
+                        <div class="sub-feature">연차, 출근, 퇴근 상태를 프로필에 표시</div>
+                    </li>
+                    <li>
+                        <strong>5. 메시지 수정 기능 (10점)</strong>
+                        <div class="sub-feature">전송한 메시지 수정 기능</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="slide-number">16 / 19</div>
+        </div>
+
+        <!-- 슬라이드 17-18: 팀원별 업무 분담 (2페이지로 분할) -->
+        <div class="slide">
+            <h1>팀원별 업무 분담 (1/2)</h1>
+            <div class="task-assignment">
+                <div class="task-item">
+                    <h4>김민재</h4>
+                    <ul>
+                        <li>회원 가입 처리 (50점)</li>
+                        <li>회원 정보 변경 - 기본 정보 (30점)</li>
+                    </ul>
+                    <div class="assignee">담당 점수: 80점</div>
+                </div>
+                <div class="task-item">
+                    <h4>김영서</h4>
+                    <ul>
+                        <li>로그인 처리 (20점)</li>
+                        <li>대화 상대 관리 - 부서별 목록, 즐겨찾기 (40점)</li>
+                        <li>대화 목록 리스트 (10점)</li>
+                    </ul>
+                    <div class="assignee">담당 점수: 70점</div>
+                </div>
+                <div class="task-item">
+                    <h4>이재욱</h4>
+                    <ul>
+                        <li>1:1 채팅 - 메시지 송수신, 알림, 대화 유지 (60점)</li>
+                        <li>멀티 프로필 기능 (20점) [고난이도]</li>
+                    </ul>
+                    <div class="assignee">담당 점수: 80점</div>
+                </div>
+            </div>
+            <div class="slide-number">17 / 19</div>
+        </div>
+
+        <div class="slide">
+            <h1>팀원별 업무 분담 (2/2)</h1>
+            <div class="task-assignment">
+                <div class="task-item">
+                    <h4>김민재</h4>
+                    <ul>
+                        <li>1:1 채팅 - 검색, 이모티콘, 파일 전송 (30점)</li>
+                        <li>대화 상대 관리 - 검색 기능 (20점)</li>
+                        <li>기타 자유 제안 기능 (50점)</li>
+                    </ul>
+                    <div class="assignee">담당 점수: 100점</div>
+                </div>
+                <div class="task-item">
+                    <h4>현지유</h4>
+                    <ul>
+                        <li>관리자 기능 구현 (80점)</li>
+                        <li>평가용 기본 데이터 준비 (10점)</li>
+                    </ul>
+                    <div class="assignee">담당 점수: 90점</div>
+                </div>
+                <div class="task-item">
+                    <h4>이승준</h4>
+                    <ul>
+                        <li>프로젝트 전체 아키텍처 설계</li>
+                        <li>데이터베이스 설계 및 관리</li>
+                        <li>API 통합 및 테스트</li>
+                        <li>프로젝트 통합 및 배포 지원</li>
+                    </ul>
+                    <div class="assignee">담당: 기술 리더</div>
+                </div>
+            </div>
+            <div class="slide-number">18 / 19</div>
+        </div>
+
+        <!-- 슬라이드 19: 개발 일정 -->
+        <div class="slide">
+            <h1>개발 일정</h1>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>단계</th>
+                        <th>기간</th>
+                        <th>주요 작업 내용</th>
+                        <th>담당자</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1단계</td>
+                        <td>1주차</td>
+                        <td>프로젝트 설계, DB 설계, 기본 환경 구축<br>회원 가입/로그인 기능 구현</td>
+                        <td>전체 팀원<br>김민재, 김영서</td>
+                    </tr>
+                    <tr>
+                        <td>2단계</td>
+                        <td>2주차</td>
+                        <td>대화 상대 관리 기능 구현<br>1:1 채팅 기능 구현</td>
+                        <td>김영서, 김민재<br>이재욱, 김민재</td>
+                    </tr>
+                    <tr>
+                        <td>3단계</td>
+                        <td>3주차</td>
+                        <td>관리자 기능 구현<br>멀티 프로필, 권한 관리 등 고급 기능</td>
+                        <td>현지유<br>이재욱, 현지유</td>
+                    </tr>
+                    <tr>
+                        <td>4단계</td>
+                        <td>4주차</td>
+                        <td>자유 제안 기능 구현<br>통합 테스트, 최종 테스트, 버그 수정, 발표 준비</td>
+                        <td>김민재, 전체 팀원<br>전체 팀원</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 20px; padding: 15px; background: #fff9e6; border-radius: 10px;">
+                <h3>주요 마일스톤</h3>
+                <ul class="feature-list">
+                    <li><strong>2주차:</strong> 기본 채팅 기능 완성</li>
+                    <li><strong>3주차:</strong> 모든 필수 기능 완성</li>
+                    <li><strong>4주차:</strong> 프로젝트 완료 및 발표</li>
+                </ul>
+            </div>
+            <div class="slide-number">19 / 19</div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">◀ 이전</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">다음 ▶</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            if (n >= totalSlides) {
+                currentSlide = 0;
+            } else if (n < 0) {
+                currentSlide = totalSlides - 1;
+            } else {
+                currentSlide = n;
+            }
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide].classList.add('active');
+
+            // 네비게이션 버튼 상태 업데이트
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // 키보드 네비게이션
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            } else if (e.key === 'ArrowRight') {
+                changeSlide(1);
+            }
+        });
+
+        // 초기 슬라이드 표시
+        showSlide(0);
+    </script>
+</body>
+</html>
