@@ -1,0 +1,609 @@
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+  cursor: pointer;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100); /* JavaScript로 설정된 실제 높이 */
+  height: 100dvh; /* 모바일 실제 보이는 영역 (fallback) */
+  /* 모바일 최적화 */
+  -webkit-overflow-scrolling: touch;
+  touch-action: none; /* 기본 터치 동작 방지 */
+  user-select: none; /* 텍스트 선택 방지 */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.name-section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100); /* JavaScript로 설정된 실제 높이 */
+  height: 100dvh; /* 모바일 실제 보이는 영역 (fallback) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2; /* 캔버스 위, 포트폴리오 아래 */
+  pointer-events: none;
+}
+
+.name-text {
+  font-size: clamp(5rem, 8vw, 6rem);
+  font-weight: bold;
+  color: white;
+  font-family: Arial, sans-serif;
+  position: absolute;
+  opacity: 0;
+  bottom: -200px;
+  white-space: nowrap;
+  max-width: 95vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: keep-all;
+  padding: 0 2.5vw;
+  box-sizing: border-box;
+  left: 50%;
+  transform: translateX(-50%);
+
+  transition: bottom 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              left 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              font-size 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.name-text.visible {
+  opacity: 1;
+}
+
+#name-text.visible {
+  bottom: 75%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#name-text-2.visible {
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 태블릿 사이즈 */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .name-text {
+    font-size: clamp(2.5rem, 6vw, 7rem);
+    max-width: 95vw;
+    padding: 0 2.5vw;
+  }
+  
+  #name-text.visible {
+    bottom: 65%;
+  }
+  
+  #name-text-2.visible {
+    bottom: 25%;
+  }
+}
+
+/* 모바일 사이즈 */
+@media (max-width: 768px) {
+  .name-text {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    max-width: 95vw;
+    padding: 0 2.5vw;
+  }
+  
+  #name-text.visible {
+    bottom: 65%;
+  }
+  
+  #name-text-2.visible {
+    bottom: 25%;
+  }
+}
+
+/* 매우 작은 모바일 */
+
+
+.portfolio-section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100); /* JavaScript로 설정된 실제 높이 */
+  height: 100dvh; /* 모바일 실제 보이는 영역 (fallback) */
+  background: transparent; /* 배경 투명하게 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 2rem;
+  overflow: hidden; /* 페이지 전환 효과를 위해 */
+  z-index: 3; /* 캔버스 위에 텍스트가 오도록 */
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
+}
+
+.portfolio-section.active {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.portfolio-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(100vh);
+  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  visibility: hidden;
+}
+
+/* Page 1은 오른쪽에서 슬라이드 인 */
+.portfolio-page[data-page="1"] {
+  transform: translateX(100vw);
+  opacity: 1;
+  visibility: visible;
+  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.portfolio-page.active {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+/* Page 1 active는 translateX 우선 */
+.portfolio-page[data-page="1"].active {
+  transform: translateX(0) !important;
+  opacity: 1;
+  visibility: visible;
+}
+
+.portfolio-page.prev {
+  transform: translateY(-100dvh);
+}
+
+.portfolio-page.next {
+  transform: translateY(100dvh);
+}
+
+/* Page 1, 3이 오른쪽에서 슬라이드 인 */
+.portfolio-page[data-page="1"].next,
+.portfolio-page[data-page="3"].next {
+  transform: translateX(100vw);
+  opacity: 1;
+  visibility: visible;
+}
+
+.portfolio-page[data-page="1"].active,
+.portfolio-page[data-page="3"].active {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Page 2는 왼쪽에서 슬라이드 인 */
+.portfolio-page[data-page="2"].next {
+  transform: translateX(-100vw);
+  opacity: 1;
+  visibility: visible;
+}
+
+.portfolio-page[data-page="2"].active {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.content-box {
+  margin-top: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  position: relative;
+}
+
+/* Base: All features positioned absolutely */
+.feature-text {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: bold;
+  color: white;
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+  padding: 1rem 2rem;
+  text-align: center;
+  transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              left 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              right 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              bottom 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+  max-width: 90vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Page 0: All features centered vertically */
+.portfolio-page[data-page="0"] .feature-text[data-feature="canvas"] {
+  bottom: 60%;
+  opacity: 1;
+}
+
+.portfolio-page[data-page="0"] .feature-text[data-feature="ai"] {
+  bottom: 50%;
+  opacity: 1;
+}
+
+.portfolio-page[data-page="0"] .feature-text[data-feature="collab"] {
+  bottom: 40%;
+  opacity: 1;
+}
+
+/* Page 1: Canvas at 20%, others out, video on right */
+.portfolio-page[data-page="1"] {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.portfolio-page[data-page="1"] .content-box {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+}
+
+.portfolio-page[data-page="1"] .feature-text[data-feature="canvas"] {
+  left: 15%;
+  bottom: 75%;
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.portfolio-page[data-page="1"] .feature-text[data-feature="ai"] {
+  left: 15%;
+  bottom: 75%;
+  transform: translateX(0);
+  opacity: 0;
+}
+
+.portfolio-page[data-page="1"] .feature-text[data-feature="collab"] {
+  left: 15%;
+  bottom: 75%;
+  transform: translateX(0);
+  opacity: 0;
+}
+
+.video-placeholder {
+  width: 50%;
+  height: 75%;
+  background: white;
+  margin-right: 5%;
+  border-radius: 8px;
+}
+
+/* Page 2: AI at right 20%, others out, video on left */
+.portfolio-page[data-page="2"] {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+}
+
+.portfolio-page[data-page="2"] .content-box {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+}
+
+.portfolio-page[data-page="2"] .feature-text[data-feature="canvas"] {
+  right: 15%;
+  bottom: 75%;
+  left: auto;
+  transform: translateX(0);
+  opacity: 0;
+}
+
+.portfolio-page[data-page="2"] .feature-text[data-feature="ai"] {
+  right: 15%;
+  bottom: 75%;
+  left: auto;
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.portfolio-page[data-page="2"] .feature-text[data-feature="collab"] {
+  right: 15%;
+  bottom: 75%;
+  left: auto;
+  transform: translateX(0);
+  opacity: 0;
+}
+
+.portfolio-page[data-page="2"] .video-placeholder {
+  margin-left: 5%;
+  margin-right: 0;
+}
+
+/* Page 3: Collab at 20%, others out, video on right */
+.portfolio-page[data-page="3"] {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.portfolio-page[data-page="3"] .content-box {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+}
+
+.portfolio-page[data-page="3"] .feature-text[data-feature="canvas"] {
+  left: 15%;
+  bottom: 75%;
+  transform: translateX(0);
+  opacity: 0;
+}
+
+.portfolio-page[data-page="3"] .feature-text[data-feature="ai"] {
+  left: 15%;
+  bottom: 75%;
+  transform: translateX(0);
+  opacity: 0;
+}
+
+.portfolio-page[data-page="3"] .feature-text[data-feature="collab"] {
+  left: 15%;
+  bottom: 75%;
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Page 2에서 Page 3로 전환 시: AI 사라지고 Collab 나타남 (next 상태) */
+.portfolio-page[data-page="3"].next .feature-text[data-feature="collab"] {
+  left: 15%;
+  bottom: 60%;
+  right: auto;
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.portfolio-page[data-page="3"].next .feature-text[data-feature="ai"] {
+  right: -50%;
+  left: auto;
+  opacity: 0;
+}
+
+/* Page 0에서 Page 1로 전환 시: Page 0의 텍스트들이 왼쪽으로 이동 */
+.portfolio-page[data-page="0"] .feature-text {
+  transition: left 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              right 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              bottom 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.portfolio-page[data-page="0"].prev .feature-text[data-feature="canvas"] {
+  left: 15%;
+  bottom: 60%;
+  transform: translateX(0);
+}
+
+.portfolio-page[data-page="0"].prev .feature-text[data-feature="ai"] {
+  left: -50%;
+  opacity: 0;
+}
+
+.portfolio-page[data-page="0"].prev .feature-text[data-feature="collab"] {
+  left: -50%;
+  opacity: 0;
+}
+
+/* Page 1에서 Page 2로 전환 시: Canvas 사라지고 AI 나타남 */
+.portfolio-page[data-page="1"] .feature-text {
+  transition: left 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              right 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              bottom 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Page 1에서 Page 2로 전환 시: Canvas 사라지고 AI 나타남 */
+.portfolio-page[data-page="1"].prev .feature-text[data-feature="canvas"] {
+  left: -50%;
+  opacity: 0;
+}
+
+.portfolio-page[data-page="1"].prev .feature-text[data-feature="ai"] {
+  right: 15%;
+  bottom: 60%;
+  left: auto;
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Page 2에서 Page 1로 돌아갈 때: AI 사라지고 Canvas 나타남 */
+.portfolio-page[data-page="1"].next .feature-text[data-feature="canvas"] {
+  left: 15%;
+  bottom: 60%;
+  right: auto;
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.portfolio-page[data-page="1"].next .feature-text[data-feature="ai"] {
+  right: -50%;
+  left: auto;
+  opacity: 0;
+}
+
+/* Page 2에서 Page 3로 전환 시: AI 사라지고 Collab 나타남 */
+.portfolio-page[data-page="2"] .feature-text {
+  transition: left 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              right 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              bottom 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.portfolio-page[data-page="2"].prev .feature-text[data-feature="ai"],
+.portfolio-page[data-page="2"].next .feature-text[data-feature="ai"] {
+  left: -50%;
+  right: auto;
+  opacity: 0;
+}
+
+.portfolio-page[data-page="2"].prev .feature-text[data-feature="collab"] {
+  left: 15%;
+  bottom: 60%;
+  right: auto;
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Page 3에서 Page 2로 돌아갈 때: Collab 사라지고 AI 나타남 */
+.portfolio-page[data-page="2"].next .feature-text[data-feature="ai"] {
+  right: 15%;
+  bottom: 60%;
+  left: auto;
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.portfolio-page[data-page="2"].next .feature-text[data-feature="collab"] {
+  left: -50%;
+  right: auto;
+  opacity: 0;
+}
+
+/* 모바일 반응형 스타일 */
+@media (max-width: 768px) {
+  .feature-text {
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+    padding: 0.75rem 1.5rem;
+    max-width: 95vw;
+  }
+  
+  /* Page 0: 모바일에서 세로 간격 조정 */
+  .portfolio-page[data-page="0"] .feature-text[data-feature="canvas"] {
+    bottom: 65%;
+  }
+  
+  .portfolio-page[data-page="0"] .feature-text[data-feature="ai"] {
+    bottom: 50%;
+  }
+  
+  .portfolio-page[data-page="0"] .feature-text[data-feature="collab"] {
+    bottom: 35%;
+  }
+  
+  /* Page 1, 2, 3: 모바일에서 위치 조정 */
+  .portfolio-page[data-page="1"] .feature-text,
+  .portfolio-page[data-page="2"] .feature-text,
+  .portfolio-page[data-page="3"] .feature-text {
+    bottom: 60%;
+  }
+  
+  .portfolio-page[data-page="1"] .feature-text[data-feature="canvas"],
+  .portfolio-page[data-page="1"] .feature-text[data-feature="ai"],
+  .portfolio-page[data-page="1"] .feature-text[data-feature="collab"],
+  .portfolio-page[data-page="3"] .feature-text[data-feature="canvas"],
+  .portfolio-page[data-page="3"] .feature-text[data-feature="ai"],
+  .portfolio-page[data-page="3"] .feature-text[data-feature="collab"] {
+    left: 10%;
+    right: auto;
+    transform: translateX(0);
+  }
+  
+  .portfolio-page[data-page="2"] .feature-text[data-feature="canvas"],
+  .portfolio-page[data-page="2"] .feature-text[data-feature="ai"],
+  .portfolio-page[data-page="2"] .feature-text[data-feature="collab"] {
+    right: 10%;
+    left: auto;
+    transform: translateX(0);
+  }
+  
+  /* 모바일에서 Page 0에서 Page 1로 전환 시 */
+  .portfolio-page[data-page="0"].prev .feature-text[data-feature="canvas"] {
+    left: 10%;
+    transform: translateX(0);
+  }
+  
+  /* 모바일에서 Page 1에서 Page 2로 전환 시 */
+  .portfolio-page[data-page="1"].prev .feature-text[data-feature="ai"] {
+    right: 10%;
+    left: auto;
+    transform: translateX(0);
+  }
+  
+  /* 모바일에서 Page 2에서 Page 3로 전환 시 */
+  .portfolio-page[data-page="2"].prev .feature-text[data-feature="collab"] {
+    left: 10%;
+    right: auto;
+    transform: translateX(0);
+  }
+}
+
+/* 태블릿 반응형 스타일 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .feature-text {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    padding: 0.875rem 1.75rem;
+  }
+  
+  .portfolio-page[data-page="0"] .feature-text[data-feature="canvas"] {
+    bottom: 62%;
+  }
+  
+  .portfolio-page[data-page="0"] .feature-text[data-feature="ai"] {
+    bottom: 50%;
+  }
+  
+  .portfolio-page[data-page="0"] .feature-text[data-feature="collab"] {
+    bottom: 38%;
+  }
+}

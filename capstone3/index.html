@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>온 잇 포트폴리오</title>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- 이름 섹션 -->
+<div class="name-section">
+  <div class="name-text" id="name-text">1-On-musk</div>
+  <div class="name-text" id="name-text-2">생각을 눈 앞으로.</div>
+</div>
+
+<!-- 모바일 사용자 안내 -->
+<div id="mobile-hint" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.7); font-size: 14px; text-align: center; z-index: 10; pointer-events: none; opacity: 0; transition: opacity 0.5s;">
+  <div>👆 스와이프하거나 더블탭하여 탐색</div>
+  <div style="font-size: 12px; margin-top: 5px;">← → 포트폴리오 페이지 전환</div>
+</div>
+
+<div class="portfolio-section">
+  <!-- Page 0: All Features -->
+  <div class="portfolio-page" data-page="0">
+    <div class="content-box">
+      <div class="feature-text" data-feature="canvas">무한 캔버스</div>
+      <div class="feature-text" data-feature="ai">AI 클러스터링</div>
+      <div class="feature-text" data-feature="collab">실시간 협업</div>
+    </div>
+  </div>
+  <!-- Page 1: Canvas Detail with Video -->
+  <div class="portfolio-page" data-page="1">
+    <div class="content-box">
+      <div class="feature-text" data-feature="canvas">무한 캔버스</div>
+      <div class="feature-text" data-feature="ai">AI 클러스터링</div>
+      <div class="feature-text" data-feature="collab">실시간 협업</div>
+    </div>
+    <div class="video-placeholder"></div>
+  </div>
+  <!-- Page 2: AI Detail with Video -->
+  <div class="portfolio-page" data-page="2">
+    <div class="content-box">
+      <div class="feature-text" data-feature="canvas">무한 캔버스</div>
+      <div class="feature-text" data-feature="ai">AI 클러스터링</div>
+      <div class="feature-text" data-feature="collab">실시간 협업</div>
+    </div>
+    <div class="video-placeholder"></div>
+  </div>
+  <!-- Page 3: Collab Detail with Video -->
+  <div class="portfolio-page" data-page="3">
+    <div class="content-box">
+      <div class="feature-text" data-feature="canvas">무한 캔버스</div>
+      <div class="feature-text" data-feature="ai">AI 클러스터링</div>
+      <div class="feature-text" data-feature="collab">실시간 협업</div>
+    </div>
+    <div class="video-placeholder"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+</html>
