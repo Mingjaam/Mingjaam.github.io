@@ -57,6 +57,32 @@ let currentPortfolioPage = 0;
 let portfolioPages = [];
 let isTransitioning = false;
 
+// 그래프 관련 변수
+let graphParticles = []; // 그래프에 사용될 particles 인덱스들
+let graphData = {
+  1: { 
+    percentage: 98, 
+    label: '무한 캔버스',
+    description: ['전반적인 무한 캔버스 모두 구현.', 'UI 추후에 더 나은 방향으로 수정 가능한지 논의 할 예정']
+  }, // Page 1: Canvas
+  2: { 
+    percentage: 80, 
+    label: 'AI 클러스터링',
+    description: ['임베딩 및 클러스터링 모델을 이용한 테스트 완료.', 'api화 시켜 프론트에 연결 남음.']
+  }, // Page 2: AI
+  3: { 
+    percentage: 84, 
+    label: '실시간 협업',
+    description: ['관련 api 개발 완료. 서버 배포후 프론트와 연결 시 완료.']
+  } // Page 3: Collab
+};
+let graphEnabled = false;
+let graphAnimationStartTime = null; // 그래프 애니메이션 시작 시간
+let graphAnimationDuration = 2000; // 애니메이션 지속 시간 (ms)
+let graphCurrentPercentage = 0; // 현재 표시되는 퍼센트
+let graphTargetPercentage = 0; // 목표 퍼센트
+let graphPercentageElement = null; // 퍼센트 텍스트 요소
+
 // Matter.js 물리 엔진
 let engine;
 let world;
@@ -258,7 +284,10 @@ function setup(){
     particles.push({
       x:p.x, y:p.y,
       tx:p.x, ty:p.y,
-      body: null // 물리 바디는 나중에 생성
+      body: null, // 물리 바디는 나중에 생성
+      isGraphParticle: false, // 그래프용 particle인지 여부
+      graphTargetX: null, // 그래프 목표 X 위치
+      graphTargetY: null // 그래프 목표 Y 위치
     });
   }
 
@@ -300,6 +329,9 @@ function draw(){
   background(0, 200);
   fill(255);
   
+  // 그래프 애니메이션 업데이트
+  updateGraphAnimation();
+  
   if(physicsEnabled) {
     // 모핑 유지 모드면 목표 지점으로 끌어당기는 힘 적용
     if (physicsMorphMode) {
@@ -313,9 +345,39 @@ function draw(){
     syncNameTextBodiesToDOM();
     syncPortfolioBodiesToDOM();
     
-    // 물리 바디 위치로 점 그리기
+    // particles 그리기
     for(let p of particles){
-      if(p.body) {
+      // 그래프용 particle은 물리 바디 없이 목표 위치로 애니메이션
+      if(p.isGraphParticle && p.graphTargetX !== null && p.graphTargetY !== null) {
+        // 애니메이션 지연 시간 확인
+        if(p.graphAnimationDelay !== undefined && graphAnimationStartTime !== null) {
+          const elapsed = millis() - graphAnimationStartTime;
+          if(elapsed >= p.graphAnimationDelay) {
+            // 애니메이션 시작 시간
+            const animElapsed = elapsed - p.graphAnimationDelay;
+            const animProgress = Math.min(1, animElapsed / 300); // 각 particle 애니메이션 시간 (300ms)
+            const easedProgress = easeOutCubic(animProgress);
+            
+            // 시작 위치에서 목표 위치로 보간
+            const startX = p.graphStartX !== undefined ? p.graphStartX : p.x;
+            const startY = p.graphStartY !== undefined ? p.graphStartY : p.y;
+            p.x = lerp(startX, p.graphTargetX, easedProgress);
+            p.y = lerp(startY, p.graphTargetY, easedProgress);
+          }
+        } else {
+          // 애니메이션 지연이 없으면 즉시 이동
+          let step = 0.05;
+          p.x = lerp(p.x, p.graphTargetX, step);
+          p.y = lerp(p.y, p.graphTargetY, step);
+        }
+        // 물리 바디가 있으면 제거
+        if(p.body) {
+          Matter.World.remove(world, p.body);
+          bodies = bodies.filter(b => b !== p.body);
+          p.body = null;
+        }
+      } else if(p.body) {
+        // 일반 물리 particle
         p.x = p.body.position.x;
         p.y = p.body.position.y;
       }
@@ -325,8 +387,31 @@ function draw(){
     // 일반 모핑 애니메이션
     let step = 0.05;
     for(let p of particles){
-      p.x = lerp(p.x, p.tx, step);
-      p.y = lerp(p.y, p.ty, step);
+      // 그래프용 particle 처리
+      if(p.isGraphParticle && p.graphTargetX !== null && p.graphTargetY !== null) {
+        // 애니메이션 지연 시간 확인
+        if(p.graphAnimationDelay !== undefined && graphAnimationStartTime !== null) {
+          const elapsed = millis() - graphAnimationStartTime;
+          if(elapsed >= p.graphAnimationDelay) {
+            // 애니메이션 시작 시간
+            const animElapsed = elapsed - p.graphAnimationDelay;
+            const animProgress = Math.min(1, animElapsed / 300); // 각 particle 애니메이션 시간 (300ms)
+            const easedProgress = easeOutCubic(animProgress);
+            
+            // 시작 위치에서 목표 위치로 보간
+            const startX = p.graphStartX !== undefined ? p.graphStartX : p.x;
+            const startY = p.graphStartY !== undefined ? p.graphStartY : p.y;
+            p.x = lerp(startX, p.graphTargetX, easedProgress);
+            p.y = lerp(startY, p.graphTargetY, easedProgress);
+          }
+        } else {
+          p.x = lerp(p.x, p.graphTargetX, step);
+          p.y = lerp(p.y, p.graphTargetY, step);
+        }
+      } else {
+        p.x = lerp(p.x, p.tx, step);
+        p.y = lerp(p.y, p.ty, step);
+      }
       ellipse(p.x, p.y, POINT_SIZE, POINT_SIZE);
     }
   }
@@ -700,6 +785,10 @@ function enterStep2(prevStep) {
     setTimeout(() => {
       if (interactionStep === 2 && physicsEnabled) {
         createPortfolioBodies();
+        // 현재 페이지의 그래프 생성
+        if (currentPortfolioPage > 0) {
+          createGraph(currentPortfolioPage);
+        }
       }
     }, 180);
   });
@@ -843,9 +932,12 @@ function enablePhysics(options = {}) {
   
   updateGroundPosition();
 
-  // 모든 점에 물리 바디 생성
+  // 모든 점에 물리 바디 생성 (그래프용 particles 제외)
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
+    
+    // 그래프용 particle은 물리 바디 생성하지 않음
+    if (p.isGraphParticle) continue;
 
     let body = Matter.Bodies.circle(p.x, p.y, POINT_SIZE / 2, {
       restitution: PHYSICS.BALL.RESTITUTION,
@@ -874,6 +966,7 @@ function disablePhysics() {
   bodies = [];
 
   clearPortfolioBodies();
+  clearGraph(); // 그래프도 초기화
 
   removeNameTextBodies();
 
@@ -923,8 +1016,13 @@ function windowResized(){
   if (physicsEnabled) {
     if (interactionStep === 2) {
       createPortfolioBodies();
+      // 그래프 재생성 (화면 크기 변경 시 위치 재계산)
+      if (currentPortfolioPage > 0 && graphEnabled) {
+        createGraph(currentPortfolioPage);
+      }
     } else {
       clearPortfolioBodies();
+      clearGraph();
     }
 
     if (nameTextsVisible) {
@@ -956,12 +1054,53 @@ function initPortfolioPages() {
 function nextPortfolioPage() {
   if (!portfolioPages || portfolioPages.length === 0) return false;
   if (isTransitioning) return true;
-  if (currentPortfolioPage >= portfolioPages.length - 1) return false;
+  
+  // 마지막 페이지에서 다음으로 가면 새로고침 화면(초기 상태)으로 돌아가기
+  const isLastPage = currentPortfolioPage >= portfolioPages.length - 1;
+  if (isLastPage) {
+    // 초기 상태(interactionStep 0)로 리셋
+    isTransitioning = true;
+    
+    // 페이지 전환 시작 시 즉시 물리 바디 제거
+    if (physicsEnabled) clearPortfolioBodies();
+    
+    // 그래프 초기화
+    clearGraph();
+
+    // 현재 페이지 숨기기
+    portfolioPages[currentPortfolioPage].classList.remove('active');
+    portfolioPages[currentPortfolioPage].classList.add('prev');
+
+    // 포트폴리오 페이지 상태 초기화
+    portfolioPages.forEach((page, index) => {
+      page.classList.remove('active', 'prev', 'next');
+      if (index === 0) {
+        page.classList.add('active');
+      } else {
+        page.classList.add('next');
+      }
+    });
+    
+    // 현재 페이지 인덱스 리셋
+    currentPortfolioPage = 0;
+
+    // interactionStep을 0으로 리셋하여 초기 화면으로 돌아가기
+    setInteractionStep(0);
+
+    setTimeout(() => {
+      isTransitioning = false;
+    }, 800);
+
+    return true;
+  }
 
   isTransitioning = true;
   
   // 페이지 전환 시작 시 즉시 물리 바디 제거
   if (physicsEnabled) clearPortfolioBodies();
+  
+  // 그래프 초기화
+  clearGraph();
 
   portfolioPages[currentPortfolioPage].classList.remove('active');
   portfolioPages[currentPortfolioPage].classList.add('prev');
@@ -970,9 +1109,22 @@ function nextPortfolioPage() {
   portfolioPages[currentPortfolioPage].classList.remove('next');
   portfolioPages[currentPortfolioPage].classList.add('active');
 
+  // 페이지 전환 시점에 퍼센트 텍스트 위치 미리 설정 (다음 프레임에서 실행)
+  if (currentPortfolioPage > 0) {
+    requestAnimationFrame(() => {
+      setupGraphPercentagePosition(currentPortfolioPage);
+    });
+  }
+
   setTimeout(() => {
     isTransitioning = false;
-    if (physicsEnabled) createPortfolioBodies();
+    if (physicsEnabled) {
+      createPortfolioBodies();
+      // 새 페이지의 그래프 생성
+      if (currentPortfolioPage > 0) {
+        createGraph(currentPortfolioPage);
+      }
+    }
   }, 800);
 
   return true;
@@ -987,6 +1139,9 @@ function prevPortfolioPage() {
   
   // 페이지 전환 시작 시 즉시 물리 바디 제거
   if (physicsEnabled) clearPortfolioBodies();
+  
+  // 그래프 초기화
+  clearGraph();
 
   portfolioPages[currentPortfolioPage].classList.remove('active');
   portfolioPages[currentPortfolioPage].classList.add('next');
@@ -995,9 +1150,22 @@ function prevPortfolioPage() {
   portfolioPages[currentPortfolioPage].classList.remove('prev');
   portfolioPages[currentPortfolioPage].classList.add('active');
 
+  // 페이지 전환 시점에 퍼센트 텍스트 위치 미리 설정 (다음 프레임에서 실행)
+  if (currentPortfolioPage > 0) {
+    requestAnimationFrame(() => {
+      setupGraphPercentagePosition(currentPortfolioPage);
+    });
+  }
+
   setTimeout(() => {
     isTransitioning = false;
-    if (physicsEnabled) createPortfolioBodies();
+    if (physicsEnabled) {
+      createPortfolioBodies();
+      // 새 페이지의 그래프 생성
+      if (currentPortfolioPage > 0) {
+        createGraph(currentPortfolioPage);
+      }
+    }
   }, 800);
 
   return true;
@@ -1201,4 +1369,286 @@ function handleTouchEnd(e) {
   
   // 스크롤 상태 리셋
   isScrolling = false;
+}
+
+// 퍼센트 텍스트 위치 미리 설정 함수 (페이지 슬라이드와 함께 이동하도록)
+function setupGraphPercentagePosition(pageNumber) {
+  const page = document.querySelector(`.portfolio-page[data-page="${pageNumber}"]`);
+  if (!page) return;
+  
+  const percentageText = page.querySelector('.graph-percentage');
+  if (!percentageText) return;
+  
+  let featureText = null;
+  if (pageNumber === 1) {
+    featureText = page.querySelector('.feature-text[data-feature="canvas"]');
+  } else if (pageNumber === 2) {
+    featureText = page.querySelector('.feature-text[data-feature="ai"]');
+  } else if (pageNumber === 3) {
+    featureText = page.querySelector('.feature-text[data-feature="collab"]');
+  }
+  
+  if (!featureText) return;
+  
+  // 실제 텍스트 위치 가져오기 (페이지가 active가 된 후)
+  const textRect = featureText.getBoundingClientRect();
+  const textBottomY = textRect.bottom;
+  
+  // 그래프 위치 계산
+  const graphHeight = POINT_SIZE * 2;
+  const graphTopY = textBottomY + POINT_SIZE * 0.5;
+  const graphBottomY = graphTopY + graphHeight;
+  const graphCenterY = (graphTopY + graphBottomY) / 2;
+  
+  // 그래프 시작점과 끝점 계산
+  const leftOffset = windowWidth * 0.1;
+  const graphStartX = textRect.left - leftOffset;
+  const graphEndX = graphStartX + windowWidth * 0.25;
+  
+  // 퍼센트 텍스트 위치 설정
+  percentageText.style.left = `${graphEndX + POINT_SIZE * 2}px`;
+  percentageText.style.top = `${graphCenterY}px`;
+  percentageText.style.transform = 'translateY(-50%)';
+  percentageText.style.fontSize = 'clamp(1rem, 2vw, 1.5rem)';
+  percentageText.style.textAlign = 'left';
+  percentageText.textContent = '0';
+  
+  // 설명 텍스트 위치 설정
+  const descriptionElement = page.querySelector('.graph-description');
+  const data = graphData[pageNumber];
+  if (descriptionElement && data && data.description && data.description.length > 0) {
+    // 여러 줄로 표시 (. 기준으로 줄바꿈)
+    const lines = data.description.flatMap(line => {
+      // '.' 기준으로 split하고, 각 문장 끝에 '.' 추가
+      return line.split('.').filter(s => s.trim().length > 0).map(s => s.trim() + '.');
+    });
+    descriptionElement.innerHTML = lines.map(line => `<div>${line}</div>`).join('');
+    descriptionElement.style.left = `${graphStartX}px`;
+    descriptionElement.style.top = `${graphBottomY + POINT_SIZE * 3}px`;
+    descriptionElement.style.opacity = '1';
+  } else if (descriptionElement) {
+    descriptionElement.style.opacity = '0';
+  }
+}
+
+// 그래프 생성 함수
+function createGraph(pageNumber) {
+  if (!graphData[pageNumber]) return;
+  
+  clearGraph();
+  
+  const data = graphData[pageNumber];
+  const percentage = data.percentage;
+  
+  // 텍스트 요소 찾기
+  const activePage = document.querySelector(`.portfolio-page[data-page="${pageNumber}"]`);
+  if (!activePage) return;
+  
+  let featureText = null;
+  if (pageNumber === 1) {
+    featureText = activePage.querySelector('.feature-text[data-feature="canvas"]');
+  } else if (pageNumber === 2) {
+    featureText = activePage.querySelector('.feature-text[data-feature="ai"]');
+  } else if (pageNumber === 3) {
+    featureText = activePage.querySelector('.feature-text[data-feature="collab"]');
+  }
+  
+  if (!featureText) return;
+  
+  // 텍스트 위치 가져오기
+  const textRect = featureText.getBoundingClientRect();
+  const textBottomY = textRect.bottom; // 텍스트 아래쪽 끝점
+  
+  // 그래프 위치 계산: 텍스트 바로 아래에 배치 (통일된 위치)
+  const graphHeight = POINT_SIZE * 2; // 공 두 줄 두께
+  const graphTopY = textBottomY + POINT_SIZE * 0.5; // 텍스트 아래에 약간의 간격
+  const graphBottomY = graphTopY + graphHeight;
+  const graphCenterY = (graphTopY + graphBottomY) / 2;
+  
+  // 직선 그래프 생성 (왼쪽에서 오른쪽으로)
+  // 그래프 시작점과 끝점 계산 (텍스트 시작점 기준으로 왼쪽으로 이동)
+  let graphStartX, graphEndX;
+  // 그래프를 전체적으로 왼쪽으로 이동 (값을 조정하여 위치 변경 가능)
+  const leftOffset = windowWidth * 0.1; // 왼쪽으로 이동할 거리 (조정 가능)
+  graphStartX = textRect.left - leftOffset; // 그래프 시작점 (왼쪽)
+  graphEndX = graphStartX + windowWidth * 0.25; // 그래프 끝점 (오른쪽)
+  
+  const graphWidth = Math.abs(graphStartX - graphEndX);
+  
+  // 필요한 particles 수 계산 (그래프 너비에 맞춰)
+  const idealSpacing = POINT_SIZE * 0.6; // particles 간 간격 (빽빽하게)
+  const maxParticles = Math.floor(graphWidth / idealSpacing);
+  const neededParticles = Math.min(maxParticles, Math.floor(particles.length * (percentage / 100)));
+  
+  // 랜덤으로 particles 선택 (아래쪽에 있는 particles 우선)
+  const availableParticles = particles
+    .map((p, idx) => ({ particle: p, index: idx, y: p.y }))
+    .filter(item => !item.particle.isGraphParticle) // 이미 그래프에 사용된 것 제외
+    .sort((a, b) => b.y - a.y); // 아래쪽부터 정렬
+  
+  const selectedParticles = availableParticles.slice(0, neededParticles);
+  
+  // 직선 그래프: 왼쪽에서 오른쪽으로 채워지는 형태
+  // 2열로 나누기
+  const particlesPerRow = Math.ceil(selectedParticles.length / 2);
+  const spacingX = graphWidth / Math.max(1, particlesPerRow - 1);
+  
+  // 퍼센트에 따라 왼쪽에서 오른쪽으로 채워지는 길이 계산
+  const filledWidth = graphWidth * (percentage / 100);
+  
+  // particles를 직선으로 배치 (2열, 왼쪽에서 오른쪽으로)
+  // 왼쪽 위부터 순서대로 정렬하기 위해 인덱스 배열 생성
+  const particlePositions = [];
+  for (let i = 0; i < selectedParticles.length; i++) {
+    const row = Math.floor(i / particlesPerRow);
+    const col = i % particlesPerRow;
+    
+    // X 위치: 왼쪽에서 오른쪽으로 (퍼센트에 따라 채워진 부분만)
+    const progress = col / Math.max(1, particlesPerRow - 1); // 0 ~ 1
+    const localX = graphStartX + (progress * filledWidth);
+    
+    // Y 위치: 두 줄로 정확히 정렬 (위쪽 줄이 먼저)
+    const localY = row === 0 ? graphTopY + POINT_SIZE / 2 : graphBottomY - POINT_SIZE / 2;
+    
+    particlePositions.push({
+      index: i,
+      row: row,
+      col: col,
+      x: localX,
+      y: localY,
+      sortKey: row * 10000 + col // 위쪽 줄, 왼쪽부터 정렬
+    });
+  }
+  
+  // 왼쪽 위부터 순서대로 정렬 (위쪽 줄 먼저, 그 다음 왼쪽에서 오른쪽)
+  particlePositions.sort((a, b) => a.sortKey - b.sortKey);
+  
+  // 애니메이션 시작 시간 설정
+  graphAnimationStartTime = millis();
+  graphCurrentPercentage = 0;
+  graphTargetPercentage = percentage;
+  graphPercentageElement = activePage.querySelector('.graph-percentage');
+  
+  // 각 particle에 위치와 애니메이션 지연 시간 설정
+  for (let i = 0; i < particlePositions.length; i++) {
+    const pos = particlePositions[i];
+    const item = selectedParticles[pos.index];
+    const p = item.particle;
+    
+    // 이미 물리 바디가 있으면 제거
+    if (p.body) {
+      Matter.World.remove(world, p.body);
+      bodies = bodies.filter(b => b !== p.body);
+      p.body = null;
+    }
+    
+    // 시작 위치 저장 (현재 위치)
+    p.graphStartX = p.x;
+    p.graphStartY = p.y;
+    
+    // 목표 위치 설정
+    p.isGraphParticle = true;
+    p.graphTargetX = pos.x;
+    p.graphTargetY = pos.y;
+    
+    // 애니메이션 지연 시간 설정 (왼쪽 위부터 순서대로, 각 particle 간격 20ms)
+    p.graphAnimationDelay = i * 20;
+    
+    graphParticles.push(item.index);
+  }
+  
+  graphEnabled = true;
+  
+  // 퍼센트 텍스트 위치 설정 (그래프 끝점(오른쪽)에 작게 배치)
+  if (graphPercentageElement) {
+    graphPercentageElement.textContent = '0';
+    graphPercentageElement.style.left = `${graphEndX + POINT_SIZE * 2}px`;
+    graphPercentageElement.style.top = `${graphCenterY}px`;
+    graphPercentageElement.style.transform = 'translateY(-50%)';
+    graphPercentageElement.style.fontSize = 'clamp(1rem, 2vw, 1.5rem)';
+    graphPercentageElement.style.textAlign = 'left';
+  }
+  
+  // 설명 텍스트 설정 (그래프 아래에 배치)
+  const descriptionElement = activePage.querySelector('.graph-description');
+  if (descriptionElement && data.description && data.description.length > 0) {
+    // 여러 줄로 표시 (. 기준으로 줄바꿈)
+    const lines = data.description.flatMap(line => {
+      // '.' 기준으로 split하고, 각 문장 끝에 '.' 추가
+      return line.split('.').filter(s => s.trim().length > 0).map(s => s.trim() + '.');
+    });
+    descriptionElement.innerHTML = lines.map(line => `<div>${line}</div>`).join('');
+    descriptionElement.style.left = `${graphStartX}px`;
+    descriptionElement.style.top = `${graphBottomY + POINT_SIZE * 3}px`;
+    descriptionElement.style.opacity = '1';
+  } else if (descriptionElement) {
+    descriptionElement.style.opacity = '0';
+  }
+  
+  console.log(`그래프 생성 완료: Page ${pageNumber}, ${selectedParticles.length}개 particles 사용`);
+}
+
+// 그래프 초기화 함수
+function clearGraph() {
+  graphParticles.forEach(idx => {
+    const p = particles[idx];
+    if (p) {
+      p.isGraphParticle = false;
+      p.graphTargetX = null;
+      p.graphTargetY = null;
+      p.graphStartX = undefined;
+      p.graphStartY = undefined;
+      p.graphAnimationDelay = undefined;
+      
+      // 물리 바디가 없고 물리 엔진이 활성화되어 있으면 다시 생성
+      if (!p.body && physicsEnabled && world) {
+        const body = Matter.Bodies.circle(p.x, p.y, POINT_SIZE / 2, {
+          restitution: PHYSICS.BALL.RESTITUTION,
+          friction: PHYSICS.BALL.FRICTION,
+          frictionAir: PHYSICS.BALL.FRICTION_AIR,
+          density: PHYSICS.BALL.DENSITY,
+        });
+        
+        p.body = body;
+        bodies.push(body);
+        Matter.World.add(world, body);
+      }
+    }
+  });
+  graphParticles = [];
+  graphEnabled = false;
+  graphAnimationStartTime = null;
+  graphCurrentPercentage = 0;
+  graphTargetPercentage = 0;
+  graphPercentageElement = null;
+}
+
+// 그래프 애니메이션 업데이트 함수
+function updateGraphAnimation() {
+  if (!graphEnabled || graphAnimationStartTime === null) return;
+  
+  const elapsed = millis() - graphAnimationStartTime;
+  const totalDuration = graphAnimationDuration;
+  
+  // 퍼센트 애니메이션 업데이트
+  if (elapsed < totalDuration) {
+    const progress = Math.min(1, elapsed / totalDuration);
+    const easedProgress = easeOutCubic(progress);
+    graphCurrentPercentage = Math.floor(graphTargetPercentage * easedProgress);
+    
+    if (graphPercentageElement) {
+      graphPercentageElement.textContent = `${graphCurrentPercentage}`;
+    }
+  } else {
+    // 애니메이션 완료
+    graphCurrentPercentage = graphTargetPercentage;
+    if (graphPercentageElement) {
+      graphPercentageElement.textContent = `${graphCurrentPercentage}`;
+    }
+  }
+}
+
+// 이징 함수 (ease-out cubic)
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
 }
