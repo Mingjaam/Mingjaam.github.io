@@ -714,6 +714,12 @@ function enterStep0(prevStep) {
   lockInteraction(350);
   hideNameTexts();
 
+  // 팀원 이름 다시 보이게 하기
+  const teamMembers = document.querySelector('.team-members');
+  if (teamMembers) {
+    teamMembers.classList.remove('hidden');
+  }
+
   const portfolioSection = document.querySelector('.portfolio-section');
   if (portfolioSection) {
     portfolioSection.classList.remove('active');
@@ -734,6 +740,12 @@ function enterStep1(prevStep) {
   const portfolioSection = document.querySelector('.portfolio-section');
   if (portfolioSection) {
     portfolioSection.classList.remove('active');
+  }
+
+  // 팀원 이름 숨기기
+  const teamMembers = document.querySelector('.team-members');
+  if (teamMembers) {
+    teamMembers.classList.add('hidden');
   }
 
   if (physicsEnabled) {

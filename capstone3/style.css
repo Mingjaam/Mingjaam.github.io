@@ -31,6 +31,25 @@ body {
   pointer-events: none;
 }
 
+.team-members {
+  position: absolute;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: normal;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+  z-index: 3;
+  opacity: 1;
+  transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.team-members.hidden {
+  opacity: 0;
+}
+
 .name-text {
   font-size: clamp(5rem, 8vw, 6rem);
   font-weight: bold;
@@ -90,6 +109,15 @@ body {
 
 /* 모바일 사이즈 */
 @media (max-width: 768px) {
+  .team-members {
+    font-size: clamp(0.875rem, 3vw, 1.25rem);
+    top: 1.5rem;
+    padding: 0 1rem;
+    white-space: normal;
+    text-align: center;
+    max-width: 95vw;
+  }
+  
   .name-text {
     font-size: clamp(2.5rem, 8vw, 4rem);
     max-width: 95vw;
