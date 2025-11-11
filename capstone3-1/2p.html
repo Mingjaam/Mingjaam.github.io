@@ -1,0 +1,186 @@
+<!DOCTYPE html><html lang="ko"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>팀원별 주요 진행 내용</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            overflow: hidden;
+            width: 1280px;
+            height: 720px;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            position: relative;
+        }
+        #p5-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+        }
+        .korean-text {
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+            word-break: keep-all;
+        }
+    </style>
+</head>
+<body>
+    <div id="p5-canvas"></div>
+    <div class="content bg-gradient-to-br from-purple-50 to-pink-100 flex flex-col p-12">
+        <div class="mb-6">
+            <h1 class="text-4xl font-bold text-gray-800 korean-text mb-2">1-on-musk</h1>
+            <h2 class="text-2xl text-gray-600 korean-text">팀원별 주요 진행 내용</h2>
+        </div>
+        
+        <div class="flex-1 bg-white rounded-2xl shadow-xl p-8 overflow-y-auto">
+            <div class="grid grid-cols-2 gap-6">
+                <!-- 프론트엔드 팀 -->
+                <div>
+                    <h3 class="text-xl font-bold text-blue-600 mb-4 korean-text border-b-2 border-blue-200 pb-2">프론트엔드 팀</h3>
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-500">
+                            <div class="font-bold text-gray-800 mb-2 korean-text">김민재 (팀장)</div>
+                            <div class="text-sm text-gray-700 korean-text">
+                                • 무한 캔버스 UI/UX 설계<br>
+                                • 캔버스 렌더링 최적화<br>
+                                • 드래그 앤 드롭 기능 구현
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-500">
+                            <div class="font-bold text-gray-800 mb-2 korean-text">김영서</div>
+                            <div class="text-sm text-gray-700 korean-text">
+                                • 실시간 협업 UI 개발<br>
+                                • 사용자 커서 추적 기능<br>
+                                • WebSocket 클라이언트 구현
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-500">
+                            <div class="font-bold text-gray-800 mb-2 korean-text">박은서</div>
+                            <div class="text-sm text-gray-700 korean-text">
+                                • 메모지 컴포넌트 개발<br>
+                                • AI 클러스터링 시각화<br>
+                                • 애니메이션 효과 구현
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 백엔드 팀 -->
+                <div>
+                    <h3 class="text-xl font-bold text-green-600 mb-4 korean-text border-b-2 border-green-200 pb-2">백엔드 팀</h3>
+                    <div class="space-y-4">
+                        <div class="bg-green-50 rounded-lg p-4 border-l-4 border-green-500">
+                            <div class="font-bold text-gray-800 mb-2 korean-text">김수빈</div>
+                            <div class="text-sm text-gray-700 korean-text">
+                                • WebSocket 서버 구축<br>
+                                • 실시간 동기화 로직 개발<br>
+                                • 서버 인프라 설계
+                            </div>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-4 border-l-4 border-green-500">
+                            <div class="font-bold text-gray-800 mb-2 korean-text">이현준</div>
+                            <div class="text-sm text-gray-700 korean-text">
+                                • AI 클러스터링 API 개발<br>
+                                • 자연어 처리 모델 통합<br>
+                                • 데이터베이스 설계
+                            </div>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-4 border-l-4 border-green-500">
+                            <div class="font-bold text-gray-800 mb-2 korean-text">정양효</div>
+                            <div class="text-sm text-gray-700 korean-text">
+                                • RESTful API 설계<br>
+                                • 인증/인가 시스템 구현<br>
+                                • 성능 최적화 및 모니터링
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 text-white">
+                <h3 class="text-lg font-bold mb-3 korean-text">주요 협업 도구</h3>
+                <div class="grid grid-cols-4 gap-4 text-sm">
+                    <div class="text-center">
+                        <div class="font-semibold mb-1">GitHub</div>
+                        <div class="opacity-90">버전 관리</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-semibold mb-1">Notion</div>
+                        <div class="opacity-90">문서 공유</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-semibold mb-1">Discord</div>
+                        <div class="opacity-90">소통 채널</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-semibold mb-1">Figma</div>
+                        <div class="opacity-90">디자인 협업</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let particles = [];
+        const colors = ['#FFE66D', '#FF6B6B', '#4ECDC4', '#95E1D3', '#F38181', '#AA96DA', '#FFD93D', '#6BCB77'];
+
+        function setup() {
+            let canvas = createCanvas(1280, 720);
+            canvas.parent('p5-canvas');
+            
+            for (let i = 0; i < 20; i++) {
+                particles.push({
+                    x: random(width),
+                    y: random(height),
+                    vx: random(-1, 1),
+                    vy: random(-1, 1),
+                    size: random(3, 8),
+                    color: random(colors),
+                    alpha: random(100, 200)
+                });
+            }
+        }
+
+        function draw() {
+            clear();
+            
+            for (let p of particles) {
+                fill(red(p.color), green(p.color), blue(p.color), p.alpha);
+                noStroke();
+                ellipse(p.x, p.y, p.size, p.size);
+                
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+            }
+            
+            // 파티클 간 연결선
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    let d = dist(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
+                    if (d < 100) {
+                        stroke(200, 200, 200, 50);
+                        strokeWeight(1);
+                        line(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+

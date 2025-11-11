@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="ko"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>개발 진행상황 - 실시간 협업</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            overflow: hidden;
+            width: 1280px;
+            height: 720px;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            position: relative;
+        }
+        #p5-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+        }
+        .korean-text {
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+            word-break: keep-all;
+        }
+    </style>
+</head>
+<body>
+    <div id="p5-canvas"></div>
+    <div class="content bg-gradient-to-br from-green-50 to-emerald-100 flex flex-col p-12">
+        <div class="mb-6">
+            <h1 class="text-4xl font-bold text-gray-800 korean-text mb-2">실시간 협업 개발 진행상황</h1>
+            <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
+                <div class="bg-green-600 h-4 rounded-full" style="width: 20%"></div>
+            </div>
+            <div class="text-right text-sm text-gray-600">진행률: 20%</div>
+        </div>
+        
+        <div class="flex-1 bg-white rounded-2xl shadow-xl p-8 overflow-y-auto">
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-bold text-green-600 mb-4 korean-text border-b-2 border-green-200 pb-2">완료된 기능</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                            <div class="text-green-500 text-xl">✓</div>
+                            <div>
+                                <div class="font-semibold text-gray-800 korean-text">WebSocket 서버 구축</div>
+                                <div class="text-sm text-gray-600 korean-text">Socket.io를 활용한 실시간 통신 서버 구현</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                            <div class="text-green-500 text-xl">✓</div>
+                            <div>
+                                <div class="font-semibold text-gray-800 korean-text">연결 관리</div>
+                                <div class="text-sm text-gray-600 korean-text">사용자 접속/해제 이벤트 처리</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-bold text-orange-600 mb-4 korean-text border-b-2 border-orange-200 pb-2">진행 중 / 예정</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3 p-3 bg-yellow-50 rounded-lg">
+                            <div class="text-yellow-500 text-xl">⟳</div>
+                            <div>
+                                <div class="font-semibold text-gray-800 korean-text">커서 추적</div>
+                                <div class="text-sm text-gray-600 korean-text">다른 사용자의 커서 위치 실시간 표시 작업 중</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="text-gray-400 text-xl">○</div>
+                            <div>
+                                <div class="font-semibold text-gray-800 korean-text">변경사항 동기화</div>
+                                <div class="text-sm text-gray-600 korean-text">메모지 생성/수정/삭제 실시간 반영</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="text-gray-400 text-xl">○</div>
+                            <div>
+                                <div class="font-semibold text-gray-800 korean-text">충돌 해결</div>
+                                <div class="text-sm text-gray-600 korean-text">동시 편집 시 충돌 방지 로직</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="text-gray-400 text-xl">○</div>
+                            <div>
+                                <div class="font-semibold text-gray-800 korean-text">사용자 목록 UI</div>
+                                <div class="text-sm text-gray-600 korean-text">접속 중인 사용자 목록 표시</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="text-gray-400 text-xl">○</div>
+                            <div>
+                                <div class="font-semibold text-gray-800 korean-text">상태 표시</div>
+                                <div class="text-sm text-gray-600 korean-text">각 사용자의 현재 작업 상태 표시</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-6 text-white">
+                <h3 class="text-lg font-bold mb-3 korean-text">기술 스택</h3>
+                <div class="flex gap-4 text-sm">
+                    <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">Socket.io</div>
+                    <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">Node.js</div>
+                    <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">Express</div>
+                    <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">Redis</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let connections = [];
+        let nodes = [];
+
+        function setup() {
+            let canvas = createCanvas(1280, 720);
+            canvas.parent('p5-canvas');
+            
+            // 네트워크 노드 생성
+            for (let i = 0; i < 5; i++) {
+                nodes.push({
+                    x: random(100, width - 100),
+                    y: random(100, height - 100),
+                    vx: random(-0.5, 0.5),
+                    vy: random(-0.5, 0.5),
+                    size: random(15, 25)
+                });
+            }
+        }
+
+        function draw() {
+            clear();
+            
+            // 연결선 그리기
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    let d = dist(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
+                    if (d < 200) {
+                        stroke(100, 200, 100, 100);
+                        strokeWeight(1);
+                        line(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
+                    }
+                }
+            }
+            
+            // 노드 그리기
+            for (let node of nodes) {
+                fill(100, 200, 100, 150);
+                noStroke();
+                ellipse(node.x, node.y, node.size, node.size);
+                
+                fill(255);
+                ellipse(node.x, node.y, node.size * 0.4, node.size * 0.4);
+                
+                node.x += node.vx;
+                node.y += node.vy;
+                
+                if (node.x < 50 || node.x > width - 50) node.vx *= -1;
+                if (node.y < 50 || node.y > height - 50) node.vy *= -1;
+            }
+        }
+    </script>
+</body>
+</html>
+

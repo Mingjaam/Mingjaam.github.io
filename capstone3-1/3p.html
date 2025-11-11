@@ -1,0 +1,134 @@
+<!DOCTYPE html><html lang="ko"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>주요 UI 화면 - 무한 캔버스</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            overflow: hidden;
+            width: 1280px;
+            height: 720px;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+            position: relative;
+        }
+        #p5-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+        }
+        .korean-text {
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+            word-break: keep-all;
+        }
+    </style>
+</head>
+<body>
+    <div id="p5-canvas"></div>
+    <div class="content bg-gradient-to-br from-yellow-50 to-orange-100 flex p-12">
+        <div class="w-1/2 flex flex-col justify-center pr-8">
+            <h1 class="text-5xl font-bold text-gray-800 mb-6 korean-text">
+                무한 캔버스
+            </h1>
+            <div class="space-y-4 mb-8">
+                <div class="bg-white rounded-xl p-5 shadow-lg">
+                    <h3 class="font-bold text-lg text-gray-800 mb-2 korean-text">✓ 무한 확장</h3>
+                    <p class="text-gray-600 text-sm korean-text">상하좌우로 제한 없이 확장되는 캔버스 공간</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 shadow-lg">
+                    <h3 class="font-bold text-lg text-gray-800 mb-2 korean-text">✓ 자유로운 배치</h3>
+                    <p class="text-gray-600 text-sm korean-text">메모지를 원하는 위치에 자유롭게 배치하고 이동</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 shadow-lg">
+                    <h3 class="font-bold text-lg text-gray-800 mb-2 korean-text">✓ 줌 & 팬</h3>
+                    <p class="text-gray-600 text-sm korean-text">마우스 휠로 확대/축소, 드래그로 화면 이동</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="w-1/2 flex items-center justify-center">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 w-full h-5/6 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100 opacity-30"></div>
+                <div class="relative z-10">
+                    <div class="text-center mb-4">
+                        <h2 class="text-2xl font-bold text-gray-800 korean-text">캔버스 미리보기</h2>
+                    </div>
+                    <div id="canvas-preview" class="bg-white rounded-lg border-2 border-dashed border-gray-300 h-96 relative overflow-hidden">
+                        <!-- 캔버스 시뮬레이션 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let canvasNotes = [];
+        const noteColors = ['#FFE66D', '#FF6B6B', '#4ECDC4', '#95E1D3', '#F38181', '#AA96DA'];
+        const noteTexts = ['아이디어1', '메모', '노트', '기록', '생각', '계획', '브레인스토밍', '협업'];
+
+        function setup() {
+            let canvas = createCanvas(1280, 720);
+            canvas.parent('p5-canvas');
+            
+            // 배경 메모지 생성
+            for (let i = 0; i < 12; i++) {
+                canvasNotes.push({
+                    x: random(width),
+                    y: random(height),
+                    vx: random(-0.3, 0.3),
+                    vy: random(-0.3, 0.3),
+                    rotation: random(-PI/8, PI/8),
+                    color: random(noteColors),
+                    text: random(noteTexts),
+                    size: random(50, 80),
+                    rotationSpeed: random(-0.01, 0.01)
+                });
+            }
+        }
+
+        function draw() {
+            clear();
+            
+            for (let note of canvasNotes) {
+                push();
+                translate(note.x, note.y);
+                rotate(note.rotation);
+                
+                fill(note.color);
+                stroke(255, 180);
+                strokeWeight(2);
+                rect(-note.size/2, -note.size/2, note.size, note.size, 5);
+                
+                fill(50);
+                textAlign(CENTER, CENTER);
+                textSize(12);
+                text(note.text, 0, 0);
+                
+                pop();
+                
+                note.x += note.vx;
+                note.y += note.vy;
+                note.rotation += note.rotationSpeed;
+                
+                if (note.x < 0) note.x = width;
+                if (note.x > width) note.x = 0;
+                if (note.y < 0) note.y = height;
+                if (note.y > height) note.y = 0;
+            }
+        }
+    </script>
+</body>
+</html>
+
