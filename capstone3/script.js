@@ -57,6 +57,11 @@ let currentPortfolioPage = 0;
 let portfolioPages = [];
 let isTransitioning = false;
 
+// UI Showcase 슬라이드 전환
+let currentUISlide = 0;
+let uiSlides = [];
+let isUISliding = false;
+
 // 그래프 관련 변수
 let graphParticles = []; // 그래프에 사용될 particles 인덱스들
 let graphData = {
@@ -810,6 +815,18 @@ function processPortfolioWheel(deltaY) {
   if (!physicsEnabled) return false;
   if (Math.abs(deltaY) < 5) return false;
 
+  // Page 4 (UI Showcase)에서는 UI 슬라이드 전환
+  if (currentPortfolioPage === 4) {
+    if (deltaY > 0) {
+      return nextUISlide();
+    }
+    if (deltaY < 0) {
+      return prevUISlide();
+    }
+    return false;
+  }
+
+  // 다른 페이지에서는 일반 페이지 전환
   if (deltaY > 0) {
     return nextPortfolioPage();
   }
@@ -817,6 +834,59 @@ function processPortfolioWheel(deltaY) {
     return prevPortfolioPage();
   }
   return false;
+}
+
+// UI 슬라이드 다음으로
+function nextUISlide() {
+  if (uiSlides.length === 0) return false;
+  if (isUISliding) return true;
+  
+  const isLastSlide = currentUISlide >= uiSlides.length - 1;
+  if (isLastSlide) {
+    // 마지막 슬라이드에서 다음으로 가면 다음 페이지로
+    return nextPortfolioPage();
+  }
+
+  isUISliding = true;
+  
+  uiSlides[currentUISlide].classList.remove('active');
+  uiSlides[currentUISlide].classList.add('prev');
+  
+  currentUISlide++;
+  uiSlides[currentUISlide].classList.remove('next');
+  uiSlides[currentUISlide].classList.add('active');
+
+  setTimeout(() => {
+    isUISliding = false;
+  }, 1200);
+
+  return true;
+}
+
+// UI 슬라이드 이전으로
+function prevUISlide() {
+  if (uiSlides.length === 0) return false;
+  if (isUISliding) return true;
+  
+  if (currentUISlide <= 0) {
+    // 첫 번째 슬라이드에서 이전으로 가면 이전 페이지로
+    return prevPortfolioPage();
+  }
+
+  isUISliding = true;
+  
+  uiSlides[currentUISlide].classList.remove('active');
+  uiSlides[currentUISlide].classList.add('next');
+  
+  currentUISlide--;
+  uiSlides[currentUISlide].classList.remove('prev');
+  uiSlides[currentUISlide].classList.add('active');
+
+  setTimeout(() => {
+    isUISliding = false;
+  }, 1200);
+
+  return true;
 }
 
 function updateGroundPosition() {
@@ -870,6 +940,35 @@ function enablePhysics(options = {}) {
 
     if (nameTextsVisible) createNameTextBodies();
     updateGroundPosition();
+    
+    // particles에 body가 없으면 생성
+    let needsBodyCreation = false;
+    for (let i = 0; i < particles.length; i++) {
+      let p = particles[i];
+      if (!p.isGraphParticle && !p.body) {
+        needsBodyCreation = true;
+        break;
+      }
+    }
+    
+    if (needsBodyCreation) {
+      for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        if (p.isGraphParticle || p.body) continue;
+        
+        let body = Matter.Bodies.circle(p.x, p.y, POINT_SIZE / 2, {
+          restitution: PHYSICS.BALL.RESTITUTION,
+          friction: PHYSICS.BALL.FRICTION,
+          frictionAir: PHYSICS.BALL.FRICTION_AIR,
+          density: PHYSICS.BALL.DENSITY,
+        });
+        
+        p.body = body;
+        bodies.push(body);
+        Matter.World.add(world, body);
+      }
+    }
+    
     return;
   }
 
@@ -1060,6 +1159,21 @@ function initPortfolioPages() {
     }
   });
   
+  // UI Showcase 슬라이드 초기화
+  const uiShowcasePage = document.querySelector('.portfolio-page[data-page="4"]');
+  if (uiShowcasePage) {
+    uiSlides = uiShowcasePage.querySelectorAll('.ui-slide');
+    currentUISlide = 0;
+    uiSlides.forEach((slide, index) => {
+      slide.classList.remove('active', 'prev', 'next');
+      if (index === 0) {
+        slide.classList.add('active');
+      } else {
+        slide.classList.add('next');
+      }
+    });
+  }
+  
   console.log('포트폴리오 페이지 초기화 완료:', portfolioPages.length, '페이지');
 }
 
@@ -1121,8 +1235,21 @@ function nextPortfolioPage() {
   portfolioPages[currentPortfolioPage].classList.remove('next');
   portfolioPages[currentPortfolioPage].classList.add('active');
 
+  // Page 4로 진입할 때 UI 슬라이드 초기화
+  if (currentPortfolioPage === 4) {
+    currentUISlide = 0;
+    uiSlides.forEach((slide, index) => {
+      slide.classList.remove('active', 'prev', 'next');
+      if (index === 0) {
+        slide.classList.add('active');
+      } else {
+        slide.classList.add('next');
+      }
+    });
+  }
+
   // 페이지 전환 시점에 퍼센트 텍스트 위치 미리 설정 (다음 프레임에서 실행)
-  if (currentPortfolioPage > 0) {
+  if (currentPortfolioPage > 0 && currentPortfolioPage !== 4) {
     requestAnimationFrame(() => {
       setupGraphPercentagePosition(currentPortfolioPage);
     });
@@ -1162,8 +1289,23 @@ function prevPortfolioPage() {
   portfolioPages[currentPortfolioPage].classList.remove('prev');
   portfolioPages[currentPortfolioPage].classList.add('active');
 
+  // Page 4로 진입할 때 UI 슬라이드 초기화
+  if (currentPortfolioPage === 4) {
+    currentUISlide = uiSlides.length - 1;
+    uiSlides.forEach((slide, index) => {
+      slide.classList.remove('active', 'prev', 'next');
+      if (index === currentUISlide) {
+        slide.classList.add('active');
+      } else if (index < currentUISlide) {
+        slide.classList.add('prev');
+      } else {
+        slide.classList.add('next');
+      }
+    });
+  }
+
   // 페이지 전환 시점에 퍼센트 텍스트 위치 미리 설정 (다음 프레임에서 실행)
-  if (currentPortfolioPage > 0) {
+  if (currentPortfolioPage > 0 && currentPortfolioPage !== 4) {
     requestAnimationFrame(() => {
       setupGraphPercentagePosition(currentPortfolioPage);
     });
