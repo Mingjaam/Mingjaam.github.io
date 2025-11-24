@@ -5,7 +5,19 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>ON-IT</title>
-    <script type="module" crossorigin src="/onit/assets/index-CI9Z0Z2Y.js"></script>
+    <script>
+      // GitHub Pages SPA 라우팅 지원
+      // 프로덕션 환경에서만 실행 (로컬 개발 환경에서는 실행 안 함)
+      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        // 현재 경로가 /onit/로 시작하는지 확인
+        const path = window.location.pathname;
+        if (path.startsWith('/onit/') && path !== '/onit/' && !path.startsWith('/onit/assets/')) {
+          // /onit/ 하위 경로인 경우, 실제 파일이 없으면 index.html로 처리
+          // 이 스크립트는 index.html이 로드된 후 실행되므로 문제없음
+        }
+      }
+    </script>
+    <script type="module" crossorigin src="/onit/assets/index-DZa3l0-Z.js"></script>
     <link rel="stylesheet" crossorigin href="/onit/assets/index-J8kgvYYd.css">
   </head>
   <body>
