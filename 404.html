@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecting...</title>
+  <script>
+    // 현재 경로를 가져와서 /onit/ 경로로 리다이렉트
+    const currentPath = window.location.pathname;
+    const newPath = '/onit' + (currentPath === '/' ? '' : currentPath);
+    window.location.replace(newPath);
+  </script>
+</head>
+<body>
+  <p>Redirecting to <a href="/onit">/onit</a>...</p>
+</body>
+</html>
