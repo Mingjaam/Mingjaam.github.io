@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Fashion-MNIST 분류 정확도 향상 프로젝트 보고서 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">🧠 Fashion-MNIST 분류 정확도 향상 프로젝트 보고서</h1>
+                    
+                    <div class="post-meta">
+                        <div class="post-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>2025년 11월 27일</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>약 20분 읽기</span>
+                        </div>
+                        <div class="post-meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>김민재</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post-tags">
+                        <span class="tag">딥러닝</span>
+                        <span class="tag">CNN</span>
+                        <span class="tag">TensorFlow</span>
+                        <span class="tag">Keras</span>
+                        <span class="tag">Fashion-MNIST</span>
+                        <span class="tag">이미지분류</span>
+                        <span class="tag">모델최적화</span>
+                    </div>
+                </header>
+                
+                <div class="post-body">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                        <h3 style="color: white; margin-bottom: 1rem;">🎯 프로젝트 개요</h3>
+                        <p style="color: white; line-height: 1.6; margin-bottom: 0;">
+                            Fashion-MNIST 데이터셋을 활용하여 기본 CNN 모델의 성능을 향상시키는 프로젝트입니다. 
+                            모델 구조 개선, 정규화 기법 적용, 학습 최적화 등을 통해 테스트 정확도를 향상시키는 과정을 기록합니다.
+                        </p>
+                    </div>
+
+                    <div class="toc">
+                        <h3>📋 목차</h3>
+                        <ul>
+                            <li><a href="#introduction">1. 서론</a></li>
+                            <li><a href="#baseline">2. 베이스라인 모델</a></li>
+                            <li><a href="#improvements">3. 개선 방법 및 실험 설정</a></li>
+                            <li><a href="#results">4. 실험 결과</a></li>
+                            <li><a href="#analysis">5. 분석 및 논의</a></li>
+                            <li><a href="#conclusion">6. 결론</a></li>
+                            <li><a href="#other-datasets">7. 다른 데이터셋 적용 시 변경 사항</a></li>
+                        </ul>
+                    </div>
+
+                    <h2 id="introduction">1. 서론</h2>
+
+                    <h3>1.1 Fashion-MNIST 데이터셋 소개</h3>
+                    <p>Fashion-MNIST는 28×28 크기의 흑백 의류 이미지 데이터셋으로, 총 10개의 클래스(티셔츠, 바지, 풀오버, 드레스, 코트, 샌달, 셔츠, 스니커즈, 가방, 앵클 부츠)로 구성되어 있다. 학습 데이터 60,000개, 테스트 데이터 10,000개로 구성되어 있으며, 각 픽셀 값은 0-255 범위의 정수이다.</p>
+
+                    <h3>1.2 프로젝트 목적</h3>
+                    <p>본 프로젝트의 목적은 기본 제공된 Fashion-MNIST 분류 모델의 구조와 하이퍼파라미터를 개선하여 테스트 정확도를 향상시키는 것이다. 베이스라인 모델의 성능을 분석하고, 다양한 개선 방법을 실험하여 최적의 모델을 찾아내는 과정을 통해 딥러닝 모델 최적화 방법을 학습한다.</p>
+
+                    <h2 id="baseline">2. 베이스라인 모델</h2>
+
+                    <h3>2.1 모델 구조</h3>
+                    <p>베이스라인 모델은 다음과 같은 간단한 CNN 구조로 구성되어 있다:</p>
+
+                    <div class="code-block">
+<span class="comment"># 베이스라인 모델 구조</span>
+Input (28×28×1)
+  ↓
+Conv2D(32, 3×3, activation='relu')
+  ↓
+MaxPooling2D(2×2)
+  ↓
+Conv2D(64, 3×3, activation='relu')
+  ↓
+MaxPooling2D(2×2)
+  ↓
+Flatten()
+  ↓
+Dense(64, activation='relu')
+  ↓
+Dense(10, activation='softmax')
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>📝 주요 특징</h4>
+                        <ul>
+                            <li>2개의 Conv2D 레이어 (32, 64 필터)</li>
+                            <li>각 Conv 레이어 후 MaxPooling2D 적용</li>
+                            <li>1개의 Dense 레이어 (64 뉴런)</li>
+                            <li>활성화 함수: ReLU (은닉층), Softmax (출력층)</li>
+                        </ul>
+                    </div>
+
+                    <h3>2.2 학습 설정</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <thead>
+                            <tr style="background: #f3f4f6;">
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">항목</th>
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">값</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Optimizer</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Adam (기본 학습률 0.001)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Loss Function</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Categorical Crossentropy</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Epochs</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">30</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Batch Size</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">512</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Validation Split</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">0.2</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>2.3 베이스라인 결과</h3>
+                    <p>베이스라인 모델의 성능은 다음과 같습니다. (실제 실험 결과를 입력하세요)</p>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <thead>
+                            <tr style="background: #f3f4f6;">
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">지표</th>
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">값</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Train Accuracy</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[실제 값 입력]</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Validation Accuracy</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[실제 값 입력]</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Test Accuracy</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[실제 값 입력]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="improvements">3. 개선 방법 및 실험 설정</h2>
+
+                    <h3>3.1 개선 방향</h3>
+                    <p>베이스라인 모델의 성능을 향상시키기 위해 다음과 같은 개선 방법을 적용하였다:</p>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">📈</div>
+                            <div class="feature-title">모델 용량 증가</div>
+                            <div class="feature-description">필터 수 증가 (32→64, 64→128), 세 번째 Conv 레이어 추가, Dense 레이어 확장</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🛡️</div>
+                            <div class="feature-title">정규화 기법 적용</div>
+                            <div class="feature-description">Batch Normalization, Dropout (Conv: 0.2, Dense: 0.3)</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🏗️</div>
+                            <div class="feature-title">네트워크 구조 개선</div>
+                            <div class="feature-description">모든 Conv 레이어에 padding='same' 적용하여 정보 손실 방지</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚙️</div>
+                            <div class="feature-title">학습 최적화</div>
+                            <div class="feature-description">학습률 스케줄러 적용 (ExponentialDecay, decay_rate=0.95)</div>
+                        </div>
+                    </div>
+
+                    <h3>3.2 실험 모델 설정</h3>
+
+                    <h4>모델 A: 베이스라인 모델</h4>
+                    <ul>
+                        <li>구조: Conv(32) → Conv(64) → Dense(64)</li>
+                        <li>정규화: 없음</li>
+                        <li>Optimizer: Adam (고정 학습률)</li>
+                    </ul>
+
+                    <h4>모델 B: 용량 증가 모델</h4>
+                    <ul>
+                        <li>구조: Conv(64) → Conv(128) → Conv(128) → Dense(128) → Dense(64)</li>
+                        <li>정규화: Batch Normalization, Dropout(0.2, 0.3)</li>
+                        <li>Optimizer: Adam (고정 학습률)</li>
+                    </ul>
+
+                    <h4>모델 C: 최종 개선 모델</h4>
+                    <ul>
+                        <li>구조: Conv(64) → Conv(128) → Conv(128) → Dense(128) → Dense(64)</li>
+                        <li>정규화: Batch Normalization, Dropout(0.2, 0.3)</li>
+                        <li>Optimizer: Adam (학습률 스케줄러 적용)</li>
+                        <li>Padding: 모든 Conv 레이어에 'same' 적용</li>
+                    </ul>
+
+                    <h4>변경 사항 비교표</h4>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem;">
+                        <thead>
+                            <tr style="background: #f3f4f6;">
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">항목</th>
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">베이스라인</th>
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">모델 B</th>
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">모델 C</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Conv 필터 수</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">32, 64</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">64, 128, 128</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">64, 128, 128</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Conv 레이어 수</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">2</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">3</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">3</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Dense 뉴런 수</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">64</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">128, 64</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">128, 64</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Batch Normalization</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">없음</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">있음</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">있음</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Dropout</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">없음</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">0.2, 0.3</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">0.2, 0.3</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Padding</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">기본</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">기본</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">'same'</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">학습률 스케줄러</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">없음</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">없음</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">ExponentialDecay</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="results">4. 실험 결과</h2>
+
+                    <h3>4.1 학습 곡선</h3>
+                    <p>각 모델의 학습 곡선을 비교 분석합니다. (실제 그래프 이미지를 삽입하세요)</p>
+                    <ul>
+                        <li>각 모델의 학습/검증 정확도 그래프</li>
+                        <li>각 모델의 학습/검증 손실 그래프</li>
+                    </ul>
+
+                    <h3>4.2 성능 비교</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <thead>
+                            <tr style="background: #f3f4f6;">
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">모델</th>
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">Train Accuracy</th>
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">Validation Accuracy</th>
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">Test Accuracy</th>
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">개선율</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">베이스라인</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[값]</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[값]</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[값]</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">-</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">모델 B</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[값]</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[값]</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[값]</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[%]</td>
+                            </tr>
+                            <tr style="background: #f0fdf4;">
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb; font-weight: 600;">모델 C (최종)</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb; font-weight: 600;">[값]</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb; font-weight: 600;">[값]</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb; font-weight: 600;">[값]</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb; font-weight: 600;">[%]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="highlight-box">
+                        <h4>🏆 최고 성능 모델: 모델 C</h4>
+                        <ul>
+                            <li>최고 검증 정확도: [값] (Epoch [번호])</li>
+                            <li>테스트 정확도: [값]</li>
+                        </ul>
+                    </div>
+
+                    <h3>4.3 과적합 분석</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <thead>
+                            <tr style="background: #f3f4f6;">
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">모델</th>
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">Train-Test 차이</th>
+                                <th style="padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left;">과적합 정도</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">베이스라인</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[값]</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[분석]</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">모델 B</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[값]</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[분석]</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">모델 C</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[값]</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">[분석]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="analysis">5. 분석 및 논의</h2>
+
+                    <h3>5.1 성능 향상 요인 분석</h3>
+
+                    <h4>1. 모델 용량 증가의 효과</h4>
+                    <ul>
+                        <li>필터 수 증가와 레이어 추가로 특징 추출 능력 향상</li>
+                        <li>Dense 레이어 확장으로 표현력 증가</li>
+                        <li>[구체적인 수치와 분석]</li>
+                    </ul>
+
+                    <h4>2. 정규화 기법의 효과</h4>
+                    <ul>
+                        <li>Batch Normalization: 학습 안정화 및 수렴 속도 향상</li>
+                        <li>Dropout: 과적합 방지 효과</li>
+                        <li>[구체적인 수치와 분석]</li>
+                    </ul>
+
+                    <h4>3. 학습률 스케줄러의 효과</h4>
+                    <ul>
+                        <li>초기 빠른 학습, 후반 정밀 조정으로 최종 성능 향상</li>
+                        <li>[구체적인 수치와 분석]</li>
+                    </ul>
+
+                    <h4>4. Padding='same'의 효과</h4>
+                    <ul>
+                        <li>정보 손실 방지로 특징 보존</li>
+                        <li>[구체적인 수치와 분석]</li>
+                    </ul>
+
+                    <h3>5.2 과적합/과소적합 분석</h3>
+                    <ul>
+                        <li><strong>베이스라인 모델:</strong> [분석 내용]</li>
+                        <li><strong>개선 모델:</strong> [분석 내용]</li>
+                        <li><strong>최종 모델:</strong> [분석 내용]</li>
+                    </ul>
+
+                    <h3>5.3 추가 개선 아이디어</h3>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🔄</div>
+                            <div class="feature-title">데이터 증강</div>
+                            <div class="feature-description">RandomRotation, RandomTranslation, RandomFlip 적용으로 학습 데이터 다양성 증가</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <div class="feature-title">앙상블 기법</div>
+                            <div class="feature-description">여러 모델의 예측 결과 결합으로 개별 모델보다 높은 정확도 기대</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🏗️</div>
+                            <div class="feature-title">더 깊은 네트워크</div>
+                            <div class="feature-description">Residual Connection 추가로 더 복잡한 패턴 학습 가능</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚙️</div>
+                            <div class="feature-title">하이퍼파라미터 튜닝</div>
+                            <div class="feature-description">학습률, Dropout 비율, 배치 크기 등 그리드 서치로 최적 조합 탐색</div>
+                        </div>
+                    </div>
+
+                    <h2 id="conclusion">6. 결론</h2>
+                    <p>본 프로젝트를 통해 다음과 같은 점을 학습하였다:</p>
+
+                    <div class="learning-section">
+                        <h3>📚 주요 학습 내용</h3>
+                        <ol>
+                            <li><strong>모델 구조 개선의 중요성</strong><br>
+                                적절한 모델 용량 증가가 성능 향상에 직접적인 영향을 미치며, 단순히 크게 만드는 것이 아니라 정규화와 함께 균형 있게 설계해야 함</li>
+                            <li><strong>정규화 기법의 효과</strong><br>
+                                Batch Normalization과 Dropout을 적절히 조합하면 과적합을 방지하면서도 학습 능력을 유지할 수 있음</li>
+                            <li><strong>학습 최적화의 필요성</strong><br>
+                                학습률 스케줄러를 통해 더 정밀한 최적화가 가능하며, 초기 학습과 후반 학습의 균형이 중요함</li>
+                            <li><strong>실험적 접근의 중요성</strong><br>
+                                이론적 가설을 실제 실험으로 검증하는 과정에서 더 나은 이해를 얻을 수 있으며, 체계적인 실험 설계와 결과 분석이 필수적임</li>
+                        </ol>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>🎯 최종 성과</h4>
+                        <ul>
+                            <li>베이스라인 대비 [X]%p 정확도 향상</li>
+                            <li>최종 테스트 정확도: [값]%</li>
+                        </ul>
+                    </div>
+
+                    <h2 id="other-datasets">7. 다른 데이터셋 적용 시 변경 사항</h2>
+                    <p>본 프로젝트에서 사용한 Fashion-MNIST 모델을 다른 이미지 분류 데이터셋에 적용할 때 필요한 변경 사항을 정리하였다.</p>
+
+                    <h3>7.1 데이터셋별 주요 변경 사항 비교표</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="background: #f3f4f6;">
+                                <th style="padding: 0.5rem; border: 1px solid #e5e7eb; text-align: left;">데이터셋</th>
+                                <th style="padding: 0.5rem; border: 1px solid #e5e7eb; text-align: left;">이미지 크기</th>
+                                <th style="padding: 0.5rem; border: 1px solid #e5e7eb; text-align: left;">채널 수</th>
+                                <th style="padding: 0.5rem; border: 1px solid #e5e7eb; text-align: left;">클래스 수</th>
+                                <th style="padding: 0.5rem; border: 1px solid #e5e7eb; text-align: left;">주요 변경 사항</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;"><strong>Fashion-MNIST</strong></td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">28×28</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">1 (흑백)</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">10</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">현재 모델 (기준)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;"><strong>MNIST</strong></td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">28×28</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">1 (흑백)</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">10</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">거의 동일 (데이터셋만 변경)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;"><strong>CIFAR-10</strong></td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">32×32</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">3 (RGB)</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">10</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">입력 shape, 채널 수 변경 필수</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;"><strong>CIFAR-100</strong></td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">32×32</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">3 (RGB)</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">100</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">입력 shape, 채널 수, 출력 뉴런 수 변경</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;"><strong>KMNIST</strong></td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">28×28</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">1 (흑백)</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">10</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">거의 동일 (데이터셋만 변경)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;"><strong>SVHN</strong></td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">32×32</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">3 (RGB)</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">10</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">입력 shape, 채널 수 변경 필수</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>7.2 데이터셋별 상세 변경 사항</h3>
+
+                    <h4>7.2.1 MNIST (손글씨 숫자)</h4>
+                    <p><strong>변경 필요도: 매우 낮음</strong></p>
+                    <div class="code-block">
+<span class="comment"># 변경 사항</span>
+<span class="keyword">from</span> tensorflow.keras.datasets <span class="keyword">import</span> mnist  <span class="comment"># fashion_mnist → mnist</span>
+
+<span class="comment"># 데이터 로드</span>
+(train_images, train_labels), (test_images, test_labels) = mnist.load_data()
+
+<span class="comment"># 모델 구조: 변경 없음 (28×28×1, 10 클래스 동일)</span>
+<span class="comment"># input_shape=(28, 28, 1) 유지</span>
+<span class="comment"># 출력 레이어: Dense(10, activation='softmax') 유지</span>
+                    </div>
+                    <p><strong>특징:</strong> Fashion-MNIST와 동일한 구조 사용 가능하며, 가장 간단한 데이터셋으로 빠른 학습 가능</p>
+
+                    <h4>7.2.2 CIFAR-10 (컬러 이미지)</h4>
+                    <p><strong>변경 필요도: 높음</strong></p>
+                    <div class="code-block">
+<span class="comment"># 변경 사항</span>
+<span class="keyword">from</span> tensorflow.keras.datasets <span class="keyword">import</span> cifar10
+
+<span class="comment"># 데이터 로드</span>
+(train_images, train_labels), (test_images, test_labels) = cifar10.load_data()
+
+<span class="comment"># 1. 입력 shape 변경 (채널 수 변경)</span>
+<span class="comment"># 기존: input_shape=(28, 28, 1)</span>
+<span class="comment"># 변경: input_shape=(32, 32, 3)  # RGB 3채널</span>
+
+<span class="comment"># 2. 모델 구조 조정</span>
+model = tf.keras.models.Sequential()
+<span class="comment"># 첫 번째 Conv 레이어</span>
+model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu', 
+                                  input_shape=(32, 32, 3),  <span class="comment"># ← 변경</span>
+                                  padding='same'))
+
+<span class="comment"># 3. 데이터 전처리 (이미 정규화되어 있을 수 있음)</span>
+<span class="comment"># train_images = train_images / 255.0  # 필요시 확인</span>
+
+<span class="comment"># 4. 출력 레이어: 변경 없음 (10 클래스 동일)</span>
+model.add(tf.keras.layers.Dense(10, activation='softmax'))
+                    </div>
+                    <div class="highlight-box">
+                        <h4>💡 추가 고려사항</h4>
+                        <ul>
+                            <li>이미지 크기가 32×32로 더 큼 → 더 많은 파라미터 필요</li>
+                            <li>컬러 이미지로 복잡도 증가 → 모델 용량 증가 고려</li>
+                            <li>데이터 증강 효과가 더 클 수 있음</li>
+                        </ul>
+                    </div>
+
+                    <h4>7.2.3 CIFAR-100 (100개 클래스)</h4>
+                    <p><strong>변경 필요도: 매우 높음</strong></p>
+                    <div class="code-block">
+<span class="comment"># 변경 사항</span>
+<span class="keyword">from</span> tensorflow.keras.datasets <span class="keyword">import</span> cifar100
+
+<span class="comment"># 데이터 로드</span>
+(train_images, train_labels), (test_images, test_labels) = cifar100.load_data()
+
+<span class="comment"># 1. 입력 shape 변경</span>
+<span class="comment"># input_shape=(32, 32, 3)  # CIFAR-10과 동일</span>
+
+<span class="comment"># 2. 출력 레이어 변경 (클래스 수 변경)</span>
+<span class="comment"># 기존: Dense(10, activation='softmax')</span>
+<span class="comment"># 변경: Dense(100, activation='softmax')  # 100개 클래스</span>
+
+<span class="comment"># 3. 모델 용량 증가 필요</span>
+<span class="comment"># - 더 많은 필터 수 (128 → 256 등)</span>
+<span class="comment"># - 더 깊은 네트워크 (레이어 추가)</span>
+<span class="comment"># - 더 큰 Dense 레이어 (128 → 256 등)</span>
+
+<span class="comment"># 4. 정규화 강화 필요</span>
+<span class="comment"># - Dropout 비율 증가 (0.3 → 0.4, 0.5)</span>
+<span class="comment"># - L2 정규화 추가 고려</span>
+<span class="comment"># - 데이터 증강 필수</span>
+
+<span class="comment"># 5. 학습 설정 조정</span>
+<span class="comment"># - Epoch 수 증가 (30 → 50, 100)</span>
+<span class="comment"># - 학습률 스케줄러 필수</span>
+<span class="comment"># - Early Stopping 필수</span>
+                    </div>
+                    <div class="highlight-box">
+                        <h4>⚠️ 추가 고려사항</h4>
+                        <ul>
+                            <li>클래스 수가 10배 증가 → 모델 복잡도 대폭 증가 필요</li>
+                            <li>과적합 위험 높음 → 강한 정규화 필수</li>
+                            <li>학습 시간 증가 예상</li>
+                        </ul>
+                    </div>
+
+                    <h4>7.2.4 KMNIST (일본 고문서)</h4>
+                    <p><strong>변경 필요도: 매우 낮음</strong></p>
+                    <div class="code-block">
+<span class="comment"># 변경 사항</span>
+<span class="comment"># KMNIST는 별도 설치 필요</span>
+<span class="comment"># pip install kmnist</span>
+
+<span class="keyword">from</span> kmnist <span class="keyword">import</span> load_kmnist
+
+<span class="comment"># 데이터 로드</span>
+(train_images, train_labels), (test_images, test_labels) = load_kmnist()
+
+<span class="comment"># 모델 구조: 변경 없음 (28×28×1, 10 클래스 동일)</span>
+<span class="comment"># Fashion-MNIST와 완전히 동일한 구조 사용 가능</span>
+                    </div>
+                    <p><strong>특징:</strong> Fashion-MNIST와 동일한 형식으로 코드 변경 최소화로 바로 적용 가능</p>
+
+                    <h3>7.3 공통 변경 패턴</h3>
+
+                    <h4>패턴 1: 흑백 → 컬러 (MNIST → CIFAR-10)</h4>
+                    <div class="code-block">
+<span class="comment"># 변경 사항</span>
+input_shape=(28, 28, 1)  →  input_shape=(32, 32, 3)
+<span class="comment"># 채널 수: 1 → 3</span>
+<span class="comment"># 이미지 크기: 28×28 → 32×32 (데이터셋에 따라 다름)</span>
+                    </div>
+
+                    <h4>패턴 2: 클래스 수 증가 (10 → 100)</h4>
+                    <div class="code-block">
+<span class="comment"># 변경 사항</span>
+Dense(10, activation='softmax')  →  Dense(100, activation='softmax')
+<span class="comment"># 모델 용량 증가 필요</span>
+<span class="comment"># 정규화 강화 필요</span>
+                    </div>
+
+                    <h4>패턴 3: 이미지 크기 변경</h4>
+                    <div class="code-block">
+<span class="comment"># 28×28 → 32×32 등</span>
+<span class="comment"># Conv 레이어의 padding, stride 조정 고려</span>
+<span class="comment"># MaxPooling 레이어 수 조정 고려</span>
+                    </div>
+
+                    <h3>7.4 데이터셋별 권장 모델 구조</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="background: #f3f4f6;">
+                                <th style="padding: 0.5rem; border: 1px solid #e5e7eb; text-align: left;">데이터셋</th>
+                                <th style="padding: 0.5rem; border: 1px solid #e5e7eb; text-align: left;">권장 필터 수</th>
+                                <th style="padding: 0.5rem; border: 1px solid #e5e7eb; text-align: left;">권장 레이어 수</th>
+                                <th style="padding: 0.5rem; border: 1px solid #e5e7eb; text-align: left;">권장 Dense 크기</th>
+                                <th style="padding: 0.5rem; border: 1px solid #e5e7eb; text-align: left;">Dropout 비율</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">MNIST</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">32, 64</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">2-3</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">64-128</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">0.2-0.3</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">Fashion-MNIST</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">64, 128, 128</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">3</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">128, 64</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">0.2-0.3</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">CIFAR-10</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">64, 128, 256</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">3-4</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">256, 128</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">0.3-0.4</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">CIFAR-100</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">128, 256, 512</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">4-5</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">512, 256</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">0.4-0.5</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">SVHN</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">64, 128, 256</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">3-4</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">256, 128</td>
+                                <td style="padding: 0.5rem; border: 1px solid #e5e7eb;">0.3-0.5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>7.5 코드 템플릿</h3>
+                    <div class="code-block">
+<span class="comment"># 데이터셋별 적용 템플릿</span>
+
+<span class="comment"># 1. 데이터셋 로드</span>
+<span class="keyword">from</span> tensorflow.keras.datasets <span class="keyword">import</span> [데이터셋명]
+(train_images, train_labels), (test_images, test_labels) = [데이터셋명].load_data()
+
+<span class="comment"># 2. 데이터 전처리</span>
+<span class="comment"># 이미지 크기 확인: train_images.shape</span>
+<span class="comment"># 채널 수 확인: train_images.shape[-1] (1 또는 3)</span>
+train_images = train_images.reshape((len(train_images), [높이], [너비], [채널]))
+train_images = train_images / 255.0
+
+<span class="comment"># 3. 레이블 전처리</span>
+<span class="keyword">from</span> tensorflow.keras.utils <span class="keyword">import</span> to_categorical
+num_classes = len(np.unique(train_labels))  <span class="comment"># 클래스 수 자동 계산</span>
+one_hot_train_labels = to_categorical(train_labels, num_classes)
+one_hot_test_labels = to_categorical(test_labels, num_classes)
+
+<span class="comment"># 4. 모델 구조 (입력 shape 조정)</span>
+model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu', 
+                                  input_shape=([높이], [너비], [채널])))  <span class="comment"># ← 조정</span>
+
+<span class="comment"># 5. 출력 레이어 (클래스 수 조정)</span>
+model.add(tf.keras.layers.Dense(num_classes, activation='softmax'))  <span class="comment"># ← 조정</span>
+                    </div>
+
+                    <h3>7.6 체크리스트</h3>
+                    <p>다른 데이터셋 적용 시 확인 사항:</p>
+                    <div class="highlight-box">
+                        <ul>
+                            <li>이미지 크기 확인 및 <code>input_shape</code> 조정</li>
+                            <li>채널 수 확인 (1: 흑백, 3: 컬러)</li>
+                            <li>클래스 수 확인 및 출력 레이어 조정</li>
+                            <li>데이터 정규화 확인 (0-255 → 0-1)</li>
+                            <li>레이블 인코딩 확인 (원-핫 인코딩)</li>
+                            <li>모델 용량 조정 (필터 수, 레이어 수)</li>
+                            <li>정규화 강도 조정 (Dropout, L2)</li>
+                            <li>학습 설정 조정 (Epoch, Learning Rate)</li>
+                            <li>데이터 증강 필요 여부 판단</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 2rem; margin: 3rem 0; border-radius: 0 8px 8px 0;">
+                        <h3 style="color: #2563eb; margin-top: 0;">💭 프로젝트를 마치며</h3>
+                        
+                        <p>이번 프로젝트를 통해 딥러닝 모델 최적화의 전 과정을 경험할 수 있었습니다. 
+                        베이스라인 모델부터 시작하여 모델 구조 개선, 정규화 기법 적용, 학습 최적화까지 
+                        다양한 실험을 통해 성능을 향상시키는 과정에서 많은 것을 배웠습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🔧 기술적 성장</h4>
+                        <p>CNN 모델 설계, 정규화 기법, 학습률 스케줄러 등 딥러닝의 핵심 개념들을 
+                        실제 프로젝트에 적용하며 이해도를 높일 수 있었습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">📊 실험적 사고</h4>
+                        <p>체계적인 실험 설계와 결과 분석을 통해 어떤 개선이 실제로 성능 향상에 
+                        기여하는지 검증하는 방법을 학습했습니다.</p>
+                        
+                        <h4 style="color: #374151; margin-top: 1.5rem;">🚀 확장성 고려</h4>
+                        <p>다른 데이터셋에 적용할 수 있도록 변경 사항을 체계적으로 정리하며, 
+                        모델의 재사용성과 확장성을 고려하는 사고를 기를 수 있었습니다.</p>
+                        
+                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
+                            <h4 style="color: #92400e; margin-top: 0;">🎯 앞으로의 다짐</h4>
+                            <p style="color: #92400e; margin-bottom: 0;">
+                                이번 프로젝트에서 배운 경험을 바탕으로 더 복잡한 데이터셋과 모델 구조에 도전하겠습니다. 
+                                특히 데이터 증강, 앙상블 기법, 하이퍼파라미터 튜닝 등 추가적인 최적화 기법들을 
+                                학습하여 더 높은 성능을 달성하겠습니다.
+                            </p>
+                        </div>
+                        
+                        <p style="text-align: center; font-weight: 600; color: #2563eb; margin-top: 2rem;">
+                            함께 성장하는 개발자가 되겠습니다! 🚀
+                        </p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="../index.html">블로그</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script src="../post-script.js"></script>
+</body>
+</html>
+
