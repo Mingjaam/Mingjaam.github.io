@@ -362,12 +362,6 @@ body {
   border-radius: 8px;
 }
 
-/* API 이미지는 왼쪽을 살리고 오른쪽을 잘라내기 */
-.portfolio-page[data-page="3"] .video-placeholder img {
-  object-fit: cover;
-  object-position: left center;
-}
-
 /* Page 2: AI at left 15%, others out, video on right */
 .portfolio-page[data-page="2"] {
   display: flex;
@@ -452,6 +446,12 @@ body {
   bottom: 75%;
   transform: translateX(0);
   opacity: 1;
+}
+
+/* API 이미지는 왼쪽을 살리고 오른쪽을 잘라내기 */
+.portfolio-page[data-page="3"] .video-placeholder img {
+  object-fit: cover;
+  object-position: left center;
 }
 
 /* Page 2에서 Page 3로 전환 시: AI 사라지고 Collab 나타남 (next 상태) */
@@ -547,7 +547,6 @@ body {
               transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Page 1에서 Page 2로 전환 시: Canvas 사라지고 AI 나타남 */
 .portfolio-page[data-page="1"].prev .feature-text[data-feature="canvas"] {
   left: -50%;
   opacity: 0;
@@ -1096,6 +1095,86 @@ body {
   color: rgba(255, 255, 255, 0.8);
   font-family: Arial, sans-serif;
   line-height: 1.5;
+}
+
+/* Page 6: Team Roles 스타일 */
+.team-roles-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.team-role-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.team-role-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: bold;
+  color: white;
+  font-family: Arial, sans-serif;
+  margin-bottom: 1rem;
+}
+
+.team-members-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.team-member-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-width: 200px;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.team-member-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.team-member-name {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: bold;
+  color: white;
+  font-family: Arial, sans-serif;
+  margin-bottom: 0.5rem;
+}
+
+.team-member-role {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: Arial, sans-serif;
+}
+
+.frontend-section {
+  margin-bottom: 2rem;
+}
+
+.backend-section {
+  margin-top: 2rem;
 }
 
 /* 모바일에서 Page 4, 5, 6, 7 스타일 */
