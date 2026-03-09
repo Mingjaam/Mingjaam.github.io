@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카카오 기업 분석</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
+            background: #fff;
+            color: #333;
+        }
+        
+        .slide {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px 100px;
+            page-break-after: always;
+            background: #fff;
+        }
+        
+        /* Cover Slide */
+        .cover {
+            text-align: center;
+        }
+        
+        .cover-badge {
+            display: inline-block;
+            align-self: center;
+            background: #FEE500;
+            color: #1a1a1a;
+            padding: 10px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            letter-spacing: 2px;
+        }
+        
+        .cover h1 {
+            font-size: 90px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            letter-spacing: -2px;
+            color: #1a1a1a;
+        }
+        
+        .cover .subtitle {
+            font-size: 26px;
+            color: #666;
+            font-weight: 400;
+        }
+        
+        /* Section Headers */
+        .section-num {
+            font-size: 14px;
+            color: #999;
+            font-weight: 600;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+        }
+        
+        h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            letter-spacing: -1px;
+            color: #1a1a1a;
+        }
+        
+        /* Content */
+        .content-text {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #444;
+            max-width: 900px;
+        }
+        
+        .content-text p {
+            margin-bottom: 20px;
+        }
+        
+        /* List Style */
+        .simple-list {
+            list-style: none;
+            margin-top: 30px;
+        }
+        
+        .simple-list li {
+            font-size: 19px;
+            padding: 18px 0;
+            border-bottom: 1px solid #eee;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .simple-list li::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: #FEE500;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        /* Vision */
+        .vision-section {
+            margin-top: 50px;
+            padding: 40px 0;
+            border-top: 2px solid #FEE500;
+            border-bottom: 2px solid #FEE500;
+        }
+        
+        .vision-label {
+            font-size: 13px;
+            color: #999;
+            font-weight: 600;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+        }
+        
+        .vision-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        
+        /* Two Column */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 40px;
+        }
+        
+        .col h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #FEE500;
+            display: inline-block;
+        }
+        
+        .col ul {
+            list-style: none;
+        }
+        
+        .col li {
+            font-size: 17px;
+            padding: 12px 0;
+            color: #555;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        /* Reason Items */
+        .reason-item {
+            margin-bottom: 40px;
+        }
+        
+        .reason-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .reason-title .num {
+            color: #FEE500;
+            font-size: 32px;
+            font-weight: 800;
+        }
+        
+        .reason-desc {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #555;
+            padding-left: 47px;
+        }
+        
+        .highlight {
+            background: #FEE500;
+            padding: 2px 6px;
+            font-weight: 600;
+        }
+        
+        /* Interview Points */
+        .interview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 40px;
+        }
+        
+        .interview-item {
+            padding: 35px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        
+        .interview-item h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #FEE500;
+        }
+        
+        .interview-item p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #555;
+        }
+        
+        .point {
+            color: #1a1a1a;
+            font-weight: 600;
+            border-bottom: 2px solid #FEE500;
+        }
+        
+        /* Final */
+        .final {
+            text-align: center;
+        }
+        
+        .final h2 {
+            font-size: 72px;
+            margin-bottom: 25px;
+        }
+        
+        .final p {
+            font-size: 24px;
+            color: #666;
+        }
+        
+        @media print {
+            .slide {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cover -->
+    <div class="slide cover">
+        <div class="cover-badge">기업 분석</div>
+        <h1>KAKAO</h1>
+        <p class="subtitle">기술과 사람으로 더 나은 세상을 만듭니다</p>
+    </div>
+
+    <!-- Slide 1: 기업 개요 -->
+    <div class="slide">
+        <div class="section-num">01 / OVERVIEW</div>
+        <h2>기업 개요 및 설정</h2>
+        
+        <div class="two-col">
+            <div class="col">
+                <h3>주요 사업</h3>
+                <ul>
+                    <li>플랫폼: 카카오톡 중심 메신저, 광고, 커머스</li>
+                    <li>핀테크: 카카오페이, 카카오뱅크</li>
+                    <li>콘텐츠: 웹툰, 게임, 엔터테인먼트</li>
+                    <li>모빌리티: T Map, 카카오 T</li>
+                </ul>
+            </div>
+            <div class="col">
+                <h3>인재상</h3>
+                <ul>
+                    <li>자기주도적인 태도</li>
+                    <li>수평적 소통 문화</li>
+                    <li>본질에 대한 몰입</li>
+                    <li>공유와 협력</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="vision-section">
+            <div class="vision-label">VISION</div>
+            <div class="vision-text">"기술과 사람으로 더 나은 세상을 만듭니다"</div>
+        </div>
+    </div>
+
+    <!-- Slide 2: 기업 선정 이유 -->
+    <div class="slide">
+        <div class="section-num">02 / WHY KAKAO</div>
+        <h2>기업 선정 이유</h2>
+
+        <div class="reason-item">
+            <div class="reason-title">
+                <span class="num">01</span>
+                국민 플랫폼
+            </div>
+            <div class="reason-desc">
+                대한민국 스마트폰 사용자 <span class="highlight">대부분이 사용</span>하는 카카오톡 기반의 강력한 생태계를 보유. <span class="highlight">서비스 확장성과 데이터 활용 가치</span>가 매우 높음.
+            </div>
+        </div>
+
+        <div class="reason-item">
+            <div class="reason-title">
+                <span class="num">02</span>
+                비즈니스 다각화의 표본
+            </div>
+            <div class="reason-desc">
+                단순 메신저를 넘어 <span class="highlight">금융, 모빌리티, 콘텐츠</span> 등 다양한 산업으로의 디지털 전환을 성공적으로 이끌고 있는 <span class="highlight">IT 선두 기업</span>. 그리고 성장 잠재력이 매우 높음.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: 면접 주안점 -->
+    <div class="slide">
+        <div class="section-num">03 / INTERVIEW</div>
+        <h2>면접 주안점</h2>
+
+        <div class="interview-grid">
+            <div class="interview-item">
+                <h3>직무 역량 중심</h3>
+                <p>단순한 사용 경험을 넘어 카카오의 서비스가 <span class="point">어떻게 개선될 수 있는지</span> <span class="point">사용자 관점</span>과 <span class="point">기술적 관점</span>에서 논리적으로 제안하기</p>
+            </div>
+
+            <div class="interview-item">
+                <h3>문제 해결 능력</h3>
+                <p>빠르게 변화하는 IT 트렌드 속에서 <span class="point">새로운 기술을 어떻게 학습하고 실무에 적용</span>했는지 구체적인 사례 위주로 답변 준비</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final -->
+    <div class="slide final">
+        <div class="cover-badge">Thank You</div>
+        <h2>KAKAO</h2>
+        <p>기술과 사람으로 더 나은 세상을 만듭니다</p>
+    </div>
+
+</body>
+</html>
