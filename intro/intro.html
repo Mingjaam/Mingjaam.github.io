@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>멋쟁이사자처럼 계명대 · 랜덤 뽑기</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    body { padding: 28px 16px 64px; }
+
+    header { text-align: center; margin-bottom: 24px; }
+    header h1 { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -0.3px; }
+    header p  { font-size: 13px; color: #888; margin-top: 6px; }
+
+    .toolbar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 0 auto 20px;
+    }
+    .count { font-size: 13px; color: #777; padding: 0 4px; }
+
+    .grid { padding-bottom: 24px; }
+
+    /* ── 랜덤 뽑기 오버레이 ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      z-index: 100;
+      padding: 24px 20px;
+    }
+    .overlay.show { display: flex; }
+
+    /* 배경 카드 그리드 (블러) */
+    .draw-bg {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 10px;
+      padding: 16px;
+      filter: blur(10px) saturate(0.4);
+      opacity: 0.18;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* 뽑힌 카드 영역 */
+    .draw-card-host {
+      position: relative;
+      z-index: 2;
+      width: min(560px, 92vw);
+    }
+
+    /* 뽑기 중 카드 스타일 */
+    .draw-card-host .card {
+      animation: none;
+      opacity: 0.6;
+      border-color: rgba(255, 152, 0, 0.25);
+      filter: saturate(0.7);
+      transition: opacity 0.05s;
+    }
+
+    /* 최종 뽑힌 카드 */
+    .draw-card-host .card.revealed {
+      opacity: 1;
+      filter: none;
+      border-color: rgba(255, 152, 0, 0.9) !important;
+      box-shadow:
+        0 0 0 1px rgba(255, 152, 0, 0.4),
+        0 0 40px rgba(255, 152, 0, 0.25),
+        0 8px 40px rgba(0, 0, 0, 0.8);
+      animation: revealBounce 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes revealBounce {
+      0%   { transform: scale(0.88); opacity: 0; }
+      60%  { transform: scale(1.04); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(255, 152, 0, 0.2); }
+      50%       { box-shadow: 0 0 50px rgba(255, 152, 0, 0.45); }
+    }
+
+    .draw-card-host .card.revealed {
+      animation: revealBounce 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+                 glowPulse 2s ease-in-out 0.45s infinite;
+    }
+
+    /* 버튼 영역 — 항상 카드 아래에 표시 */
+    .overlay-actions {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* 뽑기 완료 메시지 */
+    .draw-done {
+      position: relative;
+      z-index: 2;
+      font-size: 13px;
+      color: #ffb74d;
+      font-weight: 800;
+      background: rgba(255, 152, 0, 0.1);
+      border: 1px solid rgba(255, 152, 0, 0.3);
+      border-radius: 10px;
+      padding: 8px 16px;
+      display: none;
+    }
+    .draw-done.show { display: block; }
+
+    /* 뽑힌 카드 영역 — 길면 스크롤 */
+    .draw-card-host {
+      max-height: 65vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,152,0,0.3) transparent;
+    }
+    .draw-card-host::-webkit-scrollbar { width: 4px; }
+    .draw-card-host::-webkit-scrollbar-thumb { background: rgba(255,152,0,0.3); border-radius: 4px; }
+
+    /* 최종 뽑힌 카드: 텍스트 전체 표시 + 크기 확대 */
+    .draw-card-host .card.revealed {
+      padding: 28px 24px;
+    }
+    .draw-card-host .card.revealed .card-name   { font-size: 22px; }
+    .draw-card-host .card.revealed .card-major  { font-size: 14px; }
+    .draw-card-host .card.revealed .field-row   { font-size: 15px; }
+    .draw-card-host .card.revealed .field-label { font-size: 12px; }
+    .draw-card-host .card.revealed .badge       { font-size: 14px; padding: 4px 13px; }
+    .draw-card-host .card.revealed .card-time   { font-size: 12px; }
+
+    /* revealed 카드에서는 clamp 해제 — 전체 텍스트 표시 */
+    .draw-card-host .card.revealed .field-value {
+      display: block;
+      -webkit-line-clamp: unset;
+      overflow: visible;
+      font-size: 15px;
+    }
+    .draw-card-host .card.revealed .field-goal {
+      display: block;
+      -webkit-line-clamp: unset;
+      overflow: visible;
+      font-size: 15px;
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 18px 14px 56px; }
+      header h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>멋쟁이사자처럼 계명대</h1>
+    <p>랜덤 뽑기 · 자기소개 카드</p>
+  </header>
+
+  <div class="toolbar">
+    <button class="btn subtle" id="refreshBtn">새로고침</button>
+    <button class="btn" id="drawBtn" disabled>🎲 랜덤 뽑기</button>
+    <button class="btn subtle" id="resetDrawBtn" style="display:none;">뽑기 리셋</button>
+    <span class="count" id="countLabel"></span>
+  </div>
+
+  <div class="grid" id="grid">
+    <p class="empty">불러오는 중...</p>
+  </div>
+
+  <!-- 랜덤 뽑기 오버레이 -->
+  <div class="overlay" id="overlay" aria-modal="true" role="dialog">
+    <div class="draw-bg" id="drawBg"></div>
+    <div class="draw-card-host" id="drawPickHost"></div>
+    <div class="draw-done" id="drawDone">🎉 모든 멤버를 뽑았습니다!</div>
+    <div class="overlay-actions">
+      <button class="btn" id="nextPickBtn">다음 뽑기</button>
+      <button class="btn subtle" id="closeOverlayBtn">닫기</button>
+    </div>
+  </div>
+
+  <script src="card-render.js"></script>
+  <script>
+    const STORAGE_KEY = "kmulion.draw.v2";
+
+    const grid          = document.getElementById("grid");
+    const refreshBtn    = document.getElementById("refreshBtn");
+    const drawBtn       = document.getElementById("drawBtn");
+    const resetDrawBtn  = document.getElementById("resetDrawBtn");
+    const countLabel    = document.getElementById("countLabel");
+    const overlay       = document.getElementById("overlay");
+    const drawBg        = document.getElementById("drawBg");
+    const drawPickHost  = document.getElementById("drawPickHost");
+    const nextPickBtn   = document.getElementById("nextPickBtn");
+    const closeOverlayBtn = document.getElementById("closeOverlayBtn");
+    const drawDone      = document.getElementById("drawDone");
+
+    let configFields = [];
+    let rows = [];
+    let drawBag = [];
+
+    /* ── 뽑기 가방 ── */
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function loadDrawBag(total) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        if (saved?.total === total && Array.isArray(saved.bag) && saved.bag.length) {
+          drawBag = saved.bag.filter(n => Number.isInteger(n) && n >= 0 && n < total);
+          if (drawBag.length) return;
+        }
+      } catch {}
+      drawBag = shuffle([...Array(total)].map((_, i) => i));
+      saveDrawBag(total);
+    }
+
+    function saveDrawBag(total) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ total, bag: drawBag }));
+    }
+
+    function resetDrawBag() {
+      drawBag = shuffle([...Array(rows.length)].map((_, i) => i));
+      saveDrawBag(rows.length);
+      resetDrawBtn.style.display = "none";
+      drawBtn.disabled = rows.length === 0;
+      drawDone.classList.remove("show");
+      nextPickBtn.disabled = false;
+    }
+
+    /* ── 애니메이션 ── */
+    // 슬롯머신 스타일: 빠르게 → 점점 느려지며 → 최종 reveal
+    async function animatePick(targetIdx) {
+      // 각 단계별 딜레이(ms) — 뒤로 갈수록 느려짐
+      const delays = [45, 50, 55, 65, 80, 100, 125, 155, 190, 230, 275];
+      const pool = rows.map((_, i) => i);
+      let lastRand = -1;
+
+      return new Promise(resolve => {
+        let step = 0;
+
+        const tick = () => {
+          if (step < delays.length) {
+            // 같은 카드 연속 방지
+            let rand;
+            do { rand = pool[Math.floor(Math.random() * pool.length)]; }
+            while (rand === lastRand && pool.length > 1);
+            lastRand = rand;
+
+            drawPickHost.innerHTML = buildCard(rows[rand], configFields);
+            step++;
+            setTimeout(tick, delays[step - 1]);
+          } else {
+            // 최종 카드 reveal
+            drawPickHost.innerHTML = buildCard(rows[targetIdx], configFields);
+            const card = drawPickHost.querySelector(".card");
+            if (card) card.classList.add("revealed");
+            resolve();
+          }
+        };
+
+        tick();
+      });
+    }
+
+    /* ── 오버레이 ── */
+    function openOverlay() {
+      drawBg.innerHTML = rows.map(r => buildCard(r, configFields)).join("");
+      overlay.classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeOverlay() {
+      overlay.classList.remove("show");
+      document.body.style.overflow = "";
+      drawPickHost.innerHTML = "";
+    }
+
+    async function pickNext() {
+      if (!rows.length || drawBag.length === 0) return;
+
+      nextPickBtn.disabled = true;
+      drawDone.classList.remove("show");
+
+      const idx = drawBag.shift();
+      saveDrawBag(rows.length);
+
+      await animatePick(idx);
+
+      if (drawBag.length === 0) {
+        drawDone.classList.add("show");
+        nextPickBtn.disabled = true;
+        resetDrawBtn.style.display = "inline-block";
+        drawBtn.disabled = true;
+      } else {
+        nextPickBtn.disabled = false;
+      }
+    }
+
+    /* ── 데이터 로드 ── */
+    async function load() {
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = "불러오는 중...";
+      grid.innerHTML = `<p class="empty">데이터를 불러오는 중입니다...</p>`;
+      countLabel.textContent = "";
+
+      try {
+        const [cfgRes, dataRes] = await Promise.all([
+          fetch(`${API_URL}?action=config`),
+          fetch(`${API_URL}?action=data`),
+        ]);
+        const [cfg, dataJson] = await Promise.all([cfgRes.json(), dataRes.json()]);
+        if (cfg.result !== "success") throw new Error("설정 로드 실패");
+        if (dataJson.result !== "success") throw new Error("데이터 로드 실패");
+
+        configFields = (cfg.fields || []).filter(f => f.type !== "image");
+        rows = (dataJson.data || []).slice().reverse();
+
+        if (rows.length === 0) {
+          grid.innerHTML = `<p class="empty">아직 자기소개가 없습니다.</p>`;
+          drawBtn.disabled = true;
+          return;
+        }
+
+        grid.innerHTML = rows.map(r => buildCard(r, configFields)).join("");
+        countLabel.textContent = `총 ${rows.length}명`;
+
+        loadDrawBag(rows.length);
+        drawBtn.disabled = drawBag.length === 0;
+        resetDrawBtn.style.display = drawBag.length === 0 ? "inline-block" : "none";
+
+      } catch (err) {
+        console.error("로드 오류:", err);
+        grid.innerHTML = `<p class="empty">❌ 불러오지 못했습니다.<br>${escapeHtml(err.message)}</p>`;
+        drawBtn.disabled = true;
+      } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = "새로고침";
+      }
+    }
+
+    /* ── 이벤트 ── */
+    refreshBtn.addEventListener("click", load);
+
+    drawBtn.addEventListener("click", async () => {
+      if (!rows.length || drawBag.length === 0) return;
+      openOverlay();
+      nextPickBtn.disabled = false;
+      drawDone.classList.remove("show");
+      await pickNext();
+    });
+
+    resetDrawBtn.addEventListener("click", () => {
+      resetDrawBag();
+      if (overlay.classList.contains("show")) {
+        nextPickBtn.disabled = false;
+      }
+    });
+
+    nextPickBtn.addEventListener("click", pickNext);
+    closeOverlayBtn.addEventListener("click", closeOverlay);
+    overlay.addEventListener("click", e => { if (e.target === overlay) closeOverlay(); });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && overlay.classList.contains("show")) closeOverlay();
+    });
+
+    load();
+  </script>
+</body>
+</html>

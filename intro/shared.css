@@ -1,0 +1,181 @@
+/* =============================================
+   shared.css — 멋쟁이사자처럼 계명대 공통 스타일
+   ============================================= */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Pretendard", "Apple SD Gothic Neo", sans-serif;
+  background: #050505;
+  min-height: 100vh;
+  color: #f5f5f5;
+}
+
+/* ── 버튼 ── */
+.btn {
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.08s ease, filter 0.15s;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+.btn:hover  { filter: brightness(1.12); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; filter: none; }
+
+.btn.subtle {
+  background: #111;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  color: #ffcc80;
+  font-weight: 800;
+}
+.btn.subtle:hover { background: #1c1c1c; }
+
+/* ── 카드 ── */
+.card {
+  background: #121212;
+  border-radius: 16px;
+  padding: 20px 18px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid rgba(255, 152, 0, 0.22);
+  animation: fadeUp 0.2s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.card-name  { font-size: 17px; font-weight: 900; color: #ffffff; }
+.card-major { font-size: 12px; color: #ffb74d; font-weight: 900; }
+
+.field-row {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  align-items: flex-start;
+}
+
+.field-label {
+  flex-shrink: 0;
+  color: #666;
+  font-size: 10px;
+  font-weight: 800;
+  min-width: 58px;
+  padding-top: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.field-value {
+  color: #e0e0e0;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* goal 필드: 라벨 없이 quote 스타일 */
+.field-goal {
+  font-size: 13px;
+  color: #d0d0d0;
+  line-height: 1.75;
+  border-left: 2px solid rgba(255, 152, 0, 0.55);
+  padding: 4px 10px;
+  font-style: italic;
+  background: rgba(255, 152, 0, 0.04);
+  border-radius: 0 6px 6px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 900;
+  background: #1a1a1a;
+  color: #ffb74d;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.divider { border: none; border-top: 1px solid #1e1e1e; margin: 2px 0; }
+
+.card-time {
+  font-size: 11px;
+  color: #555;
+  text-align: right;
+  padding-top: 4px;
+  border-top: 1px solid #1a1a1a;
+}
+
+/* ── 그리드 ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── 빈 상태 ── */
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 20px;
+  color: #555;
+  font-size: 15px;
+  background: #0b0b0b;
+  border: 1px dashed rgba(255, 152, 0, 0.18);
+  border-radius: 16px;
+  line-height: 1.8;
+}
+
+/* ── add 카드 ── */
+.card.add {
+  border-style: dashed;
+  border-color: rgba(255, 152, 0, 0.35);
+  background: radial-gradient(100% 100% at 50% 0%, rgba(255, 152, 0, 0.1), #121212);
+  cursor: pointer;
+  min-height: 140px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.card.add:hover {
+  border-color: rgba(255, 152, 0, 0.6);
+  background: radial-gradient(100% 100% at 50% 0%, rgba(255, 152, 0, 0.18), #121212);
+}
+.add .plus  { font-size: 32px; font-weight: 900; color: #ffb74d; line-height: 1; }
+.add .label { margin-top: 6px; font-size: 14px; font-weight: 900; color: #e0e0e0; }
+.add .hint  { margin-top: 4px; font-size: 12px; color: #888; }
+
+/* ── 반응형 ── */
+@media (max-width: 520px) {
+  .grid { grid-template-columns: 1fr; }
+}
