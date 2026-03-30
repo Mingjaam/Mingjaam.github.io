@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent 기반 최신 개발 방법</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Archivo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  /* =========================================
+     CSS CUSTOM PROPERTIES
+     ========================================= */
+  :root {
+    --orange: #F97316;
+    --orange-light: #FED7AA;
+    --orange-faint: #FFF7ED;
+    --black: #111827;
+    --gray-dark: #374151;
+    --gray-mid: #6B7280;
+    --gray-light: #E5E7EB;
+    --gray-faint: #F9FAFB;
+    --white: #FFFFFF;
+
+    --title-size: clamp(2rem, 5.5vw, 4.5rem);
+    --h2-size: clamp(1.4rem, 3.2vw, 2.6rem);
+    --h3-size: clamp(1rem, 2vw, 1.5rem);
+    --body-size: clamp(0.8rem, 1.4vw, 1.05rem);
+    --small-size: clamp(0.65rem, 1vw, 0.85rem);
+    --label-size: clamp(0.6rem, 0.9vw, 0.75rem);
+
+    --slide-padding: clamp(2rem, 5vw, 5rem);
+    --content-gap: clamp(0.75rem, 2vw, 2rem);
+    --element-gap: clamp(0.4rem, 1vw, 0.9rem);
+  }
+
+  /* =========================================
+     MANDATORY VIEWPORT BASE
+     ========================================= */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
+    font-family: 'Noto Sans KR', 'Archivo', sans-serif;
+    background: var(--white);
+    color: var(--black);
+  }
+
+  html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+  }
+
+  .slide {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: var(--white);
+  }
+
+  .slide-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-height: 100%;
+    overflow: hidden;
+    padding: var(--slide-padding);
+  }
+
+  /* =========================================
+     PROGRESS BAR
+     ========================================= */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: var(--orange);
+    z-index: 100;
+    transition: width 0.35s ease;
+  }
+
+  /* =========================================
+     SLIDE COUNTER
+     ========================================= */
+  .slide-counter {
+    position: fixed;
+    bottom: clamp(1rem, 2.5vh, 1.75rem);
+    right: clamp(1.5rem, 3vw, 2.5rem);
+    font-family: 'Archivo', sans-serif;
+    font-size: var(--label-size);
+    font-weight: 600;
+    color: var(--gray-mid);
+    letter-spacing: 0.1em;
+    z-index: 100;
+  }
+
+  .slide-counter .current {
+    color: var(--orange);
+  }
+
+  /* =========================================
+     NAV DOTS
+     ========================================= */
+  .nav-dots {
+    position: fixed;
+    right: clamp(1rem, 2vw, 1.5rem);
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gray-light);
+    cursor: pointer;
+    transition: background 0.25s, transform 0.25s;
+    border: none;
+  }
+
+  .nav-dot.active {
+    background: var(--orange);
+    transform: scale(1.4);
+  }
+
+  /* =========================================
+     DECORATIVE ORANGE LINE (left border accent)
+     ========================================= */
+  .accent-line {
+    width: 4px;
+    height: clamp(2.5rem, 5vh, 4rem);
+    background: var(--orange);
+    margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
+    border-radius: 2px;
+  }
+
+  /* =========================================
+     SLIDE 1 — TITLE
+     ========================================= */
+  .slide-title {
+    background: var(--white);
+  }
+
+  .slide-title .slide-content {
+    padding-left: clamp(3rem, 8vw, 8rem);
+    justify-content: center;
+  }
+
+  .title-label {
+    font-family: 'Archivo', sans-serif;
+    font-size: var(--label-size);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: clamp(0.75rem, 2vh, 1.25rem);
+  }
+
+  .title-main {
+    font-family: 'Archivo', sans-serif;
+    font-size: var(--title-size);
+    font-weight: 900;
+    color: var(--black);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: clamp(0.75rem, 2vh, 1.25rem);
+  }
+
+  .title-sub {
+    font-size: var(--h3-size);
+    font-weight: 400;
+    color: var(--gray-mid);
+    line-height: 1.5;
+  }
+
+  .title-deco {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 38vw;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .title-deco-inner {
+    position: absolute;
+    right: calc(-1 * clamp(4rem, 8vw, 10rem));
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(18rem, 32vw, 42rem);
+    height: clamp(18rem, 32vw, 42rem);
+    border-radius: 50%;
+    background: var(--orange-faint);
+    border: 2px solid var(--orange-light);
+  }
+
+  .title-deco-inner::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    background: var(--orange-light);
+    opacity: 0.5;
+  }
+
+  .title-tag {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 0.4em;
+    margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
+    padding: 0.35em 0.9em;
+    background: var(--orange-faint);
+    border: 1px solid var(--orange-light);
+    border-radius: 999px;
+    font-size: var(--small-size);
+    font-weight: 500;
+    color: var(--orange);
+    font-family: 'Archivo', sans-serif;
+    letter-spacing: 0.02em;
+  }
+
+  /* =========================================
+     SLIDE 2 — AGENDA
+     ========================================= */
+  .slide-agenda .slide-content {
+    gap: var(--content-gap);
+  }
+
+  .section-label {
+    font-family: 'Archivo', sans-serif;
+    font-size: var(--label-size);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+  }
+
+  .slide-heading {
+    font-family: 'Archivo', sans-serif;
+    font-size: var(--h2-size);
+    font-weight: 900;
+    color: var(--black);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: clamp(1.5rem, 3.5vh, 2.5rem);
+  }
+
+  .agenda-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+
+  .agenda-item {
+    padding: clamp(1rem, 2vh, 1.5rem) clamp(1.25rem, 2.5vw, 1.75rem);
+    border: 1px solid var(--gray-light);
+    border-radius: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(0.75rem, 1.5vw, 1.1rem);
+    background: var(--white);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .agenda-item:hover {
+    border-color: var(--orange-light);
+    box-shadow: 0 2px 12px rgba(249, 115, 22, 0.08);
+  }
+
+  .agenda-num {
+    font-family: 'Archivo', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 900;
+    color: var(--orange-light);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .agenda-text h3 {
+    font-size: var(--h3-size);
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 0.2em;
+  }
+
+  .agenda-text p {
+    font-size: var(--small-size);
+    color: var(--gray-mid);
+    line-height: 1.5;
+  }
+
+  /* =========================================
+     SHARED — CONTENT SLIDES
+     ========================================= */
+  .content-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  .content-left {}
+
+  .content-right {}
+
+  .slide-body {
+    font-size: var(--body-size);
+    color: var(--gray-dark);
+    line-height: 1.7;
+    margin-bottom: clamp(1rem, 2.5vh, 1.75rem);
+  }
+
+  .feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--element-gap);
+  }
+
+  .feature-list li {
+    font-size: var(--body-size);
+    color: var(--gray-dark);
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6em;
+  }
+
+  .feature-list li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--orange);
+    flex-shrink: 0;
+    margin-top: 0.55em;
+  }
+
+  /* Code tag style */
+  .code-tag {
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    font-size: var(--small-size);
+    font-weight: 600;
+    color: var(--orange);
+    background: var(--orange-faint);
+    border: 1px solid var(--orange-light);
+    border-radius: 5px;
+    padding: 0.1em 0.5em;
+    letter-spacing: 0.02em;
+  }
+
+  /* Visual card for right side */
+  .visual-card {
+    background: var(--gray-faint);
+    border: 1px solid var(--gray-light);
+    border-radius: 14px;
+    padding: clamp(1.25rem, 2.5vw, 2rem);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--element-gap);
+  }
+
+  .visual-card-title {
+    font-family: 'Archivo', sans-serif;
+    font-size: var(--small-size);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    margin-bottom: 0.5em;
+  }
+
+  /* Flow diagram items */
+  .flow-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    padding: 0.6em 0.85em;
+    border-radius: 8px;
+    background: var(--white);
+    border: 1px solid var(--gray-light);
+    font-size: var(--small-size);
+    font-weight: 500;
+    color: var(--black);
+  }
+
+  .flow-item.highlight {
+    background: var(--orange-faint);
+    border-color: var(--orange-light);
+    color: var(--orange);
+    font-weight: 600;
+  }
+
+  .flow-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--orange);
+    flex-shrink: 0;
+  }
+
+  .flow-arrow {
+    text-align: center;
+    color: var(--gray-light);
+    font-size: 1rem;
+    font-family: 'Archivo', sans-serif;
+    padding: 0.1em 0;
+  }
+
+  /* Tag badge */
+  .tag-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    padding: 0.25em 0.75em;
+    border-radius: 999px;
+    font-size: var(--label-size);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: 'Archivo', sans-serif;
+  }
+
+  .tag-badge.orange {
+    background: var(--orange-faint);
+    color: var(--orange);
+    border: 1px solid var(--orange-light);
+  }
+
+  .tag-badge.gray {
+    background: var(--gray-faint);
+    color: var(--gray-mid);
+    border: 1px solid var(--gray-light);
+  }
+
+  /* =========================================
+     SLIDE — MULTI-AGENT specific
+     ========================================= */
+  .agent-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3em;
+  }
+
+  .agent-box {
+    padding: 0.5em 0.85em;
+    border-radius: 8px;
+    font-size: var(--small-size);
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .agent-box.orch {
+    background: var(--orange);
+    color: var(--white);
+    font-family: 'Archivo', sans-serif;
+  }
+
+  .agent-box.sub {
+    background: var(--white);
+    border: 1.5px solid var(--orange-light);
+    color: var(--black);
+  }
+
+  .agent-connector {
+    display: flex;
+    justify-content: center;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    margin: 0.5em 0;
+  }
+
+  .connector-line {
+    width: 1px;
+    height: 1.5rem;
+    background: var(--gray-light);
+    margin: 0 auto;
+  }
+
+  .connector-row {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(0.5rem, 2vw, 1.5rem);
+    justify-content: center;
+  }
+
+  /* =========================================
+     SLIDE 7 — SUMMARY TABLE
+     ========================================= */
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .summary-table th {
+    font-family: 'Archivo', sans-serif;
+    font-size: var(--small-size);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    padding: 0.6em 1em;
+    text-align: left;
+    border-bottom: 2px solid var(--gray-light);
+  }
+
+  .summary-table td {
+    font-size: var(--body-size);
+    color: var(--gray-dark);
+    padding: clamp(0.5em, 1.2vh, 0.85em) 1em;
+    border-bottom: 1px solid var(--gray-light);
+    vertical-align: middle;
+  }
+
+  .summary-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .summary-table td:first-child {
+    font-weight: 700;
+    color: var(--black);
+  }
+
+  .summary-table td .code-tag {
+    white-space: nowrap;
+  }
+
+  /* =========================================
+     SLIDE 8 — CLOSING
+     ========================================= */
+  .slide-closing .slide-content {
+    align-items: center;
+    text-align: center;
+    gap: var(--content-gap);
+  }
+
+  .closing-title {
+    font-family: 'Archivo', sans-serif;
+    font-size: var(--h2-size);
+    font-weight: 900;
+    color: var(--black);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .closing-line {
+    width: clamp(3rem, 6vw, 5rem);
+    height: 3px;
+    background: var(--orange);
+    border-radius: 2px;
+  }
+
+  .closing-body {
+    font-size: var(--body-size);
+    color: var(--gray-mid);
+    max-width: 48ch;
+    line-height: 1.7;
+  }
+
+  /* =========================================
+     SLIDE HEADER (shared top bar style)
+     ========================================= */
+  .slide-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(1.25rem, 3vh, 2rem) var(--slide-padding) 0;
+    flex-shrink: 0;
+  }
+
+  .header-topic {
+    font-family: 'Archivo', sans-serif;
+    font-size: var(--label-size);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+
+  .header-divider {
+    flex: 1;
+    height: 1px;
+    background: var(--gray-light);
+    margin: 0 clamp(1rem, 2vw, 1.5rem);
+  }
+
+  /* =========================================
+     REVEAL ANIMATIONS
+     ========================================= */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+  .reveal-delay-5 { transition-delay: 0.5s; }
+
+  /* =========================================
+     SHORT SCREEN BREAKPOINTS
+     ========================================= */
+  @media (max-height: 700px) {
+    :root {
+      --slide-padding: clamp(0.75rem, 3vw, 2rem);
+      --content-gap: clamp(0.4rem, 1.5vw, 1rem);
+      --title-size: clamp(1.5rem, 4.5vw, 3rem);
+      --h2-size: clamp(1.1rem, 3vw, 2rem);
+    }
+  }
+
+  @media (max-height: 600px) {
+    :root {
+      --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem);
+      --title-size: clamp(1.2rem, 4vw, 2.2rem);
+      --body-size: clamp(0.7rem, 1.2vw, 0.9rem);
+    }
+
+    .nav-dots { display: none; }
+    .title-deco { display: none; }
+  }
+
+  @media (max-width: 768px) {
+    .content-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .content-right {
+      display: none;
+    }
+
+    .agenda-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .title-deco { display: none; }
+    .nav-dots { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.2s !important;
+    }
+
+    html { scroll-behavior: auto; }
+
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Slide Counter -->
+<div class="slide-counter">
+  <span class="current" id="currentSlide">1</span> / <span id="totalSlides">8</span>
+</div>
+
+<!-- Nav Dots -->
+<nav class="nav-dots" id="navDots" aria-label="슬라이드 내비게이션"></nav>
+
+<!-- =========================================
+     SLIDE 1 — TITLE
+     ========================================= -->
+<section class="slide slide-title" id="slide-1" aria-label="타이틀">
+  <div class="title-deco" aria-hidden="true">
+    <div class="title-deco-inner"></div>
+  </div>
+  <div class="slide-content">
+    <p class="title-label reveal">Claude Code — 2026</p>
+    <h1 class="title-main reveal reveal-delay-1">Agent 기반<br>최신 개발 방법</h1>
+    <p class="title-sub reveal reveal-delay-2">Skills · Multi-agent · Remote Control · Computer Use</p>
+    <div class="title-tag reveal reveal-delay-3">팀 발표 자료</div>
+  </div>
+</section>
+
+<!-- =========================================
+     SLIDE 2 — AGENDA
+     ========================================= -->
+<section class="slide slide-agenda" id="slide-2" aria-label="목차">
+  <div class="slide-header">
+    <span class="header-topic">Overview</span>
+    <div class="header-divider"></div>
+  </div>
+  <div class="slide-content">
+    <p class="section-label reveal">오늘 다룰 주제</p>
+    <h2 class="slide-heading reveal reveal-delay-1">4가지 핵심 기능</h2>
+    <div class="agenda-grid">
+      <div class="agenda-item reveal reveal-delay-2">
+        <span class="agenda-num">01</span>
+        <div class="agenda-text">
+          <h3>Skills</h3>
+          <p>반복 워크플로를 슬래시 명령어로 재사용</p>
+        </div>
+      </div>
+      <div class="agenda-item reveal reveal-delay-3">
+        <span class="agenda-num">02</span>
+        <div class="agenda-text">
+          <h3>Multi-agent</h3>
+          <p>여러 에이전트가 병렬로 복잡한 작업 분담</p>
+        </div>
+      </div>
+      <div class="agenda-item reveal reveal-delay-4">
+        <span class="agenda-num">03</span>
+        <div class="agenda-text">
+          <h3>Remote Control</h3>
+          <p>PC 세션을 폰·다른 기기로 이어서 개발</p>
+        </div>
+      </div>
+      <div class="agenda-item reveal reveal-delay-5">
+        <span class="agenda-num">04</span>
+        <div class="agenda-text">
+          <h3>Computer Use</h3>
+          <p>Claude가 직접 UI 조작으로 작업 자동화</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================
+     SLIDE 3 — SKILLS
+     ========================================= -->
+<section class="slide" id="slide-3" aria-label="Skills">
+  <div class="slide-header">
+    <span class="header-topic">01 — Skills</span>
+    <div class="header-divider"></div>
+    <span class="tag-badge orange">재사용</span>
+  </div>
+  <div class="slide-content">
+    <div class="content-layout">
+      <div class="content-left">
+        <div class="accent-line reveal"></div>
+        <h2 class="slide-heading reveal reveal-delay-1">반복 작업을<br>명령어 하나로</h2>
+        <p class="slide-body reveal reveal-delay-2">
+          Skills는 자주 쓰는 워크플로를 슬래시 명령어로 만들어 저장하는 기능입니다. 팀 전체가 동일한 절차를 공유하고 한 줄로 실행합니다.
+        </p>
+        <ul class="feature-list reveal reveal-delay-3">
+          <li><span class="code-tag">/commit</span>, <span class="code-tag">/review</span>, <span class="code-tag">/test</span> 등 커스텀 명령어 생성</li>
+          <li>마크다운 파일 하나로 정의, 즉시 활성화</li>
+          <li>팀 레포에 공유하면 전체 표준화 가능</li>
+          <li>인자(args) 전달로 유연하게 사용</li>
+        </ul>
+      </div>
+      <div class="content-right reveal reveal-delay-4">
+        <div class="visual-card">
+          <p class="visual-card-title">실행 흐름</p>
+          <div class="flow-item highlight">
+            <div class="flow-dot"></div>
+            사용자가 <strong>/commit</strong> 입력
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item">
+            <div class="flow-dot" style="background:var(--gray-light)"></div>
+            .claude/skills/commit.md 로드
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item">
+            <div class="flow-dot" style="background:var(--gray-light)"></div>
+            git diff 분석 → 메시지 생성
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item highlight">
+            <div class="flow-dot"></div>
+            커밋 완료
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================
+     SLIDE 4 — MULTI-AGENT
+     ========================================= -->
+<section class="slide" id="slide-4" aria-label="Multi-agent">
+  <div class="slide-header">
+    <span class="header-topic">02 — Multi-agent</span>
+    <div class="header-divider"></div>
+    <span class="tag-badge orange">병렬 처리</span>
+  </div>
+  <div class="slide-content">
+    <div class="content-layout">
+      <div class="content-left">
+        <div class="accent-line reveal"></div>
+        <h2 class="slide-heading reveal reveal-delay-1">한 에이전트가<br>여러 에이전트를 지휘</h2>
+        <p class="slide-body reveal reveal-delay-2">
+          Orchestrator가 작업을 분해하고 Subagent들에게 위임합니다. 독립적인 작업은 병렬로 실행되어 속도를 높이고, 컨텍스트 오염 없이 각 에이전트가 집중합니다.
+        </p>
+        <ul class="feature-list reveal reveal-delay-3">
+          <li>탐색·구현·테스트를 동시에 진행</li>
+          <li>각 에이전트는 독립된 컨텍스트 창 유지</li>
+          <li>결과를 취합해 최종 응답 생성</li>
+          <li>복잡한 코드베이스 리뷰·마이그레이션에 효과적</li>
+        </ul>
+      </div>
+      <div class="content-right reveal reveal-delay-4">
+        <div class="visual-card">
+          <p class="visual-card-title">오케스트레이션 구조</p>
+          <div style="text-align:center;">
+            <div class="agent-box orch" style="display:inline-block; margin-bottom:0.4em;">Orchestrator</div>
+          </div>
+          <div class="connector-line"></div>
+          <div class="connector-row">
+            <div class="agent-node">
+              <div class="agent-box sub">탐색 Agent</div>
+              <span style="font-size:var(--label-size); color:var(--gray-mid);">파일 분석</span>
+            </div>
+            <div class="agent-node">
+              <div class="agent-box sub">구현 Agent</div>
+              <span style="font-size:var(--label-size); color:var(--gray-mid);">코드 작성</span>
+            </div>
+            <div class="agent-node">
+              <div class="agent-box sub">테스트 Agent</div>
+              <span style="font-size:var(--label-size); color:var(--gray-mid);">검증 실행</span>
+            </div>
+          </div>
+          <div class="connector-line"></div>
+          <div style="text-align:center;">
+            <div class="agent-box orch" style="display:inline-block; margin-top:0.4em; background:var(--black);">결과 취합</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================
+     SLIDE 5 — REMOTE CONTROL
+     ========================================= -->
+<section class="slide" id="slide-5" aria-label="Remote Control">
+  <div class="slide-header">
+    <span class="header-topic">03 — Remote Control</span>
+    <div class="header-divider"></div>
+    <span class="tag-badge orange">멀티 디바이스</span>
+  </div>
+  <div class="slide-content">
+    <div class="content-layout">
+      <div class="content-left">
+        <div class="accent-line reveal"></div>
+        <h2 class="slide-heading reveal reveal-delay-1">PC에서 시작하고<br>폰에서 이어서</h2>
+        <p class="slide-body reveal reveal-delay-2">
+          로컬 컴퓨터에서 실행 중인 Claude Code 세션을 URL 또는 QR코드로 공유합니다. 스마트폰이나 다른 기기의 브라우저에서 접속하면 동일한 세션이 그대로 이어집니다.
+        </p>
+        <ul class="feature-list reveal reveal-delay-3">
+          <li>로컬 파일시스템, MCP, 프로젝트 설정 모두 유지</li>
+          <li>네트워크 끊김 후 자동 재연결</li>
+          <li>터미널·브라우저·폰에서 동시 메시지 전송</li>
+          <li>Pro 이상 구독 + claude.ai 로그인 필요</li>
+        </ul>
+      </div>
+      <div class="content-right reveal reveal-delay-4">
+        <div class="visual-card">
+          <p class="visual-card-title">사용 방법</p>
+          <div class="flow-item highlight">
+            <div class="flow-dot"></div>
+            <code style="font-size:var(--small-size);">claude remote-control</code>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item">
+            <div class="flow-dot" style="background:var(--gray-light)"></div>
+            URL + QR코드 표시
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item">
+            <div class="flow-dot" style="background:var(--gray-light)"></div>
+            폰 카메라로 QR 스캔
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item highlight">
+            <div class="flow-dot"></div>
+            브라우저에서 동일 세션 연결
+          </div>
+          <div style="margin-top:0.75em; padding-top:0.75em; border-top:1px solid var(--gray-light);">
+            <p style="font-size:var(--label-size); color:var(--gray-mid);">또는 기존 세션에서 <span class="code-tag">/remote-control</span> 입력</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================
+     SLIDE 6 — COMPUTER USE
+     ========================================= -->
+<section class="slide" id="slide-6" aria-label="Computer Use">
+  <div class="slide-header">
+    <span class="header-topic">04 — Computer Use</span>
+    <div class="header-divider"></div>
+    <span class="tag-badge orange">UI 자동화</span>
+  </div>
+  <div class="slide-content">
+    <div class="content-layout">
+      <div class="content-left">
+        <div class="accent-line reveal"></div>
+        <h2 class="slide-heading reveal reveal-delay-1">Claude가 직접<br>컴퓨터를 조작</h2>
+        <p class="slide-body reveal reveal-delay-2">
+          Claude의 <strong>Dispatch</strong> 기능으로 Claude가 직접 컴퓨터를 조작합니다. <strong>Claw</strong>는 오픈소스 프로젝트인 OpenClaw와 동일한 방식으로 작동하며, 실제 UI를 클릭하고 브라우저를 제어해 작업을 완수합니다.
+        </p>
+        <ul class="feature-list reveal reveal-delay-3">
+          <li>브라우저 탐색, 양식 입력, 버튼 클릭 자동화</li>
+          <li>스크린샷으로 현재 화면 상태 인식</li>
+          <li>복잡한 멀티스텝 작업 자율 수행</li>
+          <li>테스트 실행, 배포, 모니터링에 활용</li>
+        </ul>
+      </div>
+      <div class="content-right reveal reveal-delay-4">
+        <div class="visual-card">
+          <p class="visual-card-title">예시 — 웹사이트 자동 테스트</p>
+          <div class="flow-item highlight">
+            <div class="flow-dot"></div>
+            "로그인 ~ 결제까지 테스트해줘"
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item">
+            <div class="flow-dot" style="background:var(--gray-light)"></div>
+            브라우저 열기 → URL 입력
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item">
+            <div class="flow-dot" style="background:var(--gray-light)"></div>
+            이메일·비밀번호 입력 → 로그인 클릭
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item">
+            <div class="flow-dot" style="background:var(--gray-light)"></div>
+            상품 선택 → 장바구니 → 결제 진행
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item">
+            <div class="flow-dot" style="background:var(--gray-light)"></div>
+            각 단계 스크린샷 저장 · 오류 감지
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item highlight">
+            <div class="flow-dot"></div>
+            테스트 결과 리포트 자동 생성
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================
+     SLIDE 7 — CLOSING
+     ========================================= -->
+<section class="slide slide-closing" id="slide-7" aria-label="마무리">
+  <div class="slide-content">
+    <div class="closing-line reveal"></div>
+    <h2 class="closing-title reveal reveal-delay-1">에이전트가 반복을 맡고<br>개발자는 판단에 집중</h2>
+    <p class="closing-body reveal reveal-delay-2">
+      Skills · Multi-agent · Remote Control · Computer Use<br>
+      네 가지 도구로 반복을 줄이고 개발에 집중한다.
+    </p>
+  </div>
+</section>
+
+<script>
+  // =========================================
+  // PRESENTATION CONTROLLER
+  // =========================================
+  class PresentationController {
+    constructor() {
+      this.slides = Array.from(document.querySelectorAll('.slide'));
+      this.total = this.slides.length;
+      this.current = 0;
+
+      this.progressBar = document.getElementById('progressBar');
+      this.currentSlideEl = document.getElementById('currentSlide');
+      this.totalSlidesEl = document.getElementById('totalSlides');
+      this.navDotsEl = document.getElementById('navDots');
+
+          this.totalSlidesEl.textContent = this.total;
+      this.buildNavDots();
+      this.bindEvents();
+      this.setupIntersectionObserver();
+      this.update(0);
+    }
+
+    buildNavDots() {
+      this.slides.forEach((_, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'nav-dot' + (i === 0 ? ' active' : '');
+        btn.setAttribute('aria-label', `슬라이드 ${i + 1}`);
+        btn.addEventListener('click', () => this.goTo(i));
+        this.navDotsEl.appendChild(btn);
+      });
+    }
+
+    goTo(index) {
+      if (index < 0 || index >= this.total) return;
+      this.slides[index].scrollIntoView({ behavior: 'smooth' });
+    }
+
+    update(index) {
+      this.current = index;
+      const pct = this.total > 1 ? (index / (this.total - 1)) * 100 : 100;
+      this.progressBar.style.width = pct + '%';
+      this.currentSlideEl.textContent = index + 1;
+
+      document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+      });
+    }
+
+    setupIntersectionObserver() {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const idx = this.slides.indexOf(entry.target);
+            if (idx !== -1) this.update(idx);
+
+            // Trigger reveal animations
+            entry.target.querySelectorAll('.reveal').forEach(el => {
+              el.classList.add('visible');
+            });
+          }
+        });
+      }, { threshold: 0.5 });
+
+      this.slides.forEach(slide => io.observe(slide));
+    }
+
+    bindEvents() {
+      // Keyboard
+      document.addEventListener('keydown', (e) => {
+        if (['ArrowDown', 'ArrowRight', 'PageDown', ' '].includes(e.key)) {
+          e.preventDefault();
+          this.goTo(this.current + 1);
+        } else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) {
+          e.preventDefault();
+          this.goTo(this.current - 1);
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          this.goTo(0);
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          this.goTo(this.total - 1);
+        }
+      });
+
+      // Touch / swipe
+      let touchStartY = 0;
+      document.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+      document.addEventListener('touchend', (e) => {
+        const delta = touchStartY - e.changedTouches[0].clientY;
+        if (Math.abs(delta) > 50) {
+          this.goTo(delta > 0 ? this.current + 1 : this.current - 1);
+        }
+      }, { passive: true });
+
+      // Mouse wheel (debounced)
+      let wheelTimeout;
+      document.addEventListener('wheel', (e) => {
+        clearTimeout(wheelTimeout);
+        wheelTimeout = setTimeout(() => {
+          this.goTo(e.deltaY > 0 ? this.current + 1 : this.current - 1);
+        }, 80);
+      }, { passive: true });
+    }
+  }
+
+  // Init
+  document.addEventListener('DOMContentLoaded', () => {
+    new PresentationController();
+  });
+</script>
+</body>
+</html>
