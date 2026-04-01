@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1주차 — 환경 세팅 + HTML/CSS 기초</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow-x: hidden; }
+    html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #fff; color: #1a1a1a; }
+
+    .slide {
+      width: 100vw; height: 100vh; height: 100dvh;
+      overflow: hidden; scroll-snap-align: start;
+      display: flex; flex-direction: column; position: relative;
+    }
+
+    :root {
+      --orange:       #FF6B2B;
+      --orange-light: #FFF3EE;
+      --orange-mid:   #FFD5BF;
+      --dark:         #1A1A1A;
+      --gray:         #777;
+      --light:        #F7F7F7;
+      --border:       #E8E8E8;
+      --code-bg:      #F2F2F2;
+      --title-size: clamp(2.2rem, 6vw, 5.5rem);
+      --h2-size:    clamp(1.6rem, 3.5vw, 3rem);
+      --h3-size:    clamp(1.1rem, 2.2vw, 1.8rem);
+      --body-size:  clamp(0.95rem, 1.7vw, 1.35rem);
+      --small-size: clamp(0.8rem, 1.2vw, 1.05rem);
+      --code-size:  clamp(0.78rem, 1.2vw, 1rem);
+      --label-size: clamp(0.7rem, 1vw, 0.9rem);
+      --pad: clamp(2.5rem, 6vw, 6rem);
+      --gap: clamp(0.8rem, 1.8vw, 1.6rem);
+    }
+    @media (max-height: 700px) {
+      :root { --title-size: clamp(1.8rem,5vw,3.5rem); --h2-size: clamp(1.3rem,3vw,2.2rem); --body-size: clamp(0.85rem,1.4vw,1.1rem); --pad: clamp(1.5rem,4vw,3rem); --gap: clamp(0.6rem,1.2vw,1rem); }
+    }
+    @media (max-height: 600px) {
+      :root { --title-size: clamp(1.4rem,4vw,2.4rem); --h2-size: clamp(1.1rem,2.5vw,1.7rem); --body-size: clamp(0.8rem,1.2vw,0.95rem); --pad: clamp(1rem,3vw,2rem); }
+      .decor, .nav-dots { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* ── LAYOUT ── */
+    .si       { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: var(--pad); max-height: 100%; overflow: hidden; }
+    .si.top   { justify-content: flex-start; padding-top: calc(var(--pad) * 0.65); }
+    .si.mid   { justify-content: center; }
+
+    /* ── TYPE ── */
+    .label    { font-size: var(--label-size); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--orange); margin-bottom: clamp(.5rem,1.2vw,1rem); }
+    h1.T      { font-size: var(--title-size); font-weight: 800; line-height: 1.08; color: var(--dark); }
+    h2.T      { font-size: var(--h2-size);    font-weight: 800; line-height: 1.15; color: var(--dark); }
+    .acc      { color: var(--orange); }
+    p.sub     { font-size: var(--body-size); color: var(--gray); line-height: 1.65; margin-top: clamp(.6rem,1.5vw,1.2rem); }
+    hr.dv     { border: none; border-top: 2px solid var(--border); margin: clamp(.7rem,1.8vw,1.5rem) 0; }
+    .bar      { width: clamp(48px,7vw,80px); height: 6px; background: var(--orange); border-radius: 3px; margin-bottom: clamp(.7rem,1.5vw,1.3rem); }
+
+    /* ── DECOR ── */
+    .dc { position: absolute; border-radius: 50%; pointer-events: none; }
+
+    /* ── SECTION SLIDE ── */
+    .S { background: var(--dark); }
+    .S h2.T  { color: #fff; }
+    .S .label{ color: var(--orange-mid); }
+    .S p.sub { color: rgba(255,255,255,.45); }
+    .S .bar  { background: var(--orange); }
+    .snum    { position: absolute; right: var(--pad); bottom: calc(var(--pad)*.5); font-size: clamp(8rem,22vw,20rem); font-weight: 800; color: rgba(255,255,255,.04); line-height: 1; pointer-events: none; }
+
+    /* ── CARDS ── */
+    .card   { background: var(--light); border-radius: 16px; padding: clamp(1.2rem,2.5vw,2rem); border: 2px solid var(--border); }
+    .card.o { background: var(--orange-light); border-color: var(--orange-mid); }
+    .card.dk{ background: var(--dark); border-color: var(--dark); color: #fff; }
+    .cnum   { font-size: clamp(2.5rem,5vw,5rem); font-weight: 800; color: var(--orange); line-height: 1; margin-bottom: .25em; }
+    .card h3{ font-size: var(--h3-size); font-weight: 700; color: var(--dark); margin-bottom: .35em; }
+    .card.dk h3{ color: #fff; }
+    .card p { font-size: var(--body-size); color: var(--gray); line-height: 1.6; }
+    .card.dk p { color: rgba(255,255,255,.55); }
+
+    /* ── GRIDS ── */
+    .g2   { display: grid; grid-template-columns: 1fr 1fr;         gap: var(--gap); }
+    .g3   { display: grid; grid-template-columns: 1fr 1fr 1fr;     gap: var(--gap); }
+    .g4   { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: var(--gap); }
+    .two  { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); align-items: start; }
+    .two.c{ align-items: center; }
+
+    /* ── CODE ── */
+    pre, code { font-family: 'JetBrains Mono', monospace; }
+    pre { background: var(--code-bg); border-radius: 14px; padding: clamp(1rem,2vw,1.6rem); overflow: hidden; line-height: 1.75; border-left: 4px solid var(--orange); font-size: var(--code-size); }
+    code.il { background: var(--code-bg); padding: .18em .55em; border-radius: 6px; font-size: .88em; }
+    .cm { color: #aaa; } .kw { color: #d73a49; } .str { color: #22863a; } .attr { color: var(--orange); }
+
+    /* ── CMD ROW ── */
+    .cmdl { display: flex; flex-direction: column; gap: var(--gap); }
+    .cmdr { display: flex; align-items: center; gap: clamp(.8rem,2vw,1.5rem); padding: clamp(1rem,2vw,1.6rem) clamp(1.2rem,2.5vw,2rem); background: var(--light); border-radius: 14px; border: 2px solid var(--border); }
+    .cmdn { min-width: clamp(2.4rem,4vw,3.5rem); height: clamp(2.4rem,4vw,3.5rem); background: var(--orange); color: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: var(--body-size); font-weight: 800; flex-shrink: 0; }
+    .cmdb h4{ font-size: var(--h3-size); font-weight: 700; }
+    .cmdb p { font-size: var(--small-size); color: var(--gray); margin-top: .2em; }
+
+    /* ── STEPS ── */
+    .stl { display: flex; flex-direction: column; gap: var(--gap); }
+    .st  { display: flex; align-items: flex-start; gap: clamp(.8rem,2vw,1.4rem); }
+    .stp { min-width: clamp(2rem,3.5vw,3rem); height: clamp(2rem,3.5vw,3rem); background: var(--orange); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--small-size); font-weight: 800; flex-shrink: 0; }
+    .st h4{ font-size: var(--body-size); font-weight: 700; }
+    .st p { font-size: var(--small-size); color: var(--gray); margin-top: .25em; line-height: 1.5; }
+
+    /* ── TABLE ── */
+    table { width: 100%; border-collapse: collapse; }
+    th { background: var(--orange); color: #fff; padding: .7em 1em; text-align: left; font-weight: 700; font-size: var(--small-size); }
+    th:first-child { border-radius: 10px 0 0 0; } th:last-child { border-radius: 0 10px 0 0; }
+    td { padding: .65em 1em; border-bottom: 1.5px solid var(--border); font-size: var(--body-size); }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: var(--light); }
+
+    /* ── BULLETS ── */
+    .bl { list-style: none; display: flex; flex-direction: column; gap: clamp(.5rem,1.2vh,1rem); }
+    .bl li { display: flex; align-items: flex-start; gap: .7em; font-size: var(--body-size); line-height: 1.55; }
+    .bl li::before { content: ''; min-width: 8px; height: 8px; background: var(--orange); border-radius: 50%; margin-top: .5em; flex-shrink: 0; }
+
+    /* ── CHIPS ── */
+    .chips { display: flex; flex-wrap: wrap; gap: .6rem; }
+    .chip  { background: var(--light); border: 2px solid var(--border); border-radius: 100px; padding: .4em 1em; font-size: var(--small-size); font-weight: 600; color: var(--dark); }
+    .chip.o{ background: var(--orange-light); border-color: var(--orange-mid); color: var(--orange); }
+
+    /* ── TAG CHIPS (code style) ── */
+    .tc  { background: var(--code-bg); border: 2px solid var(--border); border-radius: 8px; padding: .35em .8em; font-family: 'JetBrains Mono', monospace; font-size: var(--small-size); }
+    .tc.o{ background: var(--orange-light); border-color: var(--orange-mid); color: var(--orange); }
+
+    /* ── FLEX DEMO ── */
+    .fdemo { background: var(--light); border: 2px solid var(--border); border-radius: 10px; padding: .7rem; display: flex; gap: 6px; }
+    .fb    { background: var(--orange); color: #fff; border-radius: 7px; padding: .5rem .9rem; font-size: var(--small-size); font-weight: 700; }
+
+    /* ── BIG CONCEPT ── */
+    .bigc { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; height: 100%; padding: var(--pad); }
+    .big-lbl { font-size: clamp(3rem,7vw,7rem); font-weight: 800; color: var(--orange); line-height: 1; }
+    .big-desc{ font-size: var(--h2-size); font-weight: 600; color: var(--dark); margin-top: .4em; line-height: 1.3; }
+    .big-sub { font-size: var(--body-size); color: var(--gray); margin-top: .6em; line-height: 1.6; max-width: 600px; }
+
+    /* ── PADDING VS MARGIN (fixed) ── */
+    .pm-demo {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: clamp(2rem, 5vw, 4rem);
+    }
+    .pm-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(.8rem, 1.5vw, 1.2rem);
+      flex: 1;
+    }
+    /* Padding: one box, space inside is colored */
+    .pad-box {
+      background: var(--orange-light);
+      border: 3px solid var(--orange);
+      border-radius: 14px;
+      padding: clamp(1.2rem, 3vw, 2rem);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .pad-inner {
+      background: #fff;
+      border: 2px solid var(--dark);
+      border-radius: 8px;
+      padding: clamp(.6rem,1.5vw,1rem) clamp(1rem,2vw,1.8rem);
+      font-size: var(--body-size);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    /* Margin: two boxes with gap between */
+    .mar-wrap {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      justify-content: center;
+    }
+    .mar-box {
+      background: var(--light);
+      border: 2px solid var(--dark);
+      border-radius: 10px;
+      padding: clamp(.6rem,1.5vw,1rem) clamp(.8rem,2vw,1.5rem);
+      font-size: var(--body-size);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .mar-gap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,107,43,.12);
+      border-top: 2px dashed var(--orange);
+      border-bottom: 2px dashed var(--orange);
+      padding: clamp(.4rem,1vw,.8rem) 0;
+      width: clamp(40px,8vw,80px);
+      flex-shrink: 0;
+    }
+    .mar-gap span {
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--orange);
+      writing-mode: vertical-rl;
+      letter-spacing: .1em;
+    }
+    .pm-label {
+      font-size: var(--body-size);
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.5;
+    }
+    .pm-desc {
+      font-size: var(--small-size);
+      color: var(--gray);
+      text-align: center;
+      line-height: 1.5;
+    }
+    .pm-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      font-size: var(--small-size);
+      color: var(--orange);
+      font-weight: 700;
+    }
+    .pm-arrow::before, .pm-arrow::after { content: '◄'; }
+    .pm-arrow::after { content: '►'; }
+    .pm-arrow span { font-size: var(--label-size); text-transform: uppercase; letter-spacing: .1em; }
+
+    /* ── REACT SLIDES ── */
+    .react-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+      align-items: start;
+    }
+    .react-bad  { background: #fff5f5; border: 2px solid #ffcdd2; border-radius: 14px; padding: clamp(1.2rem,2.5vw,2rem); }
+    .react-good { background: var(--orange-light); border: 2px solid var(--orange-mid); border-radius: 14px; padding: clamp(1.2rem,2.5vw,2rem); }
+    .react-bad  h3 { color: #c62828; font-size: var(--h3-size); font-weight: 700; margin-bottom: .6em; }
+    .react-good h3 { color: var(--orange); font-size: var(--h3-size); font-weight: 700; margin-bottom: .6em; }
+    .react-bad  pre { background: #ffe8e8; border-left-color: #c62828; font-size: var(--code-size); }
+    .react-good pre { background: var(--orange-mid); border-left-color: var(--orange); font-size: var(--code-size); }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+    }
+    .why-card {
+      background: var(--light);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: clamp(1.2rem,2.5vw,2rem);
+      display: flex;
+      gap: clamp(.8rem,1.5vw,1.2rem);
+      align-items: flex-start;
+    }
+    .why-icon {
+      font-size: clamp(1.8rem,3.5vw,3rem);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .why-card h3 { font-size: var(--h3-size); font-weight: 700; color: var(--dark); margin-bottom: .3em; }
+    .why-card p  { font-size: var(--small-size); color: var(--gray); line-height: 1.55; }
+
+    /* ── HW CARD ── */
+    .hw { background: var(--orange-light); border: 2px solid var(--orange-mid); border-radius: 16px; padding: clamp(1.2rem,2.5vw,2rem); }
+    .hw h3 { font-size: var(--h3-size); font-weight: 700; margin-bottom: .6em; }
+
+    /* ── PREVIEW DARK ── */
+    .pdark { background: var(--dark); border-radius: 18px; padding: clamp(1.5rem,3vw,2.5rem); color: #fff; }
+    .pdark .label{ color: var(--orange-mid); }
+    .pdark h3    { font-size: var(--h2-size); font-weight: 800; margin-top: .3em; }
+    .pdark p     { font-size: var(--body-size); color: rgba(255,255,255,.5); margin-top: .6em; line-height: 1.6; }
+
+    /* ── NAV ── */
+    #pb { position: fixed; top: 0; left: 0; height: 4px; background: var(--orange); transition: width .35s ease; z-index: 100; }
+    .nav-dots { position: fixed; right: clamp(.8rem,1.5vw,1.4rem); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 7px; z-index: 100; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); cursor: pointer; transition: background .2s, transform .2s; }
+    .dot.on { background: var(--orange); transform: scale(1.5); }
+    #sc { position: fixed; bottom: clamp(.8rem,2vh,1.4rem); right: clamp(1rem,2.5vw,2rem); font-size: var(--label-size); color: var(--gray); z-index: 100; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+    /* ── REVEAL ── */
+    .r    { opacity: 0; transform: translateY(20px); transition: opacity .5s ease, transform .5s ease; }
+    .r.on { opacity: 1; transform: translateY(0); }
+    .d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s}
+    .d4{transition-delay:.4s} .d5{transition-delay:.5s} .d6{transition-delay:.6s}
+  </style>
+</head>
+<body>
+
+<div id="pb"></div>
+<div class="nav-dots" id="nd"></div>
+<div id="sc">1 / 31</div>
+
+<!-- ══ S01 타이틀 ══ -->
+<section class="slide" id="s1">
+  <div class="dc" style="width:clamp(260px,45vw,560px);height:clamp(260px,45vw,560px);background:var(--orange-light);top:-10%;right:-5%;"></div>
+  <div class="dc" style="width:clamp(100px,18vw,220px);height:clamp(100px,18vw,220px);background:var(--orange-mid);bottom:10%;right:22%;opacity:.5;"></div>
+  <div class="si">
+    <span class="chip o r" style="width:fit-content;">1주차</span>
+    <h1 class="T r d1" style="margin-top:clamp(.8rem,2vw,1.5rem);">환경 세팅 +<br /><span class="acc">HTML / CSS</span> 기초</h1>
+    <p class="sub r d2">개발 여정의 첫 번째 날 — 도구를 세팅하고 웹의 기본 언어를 배워요</p>
+    <div class="chips r d3" style="margin-top:clamp(1rem,2vw,1.8rem);">
+      <span class="chip">📁 GitHub</span><span class="chip">⚙️ VS Code</span>
+      <span class="chip">📦 Node.js</span><span class="chip">🏗️ HTML</span><span class="chip">🎨 CSS</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S02 오늘의 목표 ══ -->
+<section class="slide" id="s2">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">오늘의 목표</h2></div>
+    <hr class="dv r d1" />
+    <div class="g4 r d2" style="margin-top:var(--gap);">
+      <div class="card o" style="text-align:center;"><div class="cnum">01</div><h3>개발 환경</h3><p>VS Code, Node.js, Git 설치</p></div>
+      <div class="card o" style="text-align:center;"><div class="cnum">02</div><h3>GitHub</h3><p>Repository 만들고 올리기</p></div>
+      <div class="card o" style="text-align:center;"><div class="cnum">03</div><h3>HTML</h3><p>태그로 화면 구조 만들기</p></div>
+      <div class="card o" style="text-align:center;"><div class="cnum">04</div><h3>CSS</h3><p>스타일 + Flexbox 레이아웃</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S03 섹션: GitHub ══ -->
+<section class="slide S" id="s3">
+  <div class="snum">01</div>
+  <div class="si"><div class="r"><div class="label">1부</div><div class="bar"></div><h2 class="T">GitHub 기초</h2><p class="sub">Git · GitHub · 첫 Repository</p></div></div>
+</section>
+
+<!-- ══ S04 Git vs GitHub ══ -->
+<section class="slide" id="s4">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">Git과 GitHub</h2></div>
+    <hr class="dv r d1" />
+    <div class="two r d2" style="margin-top:var(--gap);align-items:stretch;">
+      <div class="card" style="padding:clamp(1.5rem,3vw,2.5rem);">
+        <div style="font-size:clamp(2.5rem,5vw,4.5rem);margin-bottom:.3em;">🗂</div>
+        <h3>Git</h3>
+        <p style="margin-top:.5em;font-size:var(--body-size);">코드 변경 역사를 <strong>내 컴퓨터</strong>에 기록하는 도구</p>
+        <p style="margin-top:.8em;font-size:var(--small-size);">"어제 코드로 돌아가고 싶다" 가 가능해져요</p>
+      </div>
+      <div class="card o" style="padding:clamp(1.5rem,3vw,2.5rem);">
+        <div style="font-size:clamp(2.5rem,5vw,4.5rem);margin-bottom:.3em;">🌐</div>
+        <h3>GitHub</h3>
+        <p style="margin-top:.5em;font-size:var(--body-size);">Git 기록을 <strong>인터넷</strong>에 올려두는 공간</p>
+        <p style="margin-top:.8em;font-size:var(--small-size);">포트폴리오 공유 · 협업 · 백업</p>
+      </div>
+    </div>
+    <div class="card r d3" style="margin-top:var(--gap);text-align:center;">
+      <p style="font-size:var(--body-size);"><strong>비유:</strong> &nbsp;Git = 일기장 &nbsp;/&nbsp; GitHub = 일기를 올린 블로그</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S05 Git 명령어 3개 ══ -->
+<section class="slide" id="s5">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">오늘 쓸 명령어 <span class="acc">3개</span></h2></div>
+    <hr class="dv r d1" />
+    <div class="cmdl r d2" style="margin-top:var(--gap);">
+      <div class="cmdr"><div class="cmdn">1</div><div class="cmdb"><h4><code class="il">git add .</code></h4><p>저장할 파일 선택 — 택배 상자에 물건 담기</p></div></div>
+      <div class="cmdr"><div class="cmdn">2</div><div class="cmdb"><h4><code class="il">git commit -m "메시지"</code></h4><p>저장하기 — 택배 상자 봉인하기</p></div></div>
+      <div class="cmdr"><div class="cmdn">3</div><div class="cmdb"><h4><code class="il">git push</code></h4><p>GitHub에 올리기 — 택배 보내기</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S06 GitHub 실습 ══ -->
+<section class="slide" id="s6">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">실습 — 첫 Repository</h2></div>
+    <hr class="dv r d1" />
+    <div class="two r d2" style="margin-top:var(--gap);">
+      <div class="stl">
+        <div class="st"><div class="stp">1</div><div><h4>GitHub에서 repo 만들기</h4><p>+ → New repository → Public → Create</p></div></div>
+        <div class="st"><div class="stp">2</div><div><h4>로컬 폴더 만들고 연결</h4><p><code class="il">mkdir my-first-repo</code> → VS Code로 열기</p></div></div>
+        <div class="st"><div class="stp">3</div><div><h4>파일 만들고 업로드</h4><p>index.html 생성 후 아래 명령어 순서대로</p></div></div>
+        <div class="st"><div class="stp">4</div><div><h4>GitHub에서 확인!</h4><p>브라우저에서 파일 올라간 것 확인</p></div></div>
+      </div>
+      <pre style="align-self:center;"><code><span class="cm"># 초기화 및 연결</span>
+git init
+git remote add origin [URL]
+git branch -M main
+
+<span class="cm"># 업로드</span>
+git add .
+git commit -m "첫 커밋"
+git push -u origin main</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S07 섹션: 환경세팅 ══ -->
+<section class="slide S" id="s7">
+  <div class="snum">02</div>
+  <div class="si"><div class="r"><div class="label">2부</div><div class="bar"></div><h2 class="T">환경 세팅</h2><p class="sub">VS Code · Node.js · 익스텐션 · 단축키</p></div></div>
+</section>
+
+<!-- ══ S08 설치 목록 ══ -->
+<section class="slide" id="s8">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">지금 설치할 것들</h2></div>
+    <hr class="dv r d1" />
+    <div class="g3 r d2" style="margin-top:var(--gap);">
+      <div class="card" style="padding:clamp(1.5rem,3vw,2.5rem);">
+        <div style="font-size:clamp(2.5rem,5vw,4.5rem);">🖥</div>
+        <h3 style="margin-top:.4em;">VS Code</h3>
+        <p style="margin-top:.4em;font-size:var(--small-size);">code.visualstudio.com</p>
+        <p style="margin-top:.5em;">코드 에디터</p>
+      </div>
+      <div class="card o" style="padding:clamp(1.5rem,3vw,2.5rem);">
+        <div style="font-size:clamp(2.5rem,5vw,4.5rem);">📦</div>
+        <h3 style="margin-top:.4em;">Node.js</h3>
+        <p style="margin-top:.4em;font-size:var(--small-size);">nodejs.org — LTS 버전</p>
+        <p style="margin-top:.5em;">React 실행에 필요</p>
+      </div>
+      <div class="card" style="padding:clamp(1.5rem,3vw,2.5rem);">
+        <div style="font-size:clamp(2.5rem,5vw,4.5rem);">🔧</div>
+        <h3 style="margin-top:.4em;">Git</h3>
+        <p style="margin-top:.4em;font-size:var(--small-size);">git-scm.com</p>
+        <p style="margin-top:.5em;">버전 관리 도구</p>
+      </div>
+    </div>
+    <div class="r d3" style="margin-top:var(--gap);">
+      <pre><code><span class="cm"># 설치 후 터미널에서 확인</span>
+node -v        <span class="cm"># v20.x.x 나오면 성공</span>
+npm -v         <span class="cm"># 10.x.x</span>
+git --version  <span class="cm"># git version 2.x.x</span></code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S09 VS Code 익스텐션 ══ -->
+<section class="slide" id="s9">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">VS Code 익스텐션</h2></div>
+    <hr class="dv r d1" />
+    <div class="g3 r d2" style="margin-top:var(--gap);">
+      <div class="card" style="padding:clamp(1.5rem,3vw,2.5rem);">
+        <div style="font-size:clamp(2rem,4vw,3.5rem);">🔍</div>
+        <h3 style="margin-top:.5em;">ESLint</h3>
+        <p style="margin-top:.5em;">코드 오류를 실시간으로 감지해줘요</p>
+      </div>
+      <div class="card o" style="padding:clamp(1.5rem,3vw,2.5rem);">
+        <div style="font-size:clamp(2rem,4vw,3.5rem);">✨</div>
+        <h3 style="margin-top:.5em;">Prettier</h3>
+        <p style="margin-top:.5em;">저장할 때 코드를 자동으로 정렬해줘요</p>
+      </div>
+      <div class="card" style="padding:clamp(1.5rem,3vw,2.5rem);">
+        <div style="font-size:clamp(2rem,4vw,3.5rem);">⚛️</div>
+        <h3 style="margin-top:.5em;">ES7+ React Snippets</h3>
+        <p style="margin-top:.5em;">React 단축 코드 자동완성 (다음 주 사용)</p>
+      </div>
+    </div>
+    <div class="card r d3" style="margin-top:var(--gap);text-align:center;background:var(--orange-light);border-color:var(--orange-mid);">
+      <p style="font-size:var(--body-size);">Extensions 탭 <code class="il">Cmd/Ctrl + Shift + X</code> → 이름 검색 → Install</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S10 단축키 ══ -->
+<section class="slide" id="s10">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">VS Code 단축키</h2></div>
+    <hr class="dv r d1" />
+    <div class="r d2" style="margin-top:var(--gap);">
+      <table>
+        <thead><tr><th>단축키 (Mac)</th><th>단축키 (Windows)</th><th>역할</th></tr></thead>
+        <tbody>
+          <tr><td><code class="il">Cmd + S</code></td><td><code class="il">Ctrl + S</code></td><td>저장</td></tr>
+          <tr><td><code class="il">Cmd + /</code></td><td><code class="il">Ctrl + /</code></td><td>주석 처리</td></tr>
+          <tr><td><code class="il">Option + Shift + F</code></td><td><code class="il">Alt + Shift + F</code></td><td>코드 자동 정렬 (Prettier)</td></tr>
+          <tr><td><code class="il">Ctrl + `</code></td><td><code class="il">Ctrl + `</code></td><td>터미널 열기/닫기</td></tr>
+          <tr><td><code class="il">Cmd + D</code></td><td><code class="il">Ctrl + D</code></td><td>같은 단어 동시 선택</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S10b React 프로젝트 만들기 + 확인 ══ -->
+<section class="slide" id="s10b">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">React 프로젝트 만들고 <span class="acc">확인하기</span></h2></div>
+    <hr class="dv r d1" />
+
+    <!-- OS 탭 -->
+    <div class="r d1" style="display:flex;gap:.6rem;margin-top:var(--gap);">
+      <button id="tab-mac" onclick="switchOS('mac')"
+        style="display:flex;align-items:center;gap:.5rem;padding:.5em 1.2em;border-radius:100px;border:2px solid var(--orange);background:var(--orange);color:#fff;font-size:var(--small-size);font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">
+        🍎 Mac
+      </button>
+      <button id="tab-win" onclick="switchOS('win')"
+        style="display:flex;align-items:center;gap:.5rem;padding:.5em 1.2em;border-radius:100px;border:2px solid var(--border);background:#fff;color:var(--gray);font-size:var(--small-size);font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">
+        🪟 Windows
+      </button>
+    </div>
+
+    <div class="two r d2" style="margin-top:var(--gap);align-items:start;">
+      <!-- 왼쪽: 터미널 여는 법 + 명령어 -->
+      <div style="display:flex;flex-direction:column;gap:var(--gap);">
+        <!-- Mac 설명 -->
+        <div id="os-mac">
+          <div class="card" style="padding:clamp(.8rem,1.5vw,1.2rem);margin-bottom:var(--gap);">
+            <p style="font-size:var(--small-size);font-weight:700;margin-bottom:.3em;">① 터미널 열기</p>
+            <p style="font-size:var(--small-size);color:var(--gray);">
+              <code class="il">Cmd + Space</code> → "Terminal" 검색 → 실행<br/>
+              또는 VS Code에서 <code class="il">Ctrl + `</code>
+            </p>
+          </div>
+          <pre><code><span class="cm"># 바탕화면으로 이동</span>
+cd ~/Desktop
+
+<span class="cm"># React 프로젝트 생성 (이름: my-app)</span>
+npm create vite@latest my-app -- --template react
+
+<span class="cm"># 이동 → 설치 → 실행</span>
+cd my-app
+npm install
+npm run dev</code></pre>
+        </div>
+        <!-- Windows 설명 (기본 숨김) -->
+        <div id="os-win" style="display:none;">
+          <div class="card o" style="padding:clamp(.8rem,1.5vw,1.2rem);margin-bottom:var(--gap);">
+            <p style="font-size:var(--small-size);font-weight:700;margin-bottom:.3em;">① 터미널 열기</p>
+            <p style="font-size:var(--small-size);">
+              시작 메뉴 → "PowerShell" 검색 → 실행<br/>
+              또는 VS Code에서 <code class="il">Ctrl + `</code>
+            </p>
+          </div>
+          <pre><code><span class="cm"># 바탕화면으로 이동</span>
+cd C:\Users\사용자이름\Desktop
+
+<span class="cm"># React 프로젝트 생성 (이름: my-app)</span>
+npm create vite@latest my-app -- --template react
+
+<span class="cm"># 이동 → 설치 → 실행</span>
+cd my-app
+npm install
+npm run dev</code></pre>
+        </div>
+      </div>
+
+      <!-- 오른쪽: 성공 화면 + 체크리스트 -->
+      <div style="display:flex;flex-direction:column;gap:var(--gap);">
+        <div style="background:#1a1a1a;border-radius:14px;padding:clamp(.9rem,1.8vw,1.6rem);font-family:'JetBrains Mono',monospace;font-size:var(--code-size);line-height:1.85;">
+          <div style="color:#888;margin-bottom:.5em;">② 터미널에 이런 메시지가 뜨면 성공</div>
+          <div style="color:#fff;">  VITE v5.x.x  <span style="color:#4caf50;">ready</span> in 300 ms</div>
+          <div style="color:#fff;margin-top:.3em;">  ➜  <span style="color:var(--orange);">Local</span>:   <span style="color:#64b5f6;">http://localhost:5173/</span></div>
+          <div style="color:#555;">  ➜  Network: use --host to expose</div>
+        </div>
+        <div class="card o" style="padding:clamp(.9rem,1.8vw,1.4rem);">
+          <p style="font-size:var(--small-size);color:var(--gray);margin-bottom:.5em;">③ 브라우저 주소창에 입력</p>
+          <div style="background:#fff;border-radius:8px;padding:.45rem .9rem;font-family:'JetBrains Mono',monospace;font-size:var(--body-size);font-weight:700;border:2px solid var(--orange-mid);">
+            http://localhost:5173
+          </div>
+        </div>
+        <div class="card" style="padding:clamp(.9rem,1.8vw,1.4rem);">
+          <p style="font-size:var(--small-size);font-weight:700;margin-bottom:.5em;">✅ 확인 체크리스트</p>
+          <ul class="bl">
+            <li>브라우저에 <strong>Vite + React</strong> 페이지가 뜨는가</li>
+            <li>카운터 버튼이 클릭되는가</li>
+            <li>터미널에 빨간 에러가 없는가</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:clamp(.7rem,1.2vw,1rem);background:#fff3cd;border-color:#ffc107;">
+          <p style="font-size:var(--small-size);"><strong>⚠️ 안 열리면:</strong> <code class="il">node -v</code> 로 Node.js 설치 확인</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+function switchOS(os) {
+  document.getElementById('os-mac').style.display = os === 'mac' ? 'block' : 'none';
+  document.getElementById('os-win').style.display = os === 'win' ? 'block' : 'none';
+  var tm = document.getElementById('tab-mac');
+  var tw = document.getElementById('tab-win');
+  if (os === 'mac') {
+    tm.style.background = 'var(--orange)'; tm.style.color = '#fff'; tm.style.borderColor = 'var(--orange)';
+    tw.style.background = '#fff'; tw.style.color = 'var(--gray)'; tw.style.borderColor = 'var(--border)';
+  } else {
+    tw.style.background = 'var(--orange)'; tw.style.color = '#fff'; tw.style.borderColor = 'var(--orange)';
+    tm.style.background = '#fff'; tm.style.color = 'var(--gray)'; tm.style.borderColor = 'var(--border)';
+  }
+}
+</script>
+
+<!-- ══ S11 섹션: HTML ══ -->
+<section class="slide S" id="s11">
+  <div class="snum">03</div>
+  <div class="si"><div class="r"><div class="label">3부</div><div class="bar"></div><h2 class="T">HTML 기초</h2><p class="sub">태그 · 구조 · 자주 쓰는 요소</p></div></div>
+</section>
+
+<!-- ══ S12 웹의 3요소 ══ -->
+<section class="slide" id="s12">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">웹을 만드는 <span class="acc">3가지</span></h2></div>
+    <hr class="dv r d1" />
+    <div class="g3 r d2" style="margin-top:var(--gap);">
+      <div class="card o" style="padding:clamp(1.5rem,3vw,2.5rem);text-align:center;">
+        <div style="font-size:clamp(3rem,6vw,6rem);">🏗</div>
+        <h3 style="margin-top:.4em;font-size:var(--h2-size);">HTML</h3>
+        <p style="margin-top:.5em;">뼈대 — 구조와 내용</p>
+      </div>
+      <div class="card" style="padding:clamp(1.5rem,3vw,2.5rem);text-align:center;">
+        <div style="font-size:clamp(3rem,6vw,6rem);">🎨</div>
+        <h3 style="margin-top:.4em;font-size:var(--h2-size);">CSS</h3>
+        <p style="margin-top:.5em;">옷 — 색상과 레이아웃</p>
+      </div>
+      <div class="card" style="padding:clamp(1.5rem,3vw,2.5rem);text-align:center;">
+        <div style="font-size:clamp(3rem,6vw,6rem);">⚡</div>
+        <h3 style="margin-top:.4em;font-size:var(--h2-size);">JavaScript</h3>
+        <p style="margin-top:.5em;">근육 — 동작과 인터랙션</p>
+      </div>
+    </div>
+    <div class="card r d3" style="margin-top:var(--gap);text-align:center;background:var(--orange-light);border-color:var(--orange-mid);">
+      <p style="font-size:var(--body-size);">오늘은 <strong style="color:var(--orange);">HTML</strong>과 <strong style="color:var(--orange);">CSS</strong>를 배워요 &nbsp;→&nbsp; 다음 주부터 React!</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S13 HTML 파일 구조 ══ -->
+<section class="slide" id="s13">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">HTML 파일 기본 구조</h2></div>
+    <hr class="dv r d1" />
+    <div class="two r d2" style="margin-top:var(--gap);">
+      <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ko"&gt;
+
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;title&gt;페이지 제목&lt;/title&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;h1&gt;안녕하세요&lt;/h1&gt;
+  &lt;/body&gt;
+
+&lt;/html&gt;</code></pre>
+      <div class="stl" style="align-self:center;">
+        <div class="st"><div class="stp" style="font-size:.75em;">!</div><div><h4>&lt;!DOCTYPE html&gt;</h4><p>HTML5 파일임을 브라우저에 알림</p></div></div>
+        <div class="st"><div class="stp" style="font-size:.75em;">H</div><div><h4>&lt;head&gt;</h4><p>브라우저 설정 정보 (화면에 안 보임)</p></div></div>
+        <div class="st"><div class="stp" style="font-size:.75em;">B</div><div><h4>&lt;body&gt;</h4><p>실제 화면에 보이는 모든 내용</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S14 태그 - 텍스트/묶음 ══ -->
+<section class="slide" id="s14">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">자주 쓰는 태그 — 텍스트 · 묶음</h2></div>
+    <hr class="dv r d1" />
+    <div class="two r d2" style="margin-top:var(--gap);">
+      <div>
+        <p class="label" style="text-transform:none;">텍스트</p>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem;">
+          <div class="card o" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;h1&gt; ~ &lt;h3&gt;</code><span style="margin-left:.8em;font-size:var(--small-size);color:var(--gray);">제목 (크기 순)</span></div>
+          <div class="card" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;p&gt;</code><span style="margin-left:.8em;font-size:var(--small-size);color:var(--gray);">문단 텍스트</span></div>
+          <div class="card" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;span&gt;</code><span style="margin-left:.8em;font-size:var(--small-size);color:var(--gray);">인라인 텍스트 묶음</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="label" style="text-transform:none;">묶음 (레이아웃)</p>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem;">
+          <div class="card o" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;div&gt;</code><span style="margin-left:.8em;font-size:var(--small-size);color:var(--gray);">블록 묶음 (줄 바꿈)</span></div>
+          <div class="card" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;header&gt;</code><span style="margin-left:.8em;font-size:var(--small-size);color:var(--gray);">상단 영역</span></div>
+          <div class="card" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;section&gt;</code><span style="margin-left:.8em;font-size:var(--small-size);color:var(--gray);">콘텐츠 구역</span></div>
+          <div class="card" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;footer&gt;</code><span style="margin-left:.8em;font-size:var(--small-size);color:var(--gray);">하단 영역</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S15 태그 - 미디어/입력/목록 ══ -->
+<section class="slide" id="s15">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">자주 쓰는 태그 — 미디어 · 입력 · 목록</h2></div>
+    <hr class="dv r d1" />
+    <div class="g3 r d2" style="margin-top:var(--gap);">
+      <div>
+        <p class="label" style="text-transform:none;">미디어 / 링크</p>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem;">
+          <div class="card o" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;img src="" alt="" /&gt;</code><p style="font-size:var(--small-size);margin-top:.3em;">이미지 (셀프 클로징)</p></div>
+          <div class="card" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;a href=""&gt;텍스트&lt;/a&gt;</code><p style="font-size:var(--small-size);margin-top:.3em;">하이퍼링크</p></div>
+        </div>
+      </div>
+      <div>
+        <p class="label" style="text-transform:none;">입력</p>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem;">
+          <div class="card" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;input type="text" /&gt;</code><p style="font-size:var(--small-size);margin-top:.3em;">텍스트 입력창</p></div>
+          <div class="card o" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;button&gt;클릭&lt;/button&gt;</code><p style="font-size:var(--small-size);margin-top:.3em;">버튼</p></div>
+        </div>
+      </div>
+      <div>
+        <p class="label" style="text-transform:none;">목록</p>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem;">
+          <div class="card" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;ul&gt; + &lt;li&gt;</code><p style="font-size:var(--small-size);margin-top:.3em;">순서 없는 목록 ●</p></div>
+          <div class="card" style="padding:.9rem 1.2rem;"><code class="il" style="font-size:var(--body-size);">&lt;ol&gt; + &lt;li&gt;</code><p style="font-size:var(--small-size);margin-top:.3em;">순서 있는 목록 1.2.3</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="card r d3" style="margin-top:var(--gap);background:var(--orange-light);border-color:var(--orange-mid);">
+      <p style="font-size:var(--small-size);"><strong>셀프 클로징:</strong> &nbsp;<code class="il">&lt;img /&gt;</code> &nbsp;<code class="il">&lt;input /&gt;</code> &nbsp;<code class="il">&lt;br /&gt;</code> &nbsp;— 내용 없는 태그는 스스로 닫아요</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S16 실습 1 ══ -->
+<section class="slide" id="s16">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">실습 1 — 자기소개 페이지</h2></div>
+    <hr class="dv r d1" />
+    <div class="two r d2" style="margin-top:var(--gap);">
+      <pre><code>&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;홍길동&lt;/h1&gt;
+    &lt;p&gt;프론트엔드 지망생&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;section&gt;
+    &lt;img src="..." alt="프로필" /&gt;
+    &lt;p&gt;안녕하세요!&lt;/p&gt;
+  &lt;/section&gt;
+
+  &lt;footer&gt;
+    &lt;a href="..."&gt;GitHub&lt;/a&gt;
+    &lt;button&gt;연락하기&lt;/button&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;</code></pre>
+      <div class="stl" style="align-self:center;">
+        <div class="st"><div class="stp" style="font-size:.75em;">①</div><div><h4>header</h4><p>이름 + 한 줄 소개</p></div></div>
+        <div class="st"><div class="stp" style="font-size:.75em;">②</div><div><h4>section — 프로필</h4><p>사진 + 자기소개 텍스트</p></div></div>
+        <div class="st"><div class="stp" style="font-size:.75em;">③</div><div><h4>section — 관심사</h4><p>&lt;ul&gt;&lt;li&gt; 로 목록 만들기</p></div></div>
+        <div class="st"><div class="stp" style="font-size:.75em;">④</div><div><h4>footer</h4><p>GitHub 링크 + 버튼</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S17 섹션: CSS ══ -->
+<section class="slide S" id="s17">
+  <div class="snum">04</div>
+  <div class="si"><div class="r"><div class="label">4부</div><div class="bar"></div><h2 class="T">CSS 기초</h2><p class="sub">선택자 · 속성 · Flexbox · 실습</p></div></div>
+</section>
+
+<!-- ══ S18 CSS란? ══ -->
+<section class="slide" id="s18">
+  <div class="bigc">
+    <div class="r">
+      <div style="font-size:clamp(3rem,8vw,7rem);">🎨</div>
+      <div class="big-lbl">CSS</div>
+      <div class="big-desc">HTML이 뼈대라면 CSS는 옷이에요</div>
+      <p class="big-sub">색상, 크기, 여백, 위치 등 시각적인 스타일을 담당해요.<br />HTML과 별도의 .css 파일로 분리해서 작성해요.</p>
+    </div>
+    <div class="r d2" style="margin-top:clamp(1.5rem,3vw,2.5rem);">
+      <pre style="max-width:480px;"><code><span class="cm">&lt;!-- head 안에 추가 --&gt;</span>
+&lt;link rel="stylesheet" href="style.css" /&gt;</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S19 CSS 기본 문법 ══ -->
+<section class="slide" id="s19">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">CSS 기본 문법</h2></div>
+    <hr class="dv r d1" />
+    <div class="two r d2" style="margin-top:var(--gap);">
+      <pre style="align-self:center;"><code><span class="cm">/* 선택자 { 속성: 값; } */</span>
+
+h1 {
+  color: red;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.container {
+  background-color: #f5f5f5;
+  padding: 20px;
+}</code></pre>
+      <div class="stl" style="align-self:center;">
+        <div class="st"><div class="stp" style="font-size:.75em;">→</div><div><h4>선택자</h4><p>어떤 태그에 스타일을 줄지 지정</p></div></div>
+        <div class="st"><div class="stp" style="font-size:.75em;">→</div><div><h4>속성</h4><p>무엇을 바꿀지 — color, font-size ...</p></div></div>
+        <div class="st"><div class="stp" style="font-size:.75em;">→</div><div><h4>값</h4><p>어떻게 바꿀지 — red, 32px ...</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S20 선택자 3종류 ══ -->
+<section class="slide" id="s20">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">선택자 <span class="acc">3종류</span></h2></div>
+    <hr class="dv r d1" />
+    <div class="g3 r d2" style="margin-top:var(--gap);">
+      <div class="card" style="padding:clamp(1.5rem,3vw,2.5rem);">
+        <h3>태그 선택자</h3>
+        <pre style="margin-top:.8em;"><code>h1 {
+  color: red;
+}</code></pre>
+        <p style="margin-top:.8em;">모든 &lt;h1&gt; 태그에 적용</p>
+      </div>
+      <div class="card o" style="padding:clamp(1.5rem,3vw,2.5rem);">
+        <h3>class 선택자</h3>
+        <pre style="margin-top:.8em;background:var(--orange-mid);border-left-color:var(--orange);"><code>.box {
+  padding: 20px;
+}</code></pre>
+        <p style="margin-top:.8em;">class="box" 인 요소에 적용 — 가장 많이 써요</p>
+      </div>
+      <div class="card" style="padding:clamp(1.5rem,3vw,2.5rem);">
+        <h3>id 선택자</h3>
+        <pre style="margin-top:.8em;"><code>#header {
+  background: blue;
+}</code></pre>
+        <p style="margin-top:.8em;">id="header" 인 요소에 적용</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S21 자주 쓰는 속성 ══ -->
+<section class="slide" id="s21">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">자주 쓰는 CSS 속성</h2></div>
+    <hr class="dv r d1" />
+    <div class="g3 r d2" style="margin-top:var(--gap);">
+      <div class="card" style="padding:clamp(1.2rem,2.5vw,2rem);">
+        <h3>텍스트</h3>
+        <ul class="bl" style="margin-top:.8em;">
+          <li><code class="il">color</code> — 글자색</li>
+          <li><code class="il">font-size</code> — 크기</li>
+          <li><code class="il">font-weight</code> — 굵기</li>
+          <li><code class="il">text-align</code> — 정렬</li>
+          <li><code class="il">line-height</code> — 줄간격</li>
+        </ul>
+      </div>
+      <div class="card o" style="padding:clamp(1.2rem,2.5vw,2rem);">
+        <h3>박스 여백</h3>
+        <ul class="bl" style="margin-top:.8em;">
+          <li><code class="il">width / height</code></li>
+          <li><code class="il">padding</code> — 안쪽 여백</li>
+          <li><code class="il">margin</code> — 바깥 여백</li>
+          <li><code class="il">border</code> — 테두리</li>
+          <li><code class="il">border-radius</code> — 모서리</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:clamp(1.2rem,2.5vw,2rem);">
+        <h3>배경 / 기타</h3>
+        <ul class="bl" style="margin-top:.8em;">
+          <li><code class="il">background-color</code></li>
+          <li><code class="il">background-image</code></li>
+          <li><code class="il">box-shadow</code></li>
+          <li><code class="il">opacity</code></li>
+          <li><code class="il">cursor: pointer</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S22 padding vs margin (완전히 새로 설계) ══ -->
+<section class="slide" id="s22">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">padding <span style="color:var(--gray);font-weight:400;">vs</span> margin</h2></div>
+    <hr class="dv r d1" />
+    <div class="pm-demo r d2" style="margin-top:var(--gap);flex:1;align-items:center;">
+
+      <!-- PADDING -->
+      <div class="pm-side">
+        <p class="label" style="text-transform:none;font-size:var(--body-size);font-weight:800;">padding — 안쪽 여백</p>
+        <!-- 시각화: 오렌지 배경 = padding 영역 -->
+        <div class="pad-box">
+          <div class="pad-inner">content</div>
+        </div>
+        <div class="pm-arrow"><span>padding</span></div>
+        <p class="pm-label"><span class="acc">테두리 ↔ 내용</span> 사이 여백</p>
+        <p class="pm-desc">요소 자체 크기에 포함돼요<br/>배경색이 padding 영역까지 채워져요</p>
+        <pre style="width:100%;margin-top:.5rem;"><code>.box {
+  padding: 24px;
+}</code></pre>
+      </div>
+
+      <!-- 구분선 -->
+      <div style="width:2px;background:var(--border);height:60%;border-radius:2px;flex-shrink:0;"></div>
+
+      <!-- MARGIN -->
+      <div class="pm-side">
+        <p class="label" style="text-transform:none;font-size:var(--body-size);font-weight:800;">margin — 바깥 여백</p>
+        <!-- 시각화: 두 박스 사이 공간 = margin -->
+        <div class="mar-wrap">
+          <div class="mar-box">box 1</div>
+          <div class="mar-gap"><span>margin</span></div>
+          <div class="mar-box">box 2</div>
+        </div>
+        <p class="pm-label" style="margin-top:.5rem;"><span style="color:var(--dark);">요소 ↔ 요소</span> 사이 여백</p>
+        <p class="pm-desc">요소 크기에 포함되지 않아요<br/>다른 요소와의 간격을 만들어요</p>
+        <pre style="width:100%;margin-top:.5rem;"><code>.box {
+  margin: 24px;
+}</code></pre>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ S23 Flexbox 개념 ══ -->
+<section class="slide" id="s23">
+  <div class="bigc">
+    <div class="r">
+      <div class="bar"></div>
+      <div class="big-lbl">Flexbox</div>
+      <div class="big-desc">요소들을 가로 · 세로로 정렬하는 레이아웃 도구</div>
+      <p class="big-sub">CSS 레이아웃의 핵심이에요. <code class="il">display: flex</code> 하나로 시작해요.</p>
+    </div>
+    <div class="r d2" style="margin-top:clamp(1.5rem,3vw,2.5rem);">
+      <pre style="max-width:520px;"><code>.container {
+  display: flex;            <span class="cm">/* Flexbox 시작 */</span>
+  flex-direction: row;      <span class="cm">/* 방향: row(가로) | column(세로) */</span>
+  justify-content: center;  <span class="cm">/* 주축 정렬 */</span>
+  align-items: center;      <span class="cm">/* 교차축 정렬 */</span>
+  gap: 16px;                <span class="cm">/* 자식 요소 간격 */</span>
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S24 Flexbox justify-content ══ -->
+<section class="slide" id="s24">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">justify-content 옵션</h2></div>
+    <hr class="dv r d1" />
+    <div style="display:flex;flex-direction:column;gap:var(--gap);margin-top:var(--gap);" class="r d2">
+      <div><p class="label" style="text-transform:none;margin-bottom:.4rem;">flex-start</p>
+        <div class="fdemo" style="justify-content:flex-start;"><div class="fb">A</div><div class="fb">B</div><div class="fb">C</div></div></div>
+      <div><p class="label" style="text-transform:none;margin-bottom:.4rem;">center</p>
+        <div class="fdemo" style="justify-content:center;"><div class="fb">A</div><div class="fb">B</div><div class="fb">C</div></div></div>
+      <div><p class="label" style="text-transform:none;margin-bottom:.4rem;">flex-end</p>
+        <div class="fdemo" style="justify-content:flex-end;"><div class="fb">A</div><div class="fb">B</div><div class="fb">C</div></div></div>
+      <div><p class="label" style="text-transform:none;margin-bottom:.4rem;">space-between</p>
+        <div class="fdemo" style="justify-content:space-between;"><div class="fb">A</div><div class="fb">B</div><div class="fb">C</div></div></div>
+      <div><p class="label" style="text-transform:none;margin-bottom:.4rem;">space-around</p>
+        <div class="fdemo" style="justify-content:space-around;"><div class="fb">A</div><div class="fb">B</div><div class="fb">C</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S25 실습 2 ══ -->
+<section class="slide" id="s25">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">실습 2 — 스타일 입히기</h2></div>
+    <hr class="dv r d1" />
+    <div class="two r d2" style="margin-top:var(--gap);">
+      <pre><code><span class="cm">/* 초기화 */</span>
+* { margin:0; padding:0;
+    box-sizing:border-box; }
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 12px;
+}</code></pre>
+      <div class="stl" style="align-self:center;">
+        <div class="st"><div class="stp" style="font-size:.75em;">①</div><div><h4>전체 초기화</h4><p>브라우저 기본 여백 제거</p></div></div>
+        <div class="st"><div class="stp" style="font-size:.75em;">②</div><div><h4>container 가운데 정렬</h4><p>margin: 0 auto</p></div></div>
+        <div class="st"><div class="stp" style="font-size:.75em;">③</div><div><h4>Flexbox 레이아웃</h4><p>profile을 가로 정렬</p></div></div>
+        <div class="st"><div class="stp" style="font-size:.75em;">④</div><div><h4>도전 과제</h4><p>hover 효과 · 원형 이미지</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S26 GitHub에 올리기 ══ -->
+<section class="slide" id="s26">
+  <div class="si mid">
+    <div style="max-width:700px;margin:0 auto;width:100%;">
+      <div class="r" style="text-align:center;margin-bottom:calc(var(--gap)*1.5);">
+        <div class="bar" style="margin:0 auto var(--gap);"></div>
+        <h2 class="T">오늘 작업 GitHub에 올리기</h2>
+      </div>
+      <div class="cmdl r d1">
+        <div class="cmdr"><div class="cmdn">1</div><div class="cmdb"><h4><code class="il">git add .</code></h4><p>수정된 파일 전부 선택</p></div></div>
+        <div class="cmdr"><div class="cmdn">2</div><div class="cmdb"><h4><code class="il">git commit -m "1주차 - 자기소개 페이지"</code></h4><p>저장 + 메시지 남기기</p></div></div>
+        <div class="cmdr"><div class="cmdn">3</div><div class="cmdb"><h4><code class="il">git push</code></h4><p>GitHub 업로드 → 브라우저에서 확인!</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S27 React - 왜 필요할까? ══ -->
+<section class="slide S" id="s27">
+  <div class="snum" style="font-size:clamp(5rem,15vw,14rem);">⚛</div>
+  <div class="si">
+    <div class="r">
+      <div class="label">React 미리보기</div>
+      <div class="bar"></div>
+      <h2 class="T">React, 왜 배워야 할까?</h2>
+      <p class="sub">HTML/CSS/JS만으로는 한계가 있어요 — React가 그 문제를 해결해요</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S28 React vs Vanilla JS ══ -->
+<section class="slide" id="s28">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">HTML/CSS/JS vs <span class="acc">React</span></h2></div>
+    <hr class="dv r d1" />
+    <div class="react-compare r d2" style="margin-top:var(--gap);">
+      <div class="react-bad">
+        <h3>😓 Vanilla JS (기존 방식)</h3>
+        <pre><code><span class="cm">// 화면을 직접 찾아서 수정</span>
+let count = 0
+
+function add() {
+  count++
+  document.getElementById('num')
+    .innerText = count
+  <span class="cm">// 요소가 늘어날수록</span>
+  <span class="cm">// 코드가 뒤엉켜요</span>
+}</code></pre>
+        <ul class="bl" style="margin-top:.8em;">
+          <li>DOM을 직접 찾아서 직접 바꿔야 함</li>
+          <li>코드가 복잡해질수록 관리 어려움</li>
+          <li>같은 UI를 여러 곳에 복붙해야 함</li>
+        </ul>
+      </div>
+      <div class="react-good">
+        <h3>✅ React (새로운 방식)</h3>
+        <pre><code><span class="cm">// 데이터만 바꾸면 끝!</span>
+const [count, setCount]
+  = useState(0)
+
+&lt;button onClick={() =>
+  setCount(count + 1)}&gt;
+  {count}
+&lt;/button&gt;
+<span class="cm">// React가 화면을 알아서 업데이트</span></code></pre>
+        <ul class="bl" style="margin-top:.8em;">
+          <li>데이터(state)만 바꾸면 화면 자동 업데이트</li>
+          <li>컴포넌트로 UI를 재사용 가능하게 분리</li>
+          <li>대규모 앱도 체계적으로 관리 가능</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S29 React를 배우면? ══ -->
+<section class="slide" id="s29">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">React를 배우면 <span class="acc">뭐가 좋나요?</span></h2></div>
+    <hr class="dv r d1" />
+    <div class="why-grid r d2" style="margin-top:var(--gap);">
+      <div class="why-card">
+        <div class="why-icon">💼</div>
+        <div>
+          <h3>취업에 유리해요</h3>
+          <p>국내외 스타트업, 대기업 대부분이 React를 사용해요. 프론트엔드 채용공고의 80% 이상이 React 요구</p>
+        </div>
+      </div>
+      <div class="why-card" style="background:var(--orange-light);border-color:var(--orange-mid);">
+        <div class="why-icon">🧩</div>
+        <div>
+          <h3>재사용이 쉬워요</h3>
+          <p>버튼, 카드, 모달 등 UI를 컴포넌트로 만들어두면 어디서든 가져다 쓸 수 있어요</p>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">⚡</div>
+        <div>
+          <h3>생산성이 높아요</h3>
+          <p>복잡한 UI도 상태(state) 하나만 바꾸면 화면이 자동으로 업데이트되어 빠르게 개발할 수 있어요</p>
+        </div>
+      </div>
+      <div class="why-card" style="background:var(--orange-light);border-color:var(--orange-mid);">
+        <div class="why-icon">🚀</div>
+        <div>
+          <h3>확장이 쉬워요</h3>
+          <p>React를 알면 Next.js(풀스택), React Native(앱 개발)로 자연스럽게 확장할 수 있어요</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S30 다음 주 예고 ══ -->
+<section class="slide" id="s30">
+  <div class="si mid">
+    <div style="max-width:750px;margin:0 auto;width:100%;">
+      <div class="r" style="margin-bottom:var(--gap);">
+        <div class="bar"></div>
+        <h2 class="T">다음 주 — React 입문</h2>
+        <p class="sub">오늘 배운 CSS가 React에서 그대로 쓰여요. 차이는 딱 2가지!</p>
+      </div>
+      <div class="two r d1" style="margin-top:var(--gap);">
+        <div class="card" style="padding:clamp(1.2rem,2.5vw,2rem);">
+          <p class="label" style="text-transform:none;">HTML</p>
+          <pre style="margin-top:.5em;"><code>&lt;div class="box"&gt;
+  안녕
+&lt;/div&gt;</code></pre>
+        </div>
+        <div class="card o" style="padding:clamp(1.2rem,2.5vw,2rem);">
+          <p class="label" style="text-transform:none;">React (JSX)</p>
+          <pre style="margin-top:.5em;background:var(--orange-mid);border-left-color:var(--orange);"><code>&lt;div <span style="color:var(--orange);font-weight:700;">className</span>="box"&gt;
+  안녕
+&lt;/div&gt;</code></pre>
+        </div>
+      </div>
+      <div class="card r d2" style="margin-top:var(--gap);text-align:center;background:var(--orange-light);border-color:var(--orange-mid);">
+        <p style="font-size:var(--body-size);"><code class="il">class</code> → <code class="il">className</code> &nbsp;&nbsp;·&nbsp;&nbsp; <code class="il">style="color:red"</code> → <code class="il">style=&#123;&#123; color: 'red' &#125;&#125;</code></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S31 숙제 ══ -->
+<section class="slide" id="s31">
+  <div class="si top">
+    <div class="r"><div class="bar"></div><h2 class="T">숙제 + 수고하셨습니다!</h2></div>
+    <hr class="dv r d1" />
+    <div class="two r d2" style="margin-top:var(--gap);">
+      <div class="hw">
+        <h3>📝 필수 숙제</h3>
+        <ul class="bl">
+          <li>자기소개 페이지 더 꾸며오기</li>
+          <li>Flexbox 한 군데 이상 사용</li>
+          <li>색상, 여백 직접 수정해보기</li>
+          <li>GitHub에 올리기</li>
+        </ul>
+        <div style="margin-top:1em;padding-top:1em;border-top:1.5px solid var(--orange-mid);">
+          <p style="font-size:var(--small-size);font-weight:700;color:var(--orange);margin-bottom:.4em;">도전 과제 (선택)</p>
+          <ul class="bl"><li>hover 효과 추가하기</li><li>@media 반응형 고민해보기</li></ul>
+        </div>
+      </div>
+      <div class="pdark">
+        <div class="label">다음 주</div>
+        <h3>React 입문</h3>
+        <p>자기소개 페이지를 React 컴포넌트로 변환해요. JSX, 컴포넌트, props를 배워봐요.</p>
+        <div style="margin-top:1.2em;" class="chips">
+          <span class="chip" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15);color:#fff;">JSX</span>
+          <span class="chip" style="background:rgba(255,107,43,.2);border-color:rgba(255,107,43,.4);color:var(--orange);">컴포넌트</span>
+          <span class="chip" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15);color:#fff;">Vite</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total  = slides.length;
+  let cur = 0;
+
+  const ndEl = document.getElementById('nd');
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' on' : '');
+    d.addEventListener('click', () => go(i));
+    ndEl.appendChild(d);
+  });
+
+  function ui() {
+    document.getElementById('pb').style.width = (cur / (total-1) * 100) + '%';
+    document.getElementById('sc').textContent = (cur+1) + ' / ' + total;
+    document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('on', i===cur));
+  }
+
+  function go(n) {
+    n = Math.max(0, Math.min(total-1, n));
+    cur = n;
+    slides[n].scrollIntoView({ behavior: 'smooth' });
+    ui();
+  }
+
+  document.addEventListener('keydown', e => {
+    if ([' ','ArrowRight','ArrowDown'].includes(e.key)) { e.preventDefault(); go(cur+1); }
+    if (['ArrowLeft','ArrowUp'].includes(e.key))        { e.preventDefault(); go(cur-1); }
+    if (e.key === 'Home') { e.preventDefault(); go(0); }
+    if (e.key === 'End')  { e.preventDefault(); go(total-1); }
+  });
+
+  let wl = false;
+  document.addEventListener('wheel', e => {
+    if (wl) return; wl = true;
+    go(e.deltaY > 0 ? cur+1 : cur-1);
+    setTimeout(() => { wl = false; }, 800);
+  }, { passive: true });
+
+  let ty = 0;
+  document.addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
+  document.addEventListener('touchend',   e => {
+    const dy = ty - e.changedTouches[0].clientY;
+    if (Math.abs(dy) > 40) go(dy > 0 ? cur+1 : cur-1);
+  }, { passive: true });
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const idx = Array.from(slides).indexOf(entry.target);
+      if (idx !== -1 && idx !== cur) { cur = idx; ui(); }
+      entry.target.querySelectorAll('.r').forEach(el => el.classList.add('on'));
+    });
+  }, { threshold: 0.5 });
+
+  slides.forEach(s => io.observe(s));
+  ui();
+</script>
+</body>
+</html>
