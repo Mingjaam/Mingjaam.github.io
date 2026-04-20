@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>결혼에 초대합니다 — 안정환 · 최은서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ivory:   #FAF7F2;
+    --cream:   #F3EDE3;
+    --rose:    #C9958A;
+    --rose-lt: #E8C5BD;
+    --rose-xlt:#F5EAE7;
+    --gold:    #B8955A;
+    --gold-lt: #D4B483;
+    --sage:    #8A9E8C;
+    --sage-lt: #C2D0C4;
+    --brown:   #5C4A3A;
+    --brown-md:#7A6350;
+    --brown-lt:#A08870;
+    --gray:    #9C9189;
+  }
+
+  html { background: #E8E2DA; }
+
+  body {
+    max-width: 430px;
+    margin: 0 auto;
+    background: var(--ivory);
+    font-family: 'Noto Serif KR', serif;
+    color: var(--brown);
+    overflow-x: hidden;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    position: relative;
+    min-height: 100svh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: var(--cream);
+    overflow: hidden;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  /* petal decorations */
+  .cover::before, .cover::after {
+    content: '';
+    position: absolute;
+    border-radius: 50% 50% 50% 0 / 60% 60% 40% 40%;
+    opacity: 0.18;
+    pointer-events: none;
+  }
+  .cover::before {
+    width: 260px; height: 260px;
+    background: var(--rose);
+    top: -60px; left: -80px;
+    transform: rotate(-30deg);
+  }
+  .cover::after {
+    width: 200px; height: 200px;
+    background: var(--sage);
+    bottom: -50px; right: -60px;
+    transform: rotate(140deg);
+  }
+
+  .cover-deco-top { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--rose-lt), var(--gold-lt), var(--rose-lt)); }
+  .cover-deco-bot { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--rose-lt), var(--gold-lt), var(--rose-lt)); }
+
+  .cover-ornament {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem; color: var(--rose-lt);
+    line-height: 1; margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .cover-label {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.7rem; font-weight: 300;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 2rem;
+  }
+
+  .cover-names {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.75rem; margin-bottom: 1.5rem;
+  }
+  .cover-name {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 2.2rem; font-weight: 400; color: var(--brown);
+    letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .cover-amp {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem; font-weight: 300; font-style: italic;
+    color: var(--rose); line-height: 1;
+  }
+
+  .cover-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; font-weight: 300; letter-spacing: 0.18em;
+    color: var(--brown-lt); margin-bottom: 0.5rem;
+  }
+  .cover-date-ko {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 0.78rem; font-weight: 300;
+    color: var(--gray); letter-spacing: 0.08em;
+  }
+
+  .cover-scroll {
+    position: absolute; bottom: 2rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  .cover-scroll span {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.62rem; font-weight: 300; letter-spacing: 0.2em;
+    color: var(--gray);
+  }
+  .cover-scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--rose-lt), transparent);
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+
+  /* ── DIVIDERS ── */
+  .divider {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0 2rem; margin: 0.5rem 0;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--rose-lt); }
+  .divider-gem {
+    width: 6px; height: 6px; background: var(--rose-lt);
+    transform: rotate(45deg); flex-shrink: 0;
+  }
+
+  /* ── SECTION BASE ── */
+  .section {
+    padding: 3.5rem 2rem;
+    border-bottom: 1px solid var(--cream);
+    text-align: center;
+  }
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.82rem; font-weight: 400; font-style: italic;
+    letter-spacing: 0.25em; color: var(--gold);
+    text-transform: lowercase; margin-bottom: 1.25rem;
+    display: block;
+  }
+  .section-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.3rem; font-weight: 400; color: var(--brown);
+    letter-spacing: 0.04em; line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── INVITATION LETTER ── */
+  .letter {
+    background: var(--ivory);
+    padding: 3.5rem 2.25rem;
+    text-align: center;
+  }
+  .letter-top-ornament {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; color: var(--rose-lt);
+    margin-bottom: 1.75rem; line-height: 1;
+  }
+  .letter-body {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 0.88rem; font-weight: 300;
+    line-height: 2.1; color: var(--brown-md);
+    letter-spacing: 0.02em;
+    word-break: keep-all;
+  }
+  .letter-body strong {
+    font-weight: 500; color: var(--brown);
+  }
+  .letter-names-row {
+    display: flex; justify-content: center; align-items: flex-end;
+    gap: 2rem; margin-top: 2.5rem; margin-bottom: 0.5rem;
+  }
+  .letter-family {
+    text-align: center;
+  }
+  .letter-family-label {
+    font-size: 0.68rem; font-weight: 300;
+    letter-spacing: 0.12em; color: var(--gray);
+    margin-bottom: 0.35rem; display: block;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .letter-family-name {
+    font-size: 0.82rem; color: var(--brown-md);
+    font-weight: 400; line-height: 1.8;
+  }
+  .letter-couple {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.5rem; font-weight: 400; color: var(--brown);
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .letter-couple-amp {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; color: var(--rose); font-size: 1.8rem; font-weight: 300;
+  }
+
+  /* ── DATE & TIME ── */
+  .datetime-section {
+    background: var(--cream);
+    padding: 3.5rem 2rem;
+    text-align: center;
+  }
+  .date-display {
+    margin: 1.5rem 0;
+  }
+  .date-big {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4.5rem; font-weight: 300; color: var(--brown);
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .date-big span { color: var(--rose); }
+  .date-info {
+    display: flex; justify-content: center; align-items: center;
+    gap: 1.25rem; margin: 1rem 0;
+  }
+  .date-info-item {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 0.88rem; font-weight: 300; color: var(--brown-lt);
+    letter-spacing: 0.05em;
+  }
+  .date-info-dot { width: 3px; height: 3px; background: var(--rose-lt); border-radius: 50%; }
+  .date-day-ko {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; font-weight: 300; font-style: italic;
+    color: var(--gold); letter-spacing: 0.1em;
+  }
+
+  .countdown-wrap {
+    display: flex; justify-content: center; gap: 1.25rem;
+    margin-top: 1.75rem;
+  }
+  .countdown-item {
+    display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+    min-width: 3.5rem;
+  }
+  .countdown-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem; font-weight: 300; color: var(--brown);
+    line-height: 1;
+  }
+  .countdown-label {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.62rem; font-weight: 300; letter-spacing: 0.15em;
+    color: var(--gray);
+  }
+  .countdown-sep {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; color: var(--rose-lt); align-self: center; margin-top: -0.3rem;
+  }
+
+  /* ── GALLERY ── */
+  .gallery-section {
+    padding: 3.5rem 0;
+    background: var(--ivory);
+    overflow: hidden;
+  }
+  .gallery-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.82rem; font-style: italic; letter-spacing: 0.25em;
+    color: var(--gold); text-align: center; display: block; margin-bottom: 1.5rem;
+  }
+  .gallery-scroll {
+    display: flex; gap: 0.75rem;
+    overflow-x: auto; padding: 0 2rem 0.5rem;
+    scrollbar-width: none;
+  }
+  .gallery-scroll::-webkit-scrollbar { display: none; }
+  .gallery-img {
+    flex-shrink: 0;
+    width: 160px; height: 210px;
+    border-radius: 12px;
+    background: var(--cream);
+    border: 1px solid var(--rose-lt);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.5rem; color: var(--rose-lt);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.65rem; font-weight: 300; letter-spacing: 0.1em;
+    overflow: hidden; position: relative;
+  }
+  .gallery-img svg { opacity: 0.5; }
+  .gallery-img-tall {
+    height: 270px; margin-top: -30px;
+  }
+  .gallery-img:nth-child(even) {
+    margin-top: 30px;
+  }
+
+  /* ── VENUE ── */
+  .venue-section {
+    background: var(--cream);
+    padding: 3.5rem 2rem;
+    text-align: center;
+  }
+  .venue-name {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.35rem; font-weight: 500; color: var(--brown);
+    margin-bottom: 0.3rem; letter-spacing: 0.02em;
+  }
+  .venue-hall {
+    font-size: 0.82rem; font-weight: 300; color: var(--brown-lt);
+    margin-bottom: 1.25rem; letter-spacing: 0.05em;
+  }
+  .venue-map {
+    width: 100%; height: 180px; border-radius: 14px;
+    background: var(--sage-lt); border: 1px solid var(--sage);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.5rem; margin: 1.25rem 0;
+    position: relative; overflow: hidden;
+    cursor: pointer;
+  }
+  .venue-map::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(138,158,140,.15) 28px, rgba(138,158,140,.15) 29px),
+      repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(138,158,140,.15) 28px, rgba(138,158,140,.15) 29px);
+  }
+  .venue-map-pin {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+  }
+  .venue-map-pin svg { filter: drop-shadow(0 2px 4px rgba(92,74,58,.2)); }
+  .venue-map-text {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.68rem; font-weight: 400; color: var(--brown);
+    letter-spacing: 0.05em; background: rgba(250,247,242,.85);
+    padding: 0.2em 0.7em; border-radius: 20px;
+  }
+  .venue-address {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.78rem; font-weight: 300; color: var(--brown-lt);
+    line-height: 1.7; margin-bottom: 1.25rem;
+  }
+  .venue-transport {
+    text-align: left;
+    background: var(--ivory); border-radius: 12px;
+    padding: 1.1rem 1.3rem;
+    display: flex; flex-direction: column; gap: 0.6em;
+  }
+  .transport-item {
+    display: flex; align-items: flex-start; gap: 0.7em;
+  }
+  .transport-badge {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.62rem; font-weight: 500; letter-spacing: 0.05em;
+    padding: 0.2em 0.55em; border-radius: 4px; flex-shrink: 0;
+    margin-top: 0.1em;
+  }
+  .transport-badge.subway { background: #3D7DCA; color: #fff; }
+  .transport-badge.bus    { background: #33A23D; color: #fff; }
+  .transport-badge.car    { background: var(--brown-md); color: #fff; }
+  .transport-text {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.76rem; font-weight: 300; color: var(--brown-md); line-height: 1.6;
+  }
+
+  /* ── CONTACT ── */
+  .contact-section {
+    padding: 3.5rem 2rem;
+    background: var(--ivory);
+    text-align: center;
+  }
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0.75rem; margin-top: 1.5rem;
+  }
+  .contact-card {
+    background: var(--cream); border-radius: 12px;
+    padding: 1.25rem 1rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.35em;
+    border: 1px solid var(--rose-lt);
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .contact-card:active { background: var(--rose-xlt); }
+  .contact-role {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.62rem; font-weight: 300; letter-spacing: 0.12em;
+    color: var(--gray);
+  }
+  .contact-name {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1rem; font-weight: 400; color: var(--brown);
+  }
+  .contact-btn {
+    display: inline-flex; align-items: center; gap: 0.35em;
+    margin-top: 0.4em;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.68rem; font-weight: 400; color: var(--rose);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── ACCOUNT ── */
+  .account-section {
+    background: var(--cream);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  .account-tabs {
+    display: flex; border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--rose-lt); margin: 1.25rem 0;
+  }
+  .account-tab {
+    flex: 1; padding: 0.6em; font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.75rem; font-weight: 400; cursor: pointer;
+    background: var(--ivory); color: var(--gray);
+    border: none; transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .account-tab.active { background: var(--rose); color: #fff; }
+  .account-info {
+    background: var(--ivory); border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.82rem; font-weight: 300; color: var(--brown-md);
+    line-height: 2.1; text-align: left;
+    border: 1px solid var(--rose-lt);
+  }
+  .account-info strong { font-weight: 500; color: var(--brown); }
+
+  /* ── CLOSING ── */
+  .closing {
+    background: var(--brown);
+    padding: 4rem 2rem 5rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .closing::before, .closing::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,.04);
+    pointer-events: none;
+  }
+  .closing::before { width:280px; height:280px; top:-80px; left:-80px; }
+  .closing::after  { width:200px; height:200px; bottom:-60px; right:-50px; }
+  .closing-ornament {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; color: var(--rose-lt);
+    margin-bottom: 1.25rem; opacity: 0.7;
+  }
+  .closing-text {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 0.9rem; font-weight: 300; line-height: 2.2;
+    color: rgba(255,255,255,.75); letter-spacing: 0.04em;
+    word-break: keep-all;
+  }
+  .closing-names {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; font-weight: 300; font-style: italic;
+    color: var(--rose-lt); margin-top: 2rem; letter-spacing: 0.08em;
+  }
+  .closing-date {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.7rem; font-weight: 300; letter-spacing: 0.2em;
+    color: rgba(255,255,255,.35); margin-top: 0.5rem;
+  }
+
+  /* ── FLOATING CTA ── */
+  .floating-cta {
+    position: fixed; bottom: 1.5rem; left: 50%;
+    transform: translateX(-50%);
+    max-width: 390px; width: calc(100% - 3rem);
+    background: var(--rose); color: #fff;
+    border: none; border-radius: 14px;
+    padding: 0.9rem 1.5rem;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.85rem; font-weight: 400; letter-spacing: 0.08em;
+    cursor: pointer; z-index: 50;
+    box-shadow: 0 4px 20px rgba(201,149,138,.4);
+    display: flex; align-items: center; justify-content: center; gap: 0.5em;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .floating-cta.hidden { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(10px); }
+
+  /* ── REVEAL ANIMATIONS ── */
+  .fade-up {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-up { opacity: 1; transform: none; }
+    .cover-scroll { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ COVER ══ -->
+<section class="cover">
+  <div class="cover-deco-top"></div>
+  <div class="cover-deco-bot"></div>
+
+  <div class="cover-ornament">✦</div>
+  <div class="cover-label">Wedding Invitation</div>
+
+  <div class="cover-names">
+    <div class="cover-name">정환</div>
+    <div class="cover-amp">&</div>
+    <div class="cover-name">은서</div>
+  </div>
+
+  <div class="cover-date">2026 · 04 · 30</div>
+  <div class="cover-date-ko" style="margin-top:.4rem">수요일 오후 1시</div>
+
+  <div class="cover-scroll">
+    <div class="cover-scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</section>
+
+<!-- ══ INVITATION LETTER ══ -->
+<div class="letter fade-up">
+  <div class="letter-top-ornament">❧</div>
+  <div class="letter-body">
+    저희 두 사람이 사랑을 맹세하고<br>
+    인생의 동반자가 되려 합니다.<br><br>
+    바쁘시더라도 부디 오시어<br>
+    <strong>새 출발을 축복해 주시면</strong><br>
+    더없는 기쁨과 행복이 되겠습니다.
+  </div>
+
+  <div class="divider" style="margin-top:2rem">
+    <div class="divider-line"></div>
+    <div class="divider-gem"></div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div style="margin-top:1.5rem;display:flex;justify-content:center;align-items:center;gap:.75rem">
+    <div style="text-align:center">
+      <div style="font-family:'Noto Sans KR',sans-serif;font-size:.62rem;font-weight:300;letter-spacing:.15em;color:var(--gray);margin-bottom:.4rem">신랑</div>
+      <div style="font-family:'Noto Serif KR',serif;font-size:1.25rem;font-weight:400;color:var(--brown)">안정환</div>
+    </div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;font-style:italic;color:var(--rose-lt)">❦</div>
+    <div style="text-align:center">
+      <div style="font-family:'Noto Sans KR',sans-serif;font-size:.62rem;font-weight:300;letter-spacing:.15em;color:var(--gray);margin-bottom:.4rem">신부</div>
+      <div style="font-family:'Noto Serif KR',serif;font-size:1.25rem;font-weight:400;color:var(--brown)">최은서</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DATE & TIME ══ -->
+<div class="datetime-section fade-up">
+  <span class="section-label">Date & Time</span>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-gem"></div><div class="divider-line"></div></div>
+
+  <div class="date-display">
+    <div class="date-day-ko" style="margin-bottom:.5rem">2026년 4월 30일 수요일</div>
+    <div class="date-big">30<span>.</span>04</div>
+    <div class="date-info">
+      <div class="date-info-item">오후 1시</div>
+      <div class="date-info-dot"></div>
+      <div class="date-info-item">Wednesday</div>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-gem"></div><div class="divider-line"></div></div>
+
+  <div style="margin-top:1.5rem">
+    <div style="font-family:'Noto Sans KR',sans-serif;font-size:.68rem;font-weight:300;letter-spacing:.15em;color:var(--gray);margin-bottom:.75rem">D-DAY COUNTER</div>
+    <div class="countdown-wrap" id="countdown">
+      <div class="countdown-item">
+        <div class="countdown-num" id="cd-d">--</div>
+        <div class="countdown-label">DAYS</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-item">
+        <div class="countdown-num" id="cd-h">--</div>
+        <div class="countdown-label">HRS</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-item">
+        <div class="countdown-num" id="cd-m">--</div>
+        <div class="countdown-label">MIN</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-item">
+        <div class="countdown-num" id="cd-s">--</div>
+        <div class="countdown-label">SEC</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VENUE ══ -->
+<div class="venue-section fade-up">
+  <span class="section-label">Location</span>
+  <h2 class="venue-name">계명대학교 공학관</h2>
+  <div class="venue-hall">1300호</div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-gem"></div><div class="divider-line"></div></div>
+
+  <div class="venue-map" onclick="window.open('https://maps.google.com/maps?q=계명대학교+공학관','_blank')">
+    <div class="venue-map-pin">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="var(--rose)" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+      </svg>
+      <div class="venue-map-text">지도 보기</div>
+    </div>
+  </div>
+
+  <div class="venue-address">
+    대구광역시 달서구 달구벌대로 1095<br>계명대학교 공학관 1300호
+  </div>
+
+  <div class="venue-transport">
+    <div class="transport-item">
+      <span class="transport-badge subway">지하철</span>
+      <div class="transport-text">대구 2호선 계명대역 1번 출구 도보 5분</div>
+    </div>
+    <div class="transport-item">
+      <span class="transport-badge bus">버스</span>
+      <div class="transport-text">계명대 정문 정류장 하차 후 도보 이동</div>
+    </div>
+    <div class="transport-item">
+      <span class="transport-badge car">자가용</span>
+      <div class="transport-text">계명대학교 공학관 주차장 이용</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ACCOUNT ══ -->
+<div class="account-section fade-up">
+  <span class="section-label">Wish & Congratulations</span>
+  <div class="section-title" style="font-size:1rem;margin-bottom:0">
+    마음 전하실 곳
+  </div>
+  <div class="account-info" style="margin-top:1.25rem;text-align:center">
+    <div style="font-family:'Noto Sans KR',sans-serif;font-size:.68rem;font-weight:300;letter-spacing:.12em;color:var(--gray);margin-bottom:.5rem">카카오뱅크</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--brown);letter-spacing:.05em">3333-17-9407609</div>
+    <button onclick="copyAccount()" style="margin-top:.9rem;display:inline-flex;align-items:center;gap:.4em;background:var(--rose-xlt);border:1px solid var(--rose-lt);border-radius:8px;padding:.45em 1.1em;font-family:'Noto Sans KR',sans-serif;font-size:.72rem;font-weight:400;color:var(--rose);cursor:pointer;letter-spacing:.05em">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span id="copy-label">계좌번호 복사</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══ CLOSING ══ -->
+<div class="closing">
+  <div class="closing-ornament">✦</div>
+  <div class="closing-text">
+    두 사람이 함께 걷는 이 길에<br>
+    따뜻한 마음으로 함께해 주셔서<br>
+    진심으로 감사드립니다.
+  </div>
+  <div class="closing-names">Jeong-Hwan & Eun-Seo</div>
+  <div class="closing-date">2026 · 04 · 30 · WED</div>
+</div>
+
+<!-- ══ FLOATING CALENDAR CTA ══ -->
+<button class="floating-cta" id="floatingCta" onclick="addToCalendar()">
+  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+  캘린더에 저장하기
+</button>
+
+<script>
+/* ── COUNTDOWN ── */
+function updateCountdown() {
+  const target = new Date('2026-04-30T13:00:00+09:00');
+  const now = new Date();
+  const diff = target - now;
+
+  if (diff <= 0) {
+    document.getElementById('countdown').innerHTML =
+      '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;color:var(--rose);font-style:italic;letter-spacing:.05em">결혼을 진심으로 축하합니다 ♡</div>';
+    return;
+  }
+
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+
+  document.getElementById('cd-d').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+/* ── COPY ACCOUNT ── */
+function copyAccount() {
+  navigator.clipboard.writeText('3333179407609').catch(() => {});
+  const el = document.getElementById('copy-label');
+  el.textContent = '복사 완료!';
+  setTimeout(() => { el.textContent = '계좌번호 복사'; }, 2000);
+}
+
+/* ── ADD TO CALENDAR ── */
+function addToCalendar() {
+  const start = '20260430T040000Z';
+  const end   = '20260430T060000Z';
+  const title = encodeURIComponent('안정환 ♡ 최은서 결혼식');
+  const loc   = encodeURIComponent('그랜드 워커힐 서울 비스타홀');
+  window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&location=${loc}`,'_blank');
+}
+
+/* ── FLOATING CTA HIDE ON SCROLL PAST COVER ── */
+const cta = document.getElementById('floatingCta');
+window.addEventListener('scroll', () => {
+  if (window.scrollY < 80) cta.classList.add('hidden');
+  else cta.classList.remove('hidden');
+}, { passive: true });
+cta.classList.add('hidden');
+
+/* ── FADE-UP OBSERVER ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
