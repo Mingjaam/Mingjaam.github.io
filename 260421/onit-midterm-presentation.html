@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ON-IT — 중간 발표</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Archivo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #4F46E5;
+    --accent-light: #C7D2FE;
+    --accent-faint: #EEF2FF;
+    --green: #059669;
+    --green-faint: #ECFDF5;
+    --green-light: #A7F3D0;
+    --yellow: #D97706;
+    --yellow-faint: #FFFBEB;
+    --yellow-light: #FDE68A;
+    --black: #111827;
+    --gray-dark: #374151;
+    --gray-mid: #6B7280;
+    --gray-light: #E5E7EB;
+    --gray-faint: #F9FAFB;
+    --white: #FFFFFF;
+
+    --title-size: clamp(2rem, 5.5vw, 4.5rem);
+    --h2-size: clamp(1.4rem, 3.2vw, 2.6rem);
+    --h3-size: clamp(1rem, 2vw, 1.5rem);
+    --body-size: clamp(0.82rem, 1.45vw, 1.08rem);
+    --small-size: clamp(0.72rem, 1.1vw, 0.95rem);
+    --label-size: clamp(0.62rem, 0.95vw, 0.78rem);
+
+    --slide-padding: clamp(2rem, 5vw, 5rem);
+    --content-gap: clamp(0.75rem, 2vw, 2rem);
+    --element-gap: clamp(0.4rem, 1vw, 0.9rem);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%; overflow-x: hidden;
+    font-family: 'Noto Sans KR', 'Archivo', sans-serif;
+    background: var(--white); color: var(--black);
+  }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+
+  .slide {
+    width: 100vw; height: 100vh; height: 100dvh;
+    overflow: hidden; scroll-snap-align: start;
+    display: flex; flex-direction: column;
+    position: relative; background: var(--white);
+  }
+  .slide-content {
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; max-height: 100%;
+    overflow: hidden; padding: var(--slide-padding);
+  }
+
+  /* ── PROGRESS / COUNTER / NAV ── */
+  .progress-bar {
+    position: fixed; top: 0; left: 0; width: 0%; height: 3px;
+    background: var(--accent); z-index: 100; transition: width 0.35s ease;
+  }
+  .slide-counter {
+    position: fixed; bottom: clamp(1rem,2.5vh,1.75rem); right: clamp(1.5rem,3vw,2.5rem);
+    font-family: 'Archivo', sans-serif; font-size: var(--label-size); font-weight: 600;
+    color: var(--gray-mid); letter-spacing: 0.1em; z-index: 100;
+  }
+  .slide-counter .current { color: var(--accent); }
+  .nav-dots {
+    position: fixed; right: clamp(1rem,2vw,1.5rem); top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 0.5rem; z-index: 100;
+  }
+  .nav-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--gray-light);
+    cursor: pointer; transition: background 0.25s, transform 0.25s; border: none;
+  }
+  .nav-dot.active { background: var(--accent); transform: scale(1.4); }
+
+  /* ── SHARED COMPONENTS ── */
+  .accent-line {
+    width: 4px; height: clamp(2.5rem,5vh,4rem); background: var(--accent);
+    margin-bottom: clamp(0.75rem,2vh,1.5rem); border-radius: 2px;
+  }
+  .section-label {
+    font-family: 'Archivo', sans-serif; font-size: var(--label-size);
+    font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: clamp(0.4rem,1vh,0.75rem);
+  }
+  .slide-heading {
+    font-family: 'Archivo', sans-serif; font-size: var(--h2-size);
+    font-weight: 900; color: var(--black); line-height: 1.1;
+    letter-spacing: -0.02em; margin-bottom: clamp(1rem,2.5vh,1.75rem);
+  }
+  .slide-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: clamp(1.25rem,3vh,2rem) var(--slide-padding) 0; flex-shrink: 0;
+  }
+  .header-topic {
+    font-family: 'Archivo', sans-serif; font-size: var(--label-size);
+    font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent);
+  }
+  .header-divider { flex: 1; height: 1px; background: var(--gray-light); margin: 0 clamp(1rem,2vw,1.5rem); }
+
+  .tag-badge {
+    display: inline-flex; align-items: center; padding: 0.25em 0.75em; border-radius: 999px;
+    font-size: var(--label-size); font-weight: 600; letter-spacing: 0.05em;
+    text-transform: uppercase; font-family: 'Archivo', sans-serif;
+  }
+  .tag-badge.accent { background: var(--accent-faint); color: var(--accent); border: 1px solid var(--accent-light); }
+  .tag-badge.gray   { background: var(--gray-faint);   color: var(--gray-mid); border: 1px solid var(--gray-light); }
+  .tag-badge.green  { background: var(--green-faint);  color: var(--green);    border: 1px solid var(--green-light); }
+  .tag-badge.yellow { background: var(--yellow-faint); color: var(--yellow);   border: 1px solid var(--yellow-light); }
+
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 0.4em; padding: 0.2em 0.7em;
+    border-radius: 999px; font-size: var(--label-size); font-weight: 700;
+    font-family: 'Archivo', sans-serif; letter-spacing: 0.05em;
+  }
+  .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .status-done   { background: var(--green-faint);  color: var(--green);    border: 1px solid var(--green-light); }
+  .status-done::before { background: var(--green); }
+  .status-wip    { background: var(--yellow-faint); color: var(--yellow);   border: 1px solid var(--yellow-light); }
+  .status-wip::before  { background: var(--yellow); }
+  .status-plan   { background: var(--gray-faint);   color: var(--gray-mid); border: 1px solid var(--gray-light); }
+  .status-plan::before { background: var(--gray-mid); }
+
+  .slide-body { font-size: var(--body-size); color: var(--gray-dark); line-height: 1.7; margin-bottom: clamp(0.75rem,2vh,1.5rem); }
+
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: var(--element-gap); }
+  .feature-list li {
+    font-size: var(--body-size); color: var(--gray-dark); line-height: 1.5;
+    display: flex; align-items: flex-start; gap: 0.6em;
+  }
+  .feature-list li::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0; margin-top: 0.55em;
+  }
+
+  /* ── CONTENT LAYOUTS ── */
+  .content-layout   { display: grid; grid-template-columns: 1fr 1fr;    gap: clamp(1.5rem,3vw,3rem); align-items: start; }
+  .content-layout-3 { display: grid; grid-template-columns: 1fr 1.4fr;  gap: clamp(1.5rem,3vw,3rem); align-items: start; }
+
+  /* ── FEATURE SLIDE: IMAGE-DOMINANT LAYOUT ── */
+  .feature-img-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.25rem,2.5vw,2.5rem);
+    align-items: center;
+    height: 100%;
+  }
+  .feature-img-wrap {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: clamp(.6rem,1.2vh,.9rem);
+    height: 100%;
+  }
+  .feature-img-title-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: .75rem; width: 100%;
+  }
+  .feature-img {
+    width: 100%;
+    max-height: clamp(240px, 52vh, 440px);
+    border-radius: 14px;
+    object-fit: contain;
+    display: block;
+    border: 1px solid var(--gray-light);
+    background: var(--gray-faint);
+  }
+  .feature-right-col {
+    display: flex; flex-direction: column;
+    justify-content: center;
+    gap: clamp(.6rem,1.2vh,1rem);
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* ── PROGRESS OVERVIEW CARDS ── */
+  .progress-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(0.75rem,1.5vw,1.25rem); }
+  .progress-card {
+    padding: clamp(1rem,2.5vh,1.75rem) clamp(1.25rem,2.5vw,1.75rem);
+    border: 1px solid var(--gray-light); border-radius: 14px; background: var(--white);
+    display: flex; flex-direction: column; gap: 0.6em;
+  }
+  .progress-card-num {
+    font-family: 'Archivo', sans-serif; font-size: clamp(1.75rem,3.5vw,2.75rem);
+    font-weight: 900; color: var(--accent-light); line-height: 1;
+  }
+  .progress-card h3 { font-size: var(--h3-size); font-weight: 700; color: var(--black); line-height: 1.3; }
+  .progress-card p  { font-size: var(--small-size); color: var(--gray-mid); line-height: 1.55; }
+  .progress-bar-label { display: flex; justify-content: space-between; align-items: center; font-size: var(--small-size); font-weight: 600; margin-top: 0.4em; }
+  .progress-bar-label .pct { color: var(--accent); font-family: 'Archivo', sans-serif; }
+  .progress-bar-track { width: 100%; height: 5px; background: var(--gray-light); border-radius: 999px; overflow: hidden; margin-top: 0.3em; }
+  .progress-bar-fill  { height: 100%; background: var(--accent); border-radius: 999px; transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+
+  /* ── FEATURE DETAIL DEV PANEL ── */
+  .dev-panel {
+    background: var(--gray-faint); border: 1px solid var(--gray-light);
+    border-radius: 14px; padding: clamp(1rem,2vw,1.5rem);
+    display: flex; flex-direction: column; gap: clamp(0.75rem,1.5vh,1.25rem);
+  }
+  .dev-panel-title {
+    font-family: 'Archivo', sans-serif; font-size: var(--label-size);
+    font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-mid);
+  }
+  .dev-section {
+    background: var(--white); border: 1px solid var(--gray-light);
+    border-radius: 10px; padding: 0.85em 1em;
+    display: flex; flex-direction: column; gap: 0.45em;
+  }
+  .dev-section.be { border-left: 3px solid var(--accent); }
+  .dev-section.fe { border-left: 3px solid #818CF8; }
+  .dev-section-header { display: flex; align-items: center; justify-content: space-between; }
+  .dev-role-label { font-family: 'Archivo', sans-serif; font-size: var(--label-size); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .dev-role-label.be { color: var(--accent); }
+  .dev-role-label.fe { color: #818CF8; }
+  .dev-name { font-size: var(--body-size); font-weight: 700; color: var(--black); }
+  .dev-items { list-style: none; display: flex; flex-direction: column; gap: 0.25em; margin-top: 0.1em; }
+  .dev-items li {
+    font-size: var(--small-size); color: var(--gray-dark); line-height: 1.45;
+    display: flex; align-items: flex-start; gap: 0.5em;
+  }
+  .dev-items li::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--gray-mid); flex-shrink: 0; margin-top: 0.55em; }
+
+  /* ── IMAGE PLACEHOLDER ── */
+  .img-placeholder {
+    background: var(--gray-faint); border: 2px dashed var(--gray-light);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 0.5em; min-height: clamp(7rem,18vh,14rem);
+    color: var(--gray-mid); font-size: var(--small-size);
+    font-family: 'Archivo', sans-serif; font-weight: 600; letter-spacing: 0.05em;
+  }
+  .img-placeholder svg { opacity: 0.35; }
+  .img-placeholder-sm { min-height: clamp(5rem,12vh,9rem); }
+
+  /* ── SCHEDULE ── */
+  .schedule-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: clamp(0.5rem,1vw,0.85rem); }
+  .week-card {
+    padding: clamp(0.65rem,1.5vh,1rem) clamp(0.75rem,1.5vw,1.1rem);
+    border: 1px solid var(--gray-light); border-radius: 11px; background: var(--white);
+    display: flex; flex-direction: column; gap: 0.35em;
+    position: relative; overflow: hidden;
+  }
+  .week-card.current { border-color: var(--accent); background: var(--accent-faint); }
+  .week-card.done { background: var(--gray-faint); }
+  .week-card.final { border-color: var(--green); }
+  .week-label {
+    font-family: 'Archivo', sans-serif; font-size: var(--label-size);
+    font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .week-label.c { color: var(--accent); }
+  .week-label.d { color: var(--gray-mid); }
+  .week-label.f { color: var(--green); }
+  .week-label.u { color: var(--gray-dark); }
+  .week-date { font-family: 'Archivo', sans-serif; font-size: var(--body-size); font-weight: 700; color: var(--black); }
+  .week-items { list-style: none; display: flex; flex-direction: column; gap: 0.2em; margin-top: 0.2em; }
+  .week-items li { font-size: var(--small-size); color: var(--gray-dark); line-height: 1.4; display: flex; align-items: flex-start; gap: 0.4em; }
+  .week-items li::before { content: ''; width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; margin-top: 0.52em; }
+  .week-card.current .week-items li::before { background: var(--accent); }
+  .week-card.done    .week-items li::before { background: var(--gray-mid); }
+  .week-card.final   .week-items li::before { background: var(--green); }
+  .week-card         .week-items li::before { background: var(--gray-dark); }
+  .week-badge {
+    position: absolute; top: 0.55em; right: 0.7em;
+    font-family: 'Archivo', sans-serif; font-size: calc(var(--label-size)*0.9);
+    font-weight: 700; padding: 0.1em 0.5em; border-radius: 4px;
+  }
+  .week-badge.now  { background: var(--accent); color: #fff; }
+  .week-badge.done { background: var(--gray-light); color: var(--gray-mid); }
+  .week-badge.goal { background: var(--green-faint); color: var(--green); border: 1px solid var(--green-light); }
+
+  /* ── TITLE SLIDE ── */
+  .slide-title .slide-content { padding-left: clamp(3rem,8vw,8rem); justify-content: center; }
+  .title-label {
+    font-family: 'Archivo', sans-serif; font-size: var(--label-size); font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+    margin-bottom: clamp(0.75rem,2vh,1.25rem);
+  }
+  .title-main {
+    font-family: 'Archivo', sans-serif; font-size: var(--title-size); font-weight: 900;
+    color: var(--black); line-height: 1.0; letter-spacing: -0.03em;
+    margin-bottom: clamp(0.6rem,1.5vh,1rem);
+  }
+  .title-main span { color: var(--accent); }
+  .title-sub { font-size: var(--h3-size); font-weight: 400; color: var(--gray-mid); line-height: 1.5; }
+  .title-deco { position: absolute; right: 0; top: 0; width: 38vw; height: 100%; overflow: hidden; pointer-events: none; }
+  .title-deco-inner {
+    position: absolute; right: calc(-1 * clamp(4rem,8vw,10rem)); top: 50%; transform: translateY(-50%);
+    width: clamp(18rem,32vw,42rem); height: clamp(18rem,32vw,42rem);
+    border-radius: 50%; background: var(--accent-faint); border: 2px solid var(--accent-light);
+  }
+  .title-deco-inner::after {
+    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 60%; height: 60%; border-radius: 50%; background: var(--accent-light); opacity: 0.45;
+  }
+  .title-tags { display: flex; gap: 0.6rem; margin-top: clamp(1.5rem,3.5vh,2.5rem); flex-wrap: wrap; }
+
+  /* ── MSA COMPARE SLIDE ── */
+  .msa-vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem,2.5vw,2rem); height: 100%; }
+  .msa-vs-col {
+    padding: clamp(1.25rem,3vh,2rem) clamp(1.5rem,3vw,2rem);
+    border: 1px solid var(--gray-light); border-radius: 16px;
+    display: flex; flex-direction: column; gap: 0.75em;
+  }
+  .msa-vs-col.mono { border-top: 4px solid var(--gray-mid); }
+  .msa-vs-col.msa  { border-top: 4px solid var(--accent); }
+  .msa-vs-col h3 { font-size: var(--h3-size); font-weight: 700; color: var(--black); margin-bottom: 0.2em; }
+  .msa-vs-col p  { font-size: var(--small-size); color: var(--gray-mid); line-height: 1.55; margin-bottom: 0.4em; }
+  .msa-vs-list { list-style: none; display: flex; flex-direction: column; gap: 0.5em; }
+  .msa-vs-list li {
+    font-size: var(--body-size); color: var(--gray-dark); line-height: 1.5;
+    display: flex; align-items: flex-start; gap: 0.65em;
+  }
+  .msa-vs-list li::before { content: ''; width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 0.52em; }
+  .msa-vs-col.mono .msa-vs-list li::before { background: var(--gray-mid); }
+  .msa-vs-col.msa  .msa-vs-list li::before { background: var(--accent); }
+  .msa-vs-col .key-point {
+    margin-top: auto; padding: 0.7em 0.9em; border-radius: 9px;
+    font-size: var(--small-size); color: var(--gray-dark); line-height: 1.5;
+  }
+  .msa-vs-col.mono .key-point { background: var(--gray-faint); border: 1px solid var(--gray-light); }
+  .msa-vs-col.msa  .key-point { background: var(--accent-faint); border: 1px solid var(--accent-light); }
+
+  /* ── MSA USE CASES SLIDE ── */
+  .usecase-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(0.75rem,1.5vw,1.25rem); }
+  .usecase-card {
+    padding: clamp(1rem,2.5vh,1.5rem) clamp(1.1rem,2.2vw,1.5rem);
+    border: 1px solid var(--gray-light); border-radius: 13px; background: var(--white);
+    display: flex; flex-direction: column; gap: 0.5em;
+  }
+  .usecase-company {
+    font-family: 'Archivo', sans-serif; font-size: var(--body-size);
+    font-weight: 900; color: var(--accent); letter-spacing: 0.05em;
+  }
+  .usecase-card p { font-size: var(--small-size); color: var(--gray-dark); line-height: 1.55; }
+  .usecase-card .pill {
+    display: inline-block; font-size: calc(var(--label-size)*0.95); font-family:'Archivo',sans-serif;
+    font-weight:700; background:var(--accent-faint); color:var(--accent);
+    border:1px solid var(--accent-light); border-radius:4px; padding:0.1em 0.45em;
+    letter-spacing:0.05em; width:fit-content;
+  }
+
+  /* ── MSA BENEFITS SLIDE ── */
+  .benefit-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(0.65rem,1.3vw,1.1rem); }
+  .benefit-card {
+    padding: clamp(1rem,2.5vh,1.5rem) clamp(1rem,2vw,1.4rem);
+    border: 1px solid var(--gray-light); border-radius: 13px; background: var(--white);
+    display: flex; flex-direction: column; gap: 0.5em;
+  }
+  .benefit-icon { font-size: clamp(1.4rem,2.8vw,2rem); }
+  .benefit-card h4 { font-size: var(--body-size); font-weight: 700; color: var(--black); }
+  .benefit-card p  { font-size: var(--small-size); color: var(--gray-mid); line-height: 1.55; }
+
+  /* ── MSA SERVICE SPLIT SLIDE ── */
+  .service-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(0.65rem,1.3vw,1.1rem); }
+  .service-card {
+    padding: clamp(0.9rem,2.2vh,1.35rem) clamp(1rem,2vw,1.4rem);
+    border: 1px solid var(--gray-light); border-radius: 13px; background: var(--white);
+    display: flex; flex-direction: column; gap: 0.45em;
+  }
+  .service-card.hl { border-color: var(--accent-light); background: var(--accent-faint); }
+  .service-name {
+    font-family:'Archivo',sans-serif; font-size: var(--label-size); font-weight:700;
+    text-transform:uppercase; letter-spacing:0.08em; color:var(--accent);
+  }
+  .service-card h4 { font-size: var(--body-size); font-weight:700; color:var(--black); }
+  .service-card p  { font-size: var(--small-size); color:var(--gray-mid); line-height:1.5; }
+
+  /* ── MSA ARCH + ROADMAP SLIDE ── */
+  .arch-box {
+    background: var(--gray-faint); border: 1px solid var(--gray-light);
+    border-radius: 14px; padding: clamp(1rem,2.5vh,1.5rem) clamp(1.25rem,2.5vw,1.75rem);
+  }
+  .arch-box-title {
+    font-family:'Archivo',sans-serif; font-size:var(--label-size); font-weight:700;
+    letter-spacing:0.15em; text-transform:uppercase; color:var(--gray-mid); margin-bottom:0.6em;
+  }
+  .arch-row { display:flex; align-items:center; gap:0.5em; flex-wrap:wrap; margin-bottom:0.5em; }
+  .arch-row:last-child { margin-bottom:0; }
+  .arch-tag {
+    padding:0.25em 0.7em; border-radius:7px; font-size:var(--small-size); font-weight:600;
+    font-family:'Archivo',sans-serif;
+  }
+  .arch-tag.be  { background:var(--accent-faint); color:var(--accent); border:1px solid var(--accent-light); }
+  .arch-tag.gray{ background:var(--gray-faint);   color:var(--gray-dark); border:1px solid var(--gray-light); }
+  .arch-arrow { color:var(--gray-mid); font-size:var(--small-size); font-weight:600; flex-shrink:0; }
+  .arch-desc  { font-size:var(--small-size); color:var(--gray-dark); }
+  .phase-list { list-style:none; display:flex; flex-direction:column; gap:0.45em; }
+  .phase-list li {
+    font-size:var(--body-size); color:var(--gray-dark); line-height:1.5;
+    display:flex; align-items:flex-start; gap:0.65em;
+  }
+  .phase-num {
+    font-family:'Archivo',sans-serif; font-size:var(--label-size); font-weight:700;
+    background:var(--accent); color:#fff; border-radius:50%; width:1.5em; height:1.5em;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:0.1em;
+  }
+
+  /* ── CLOSING ── */
+  .slide-closing .slide-content { align-items:center; text-align:center; gap:var(--content-gap); }
+  .closing-line { width:clamp(3rem,6vw,5rem); height:3px; background:var(--accent); border-radius:2px; }
+  .closing-title { font-family:'Archivo',sans-serif; font-size:var(--h2-size); font-weight:900; color:var(--black); line-height:1.1; letter-spacing:-0.02em; }
+  .closing-body  { font-size:var(--body-size); color:var(--gray-mid); max-width:44ch; line-height:1.7; }
+
+  /* ── ANIMATIONS ── */
+  .reveal { opacity:0; transform:translateY(18px); transition:opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity:1; transform:none; }
+  .reveal-delay-1{transition-delay:.1s} .reveal-delay-2{transition-delay:.2s}
+  .reveal-delay-3{transition-delay:.3s} .reveal-delay-4{transition-delay:.4s}
+  .reveal-delay-5{transition-delay:.5s} .reveal-delay-6{transition-delay:.6s}
+
+  /* ── RESPONSIVE ── */
+  @media(max-height:700px){
+    :root{ --slide-padding:clamp(0.75rem,3vw,2rem); --content-gap:clamp(0.4rem,1.5vw,1rem);
+           --title-size:clamp(1.5rem,4.5vw,3rem); --h2-size:clamp(1.1rem,3vw,2rem); }
+  }
+  @media(max-height:600px){
+    :root{ --slide-padding:clamp(0.5rem,2.5vw,1.5rem); --title-size:clamp(1.2rem,4vw,2.2rem);
+           --body-size:clamp(0.7rem,1.2vw,0.9rem); }
+    .nav-dots,.title-deco{display:none}
+  }
+  @media(max-width:900px){
+    .content-layout,.content-layout-3,.msa-vs-grid,.usecase-grid,.benefit-grid,.service-grid{grid-template-columns:1fr}
+    .feature-img-layout{grid-template-columns:1fr; align-items:start}
+    .content-right,.dev-panel{display:none}
+    .feature-img{max-height:clamp(180px,35vw,280px)}
+    .feature-right-col{justify-content:flex-start}
+    .progress-grid,.schedule-grid{grid-template-columns:1fr 1fr}
+    .title-deco,.nav-dots{display:none}
+  }
+  @media(max-width:600px){
+    .progress-grid,.schedule-grid,.usecase-grid,.benefit-grid,.service-grid{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{transition-duration:.2s !important}
+    html{scroll-behavior:auto} .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="slide-counter"><span class="current" id="currentSlide">1</span> / <span id="totalSlides">12</span></div>
+<nav class="nav-dots" id="navDots" aria-label="슬라이드 내비게이션"></nav>
+
+<!-- ══════════════════════════════════
+     SLIDE 1 — TITLE
+     ══════════════════════════════════ -->
+<section class="slide slide-title" id="slide-1">
+  <div class="title-deco" aria-hidden="true"><div class="title-deco-inner"></div></div>
+  <div class="slide-content">
+    <p class="title-label reveal">2026 캡스톤디자인(2) — Team 1-on-musk · 중간 발표</p>
+    <h1 class="title-main reveal reveal-delay-1"><span>ON</span>-IT</h1>
+    <p class="title-sub reveal reveal-delay-2">음성 회의에서 PRD와 프로토타입까지,<br>개발 중간 진행 현황 보고</p>
+    <div class="title-tags reveal reveal-delay-3">
+      <span class="tag-badge accent">Progress Report</span>
+      <span class="tag-badge green">2026. 04</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SLIDE 2 — PROGRESS OVERVIEW
+     ══════════════════════════════════ -->
+<section class="slide" id="slide-2">
+  <div class="slide-header">
+    <span class="header-topic">Progress Overview</span>
+    <div class="header-divider"></div>
+    <span class="tag-badge gray">3 Features</span>
+  </div>
+  <div class="slide-content">
+    <p class="section-label reveal">개발 진행 현황</p>
+    <h2 class="slide-heading reveal reveal-delay-1">3가지 기능, 각자의 궤도에서</h2>
+    <div class="progress-grid">
+      <div class="progress-card reveal reveal-delay-2">
+        <div class="progress-card-num">01</div>
+        <h3>자동 PRD 생성</h3>
+        <p>UI 및 생성 파이프라인 로컬 개발 완료. Claude API 연동으로 완전 자동화 예정</p>
+        <div style="display:flex;gap:.5em;flex-wrap:wrap;margin-top:.3em">
+          <span class="status-badge status-done">UI 구현</span>
+          <span class="status-badge status-done">파이프라인</span>
+          <span class="status-badge status-wip">배포 연동</span>
+        </div>
+        <div class="progress-bar-label"><span>전체 진행률</span><span class="pct">70%</span></div>
+        <div class="progress-bar-track"><div class="progress-bar-fill" style="width:70%"></div></div>
+      </div>
+      <div class="progress-card reveal reveal-delay-3">
+        <div class="progress-card-num">02</div>
+        <h3>음성 채팅<br>(WebRTC)</h3>
+        <p>같은 네트워크 3대 연결 성공. 외부 네트워크 TURN 서버 적용 중</p>
+        <div style="display:flex;gap:.5em;flex-wrap:wrap;margin-top:.3em">
+          <span class="status-badge status-done">P2P 연결</span>
+          <span class="status-badge status-done">Mesh 구조</span>
+          <span class="status-badge status-wip">외부 네트워크</span>
+        </div>
+        <div class="progress-bar-label"><span>전체 진행률</span><span class="pct">55%</span></div>
+        <div class="progress-bar-track"><div class="progress-bar-fill" style="width:55%"></div></div>
+      </div>
+      <div class="progress-card reveal reveal-delay-4">
+        <div class="progress-card-num">03</div>
+        <h3>크로스 플랫폼<br>(iOS)</h3>
+        <p>Swift iOS 앱 70% 완료. 소셜 로그인 및 모바일 API 연동 완성</p>
+        <div style="display:flex;gap:.5em;flex-wrap:wrap;margin-top:.3em">
+          <span class="status-badge status-done">로그인</span>
+          <span class="status-badge status-done">캔버스 UI</span>
+          <span class="status-badge status-wip">채팅 연동</span>
+        </div>
+        <div class="progress-bar-label"><span>전체 진행률</span><span class="pct">70%</span></div>
+        <div class="progress-bar-track"><div class="progress-bar-fill" style="width:70%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SLIDE 3 — FEATURE 01: 자동 PRD
+     ══════════════════════════════════ -->
+<section class="slide" id="slide-3">
+  <div class="slide-header">
+    <span class="header-topic">Feature 01 · 개발 현황</span>
+    <div class="header-divider"></div>
+    <span class="tag-badge accent">AI · PRD</span>
+  </div>
+  <div class="slide-content">
+    <div class="feature-img-layout">
+      <div class="feature-img-wrap">
+        <div class="feature-img-title-row reveal">
+          <h2 class="slide-heading" style="margin-bottom:0">자동 PRD 생성</h2>
+          <span class="status-badge status-done">로컬 완료</span>
+        </div>
+        <img src="./images/prd.png" alt="PRD 생성 UI" class="feature-img reveal reveal-delay-1">
+      </div>
+      <div class="feature-right-col reveal reveal-delay-2">
+        <p class="slide-body" style="margin-bottom:0">
+          사용자 아이디어를 AI가 분석해 PRD를 자동 작성합니다. UI와 파이프라인 모두 로컬 완료, 배포 시 Claude API 키 연동으로 완전 자동화 전환 예정입니다.
+        </p>
+        <div class="dev-panel">
+          <div class="dev-panel-title">담당 파트 · 개발 내역</div>
+          <div class="dev-section fe">
+            <div class="dev-section-header">
+              <span class="dev-role-label fe">Frontend · 영서</span>
+              <span class="status-badge status-done">로컬 완료</span>
+            </div>
+            <div class="dev-name">PRD 결과 화면 & 파이프라인 UI</div>
+            <ul class="dev-items">
+              <li>PRD 생성 요청 폼 및 결과 렌더링 화면 구현</li>
+              <li>아이디어 입력 → AI 요청 → PRD 출력 플로우 완성</li>
+              <li>UI 개선 및 배포 버전 적용 작업 진행 중</li>
+            </ul>
+          </div>
+          <div class="dev-section be">
+            <div class="dev-section-header">
+              <span class="dev-role-label be">Backend · 수빈</span>
+              <span class="status-badge status-done">로컬 완료</span>
+            </div>
+            <div class="dev-name">AI PRD 생성 파이프라인</div>
+            <ul class="dev-items">
+              <li>Claude API 프롬프트 엔지니어링 및 파이프라인 설계</li>
+              <li>로컬 서버 전체 파이프라인 동작 검증 완료</li>
+              <li>추후 STT 입력 수신 인터페이스 설계 예정</li>
+            </ul>
+          </div>
+          <div style="background:var(--accent-faint);border-radius:8px;padding:.6em .9em;border:1px solid var(--accent-light)">
+            <div style="font-family:'Archivo',sans-serif;font-size:var(--label-size);font-weight:700;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25em">다음 단계</div>
+            <p style="font-size:var(--small-size);color:var(--gray-dark);line-height:1.5">Claude API 키 연동 → 완전 자동화 배포 / STT 연결로 음성 기반 PRD 생성 추가</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SLIDE 4 — FEATURE 02: WebRTC
+     ══════════════════════════════════ -->
+<section class="slide" id="slide-4">
+  <div class="slide-header">
+    <span class="header-topic">Feature 02 · 개발 현황</span>
+    <div class="header-divider"></div>
+    <span class="tag-badge accent">WebRTC · P2P</span>
+  </div>
+  <div class="slide-content">
+    <div class="feature-img-layout">
+      <div class="feature-img-wrap">
+        <div class="feature-img-title-row reveal">
+          <h2 class="slide-heading" style="margin-bottom:0">음성 채팅<br>(WebRTC)</h2>
+          <span class="status-badge status-wip">외부 연결 미해결</span>
+        </div>
+        <img src="./images/voice.png" alt="음성 채팅 화면" class="feature-img reveal reveal-delay-1">
+      </div>
+      <div class="feature-right-col reveal reveal-delay-2">
+        <p class="slide-body" style="margin-bottom:0">
+          RTCPeerConnection 기반 P2P 구현 완료. 같은 네트워크 3대 연결 성공. 외부 네트워크는 TURN 서버 이슈 — coturn 자체 구축으로 해결 예정입니다.
+        </p>
+        <div class="dev-panel">
+          <div class="dev-panel-title">담당 파트 · 개발 내역</div>
+          <div class="dev-section fe">
+            <div class="dev-section-header">
+              <span class="dev-role-label fe">Frontend · 은서</span>
+              <span class="status-badge status-wip">외부 연결 미해결</span>
+            </div>
+            <div class="dev-name">WebRTC 클라이언트 & 음성 UI</div>
+            <ul class="dev-items">
+              <li>RTCPeerConnection 연결 로직 및 오디오 스트림 처리</li>
+              <li>Mesh 구조 다중 PeerConnection 관리</li>
+              <li>마이크 On/Off, 참여자 표시 UI 구현</li>
+            </ul>
+          </div>
+          <div class="dev-section be">
+            <div class="dev-section-header">
+              <span class="dev-role-label be">Backend · 양효</span>
+              <span class="status-badge status-done">시그널링 완료</span>
+            </div>
+            <div class="dev-name">WebRTC 시그널링 서버</div>
+            <ul class="dev-items">
+              <li>Socket.IO 시그널링 서버 — offer/answer/ICE 중계</li>
+              <li>방(room) 단위 참여자 관리 및 연결 조율</li>
+              <li>coturn 자체 서버 구축 계획 수립 중</li>
+            </ul>
+          </div>
+          <div style="background:var(--yellow-faint);border-radius:8px;padding:.6em .9em;border:1px solid var(--yellow-light)">
+            <div style="font-family:'Archivo',sans-serif;font-size:var(--label-size);font-weight:700;color:var(--yellow);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25em">현재 한계 & 해결 계획</div>
+            <p style="font-size:var(--small-size);color:var(--gray-dark);line-height:1.5">동일 네트워크 3대 성공, 외부 불가 → <strong>coturn 구축</strong>으로 해결. 다자간 확장 시 <strong>SFU (mediasoup)</strong> 도입</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SLIDE 5 — FEATURE 03: iOS
+     ══════════════════════════════════ -->
+<section class="slide" id="slide-5">
+  <div class="slide-header">
+    <span class="header-topic">Feature 03 · 개발 현황</span>
+    <div class="header-divider"></div>
+    <span class="tag-badge accent">iOS · Swift</span>
+  </div>
+  <div class="slide-content">
+    <div class="feature-img-layout">
+      <div class="feature-img-wrap">
+        <div class="feature-img-title-row reveal">
+          <h2 class="slide-heading" style="margin-bottom:0">크로스 플랫폼<br>(iOS)</h2>
+          <span class="status-badge status-done">70% 완료</span>
+        </div>
+        <img src="./images/ios.png" alt="iOS 앱 화면" class="feature-img reveal reveal-delay-1">
+      </div>
+      <div class="feature-right-col reveal reveal-delay-2">
+        <p class="slide-body" style="margin-bottom:0">
+          Swift 네이티브 앱 70% 완료. 소셜 로그인, 캔버스, 채팅까지 구현됐으며 백엔드는 플랫폼별 redirect_uri 동적 처리로 모바일-웹 공통 인증을 완성했습니다.
+        </p>
+        <div class="dev-panel">
+          <div class="dev-panel-title">담당 파트 · 개발 내역</div>
+          <div class="dev-section fe">
+            <div class="dev-section-header">
+              <span class="dev-role-label fe">Frontend (iOS) · 민재</span>
+              <span class="status-badge status-done">70% 완료</span>
+            </div>
+            <div class="dev-name">Swift iOS 네이티브 앱</div>
+            <ul class="dev-items">
+              <li>SwiftUI 전체 화면 구조 · 구글/애플 로그인 연동</li>
+              <li>프로젝트 목록 · 캔버스 · 노트 카드 화면 구현</li>
+              <li>WebSocket 실시간 채팅 패널 · Keychain 토큰 저장</li>
+            </ul>
+          </div>
+          <div class="dev-section be">
+            <div class="dev-section-header">
+              <span class="dev-role-label be">Backend · 현준</span>
+              <span class="status-badge status-done">인증 완료</span>
+            </div>
+            <div class="dev-name">모바일 대응 API & 인증</div>
+            <ul class="dev-items">
+              <li>구글 로그인 — platform 파라미터 기반 redirect_uri 동적 조정</li>
+              <li>애플 로그인 — iOS native custom scheme URI 지원</li>
+              <li>iOS / Web 공통 인증 체계 통합 설계</li>
+            </ul>
+          </div>
+          <div style="background:var(--green-faint);border-radius:8px;padding:.6em .9em;border:1px solid var(--green-light)">
+            <div style="font-family:'Archivo',sans-serif;font-size:var(--label-size);font-weight:700;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25em">남은 작업</div>
+            <p style="font-size:var(--small-size);color:var(--gray-dark);line-height:1.5">WebRTC 음성 채팅 모바일 연동 / 실기기 전반 UX 테스트 및 폴리싱</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SLIDE 6 — 개발 일정
+     ══════════════════════════════════ -->
+<section class="slide" id="slide-6">
+  <div class="slide-header">
+    <span class="header-topic">Development Schedule</span>
+    <div class="header-divider"></div>
+    <span class="tag-badge gray">4월 21일 — 6월 2째주</span>
+  </div>
+  <div class="slide-content">
+    <p class="section-label reveal">앞으로의 개발 일정</p>
+    <h2 class="slide-heading reveal reveal-delay-1" style="margin-bottom:clamp(.5rem,1.2vh,.9rem)">8주 스프린트</h2>
+    <div class="schedule-grid reveal reveal-delay-2">
+
+      <div class="week-card current">
+        <span class="week-badge now">NOW</span>
+        <div class="week-label c">Week 1</div>
+        <div class="week-date">4 / 21 — 4 / 27</div>
+        <ul class="week-items">
+          <li>coturn 서버 환경 구축 착수</li>
+          <li>PRD UI 개선 및 배포 환경 세팅</li>
+          <li>iOS 잔여 화면 마무리</li>
+        </ul>
+      </div>
+
+      <div class="week-card">
+        <div class="week-label u">Week 2</div>
+        <div class="week-date">4 / 28 — 5 / 4</div>
+        <ul class="week-items">
+          <li>coturn 외부 네트워크 연결 테스트</li>
+          <li>Claude API 키 연동 → PRD 배포</li>
+          <li>iOS 음성 채팅 연동 준비</li>
+        </ul>
+      </div>
+
+      <div class="week-card">
+        <div class="week-label u">Week 3</div>
+        <div class="week-date">5 / 5 — 5 / 11</div>
+        <ul class="week-items">
+          <li>WebRTC 다자간 안정화 테스트</li>
+          <li>PRD STT 파이프라인 연결 설계</li>
+          <li>iOS WebRTC 연동 시작</li>
+        </ul>
+      </div>
+
+      <div class="week-card">
+        <div class="week-label u">Week 4</div>
+        <div class="week-date">5 / 12 — 5 / 18</div>
+        <ul class="week-items">
+          <li>음성 → STT → PRD 전체 파이프라인 통합</li>
+          <li>모바일 통합 테스트</li>
+          <li>SFU (mediasoup) 도입 검토</li>
+        </ul>
+      </div>
+
+      <div class="week-card">
+        <div class="week-label u">Week 5</div>
+        <div class="week-date">5 / 19 — 5 / 25</div>
+        <ul class="week-items">
+          <li>3개 기능 전체 E2E 테스트</li>
+          <li>버그 수정 및 예외 처리 강화</li>
+          <li><strong>Code Freeze</strong></li>
+        </ul>
+      </div>
+
+      <div class="week-card">
+        <div class="week-label u">Week 6</div>
+        <div class="week-date">5 / 26 — 6 / 1</div>
+        <ul class="week-items">
+          <li>최종 통합 점검 및 성능 튜닝</li>
+          <li>프로덕션 서버 부하 테스트</li>
+          <li>배포 준비 및 스토어 심사 제출</li>
+        </ul>
+      </div>
+
+      <div class="week-card">
+        <div class="week-label u">Week 7</div>
+        <div class="week-date">6 / 2 — 6 / 8</div>
+        <ul class="week-items">
+          <li>프로덕션 배포 및 모니터링</li>
+          <li>심사 피드백 대응 및 핫픽스</li>
+          <li>최종 발표 자료 준비</li>
+        </ul>
+      </div>
+
+      <div class="week-card final">
+        <span class="week-badge goal">GOAL</span>
+        <div class="week-label f">Week 8</div>
+        <div class="week-date">6 / 9 — 6 / 15</div>
+        <ul class="week-items">
+          <li>최종 발표</li>
+          <li>데모 영상 제작 완료</li>
+          <li>라이브 트래픽 모니터링</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SLIDE 7 — MSA 개념: 모놀리식 vs MSA
+     ══════════════════════════════════ -->
+<section class="slide" id="slide-7">
+  <div class="slide-header">
+    <span class="header-topic">Architecture Plan · MSA</span>
+    <div class="header-divider"></div>
+    <span class="tag-badge gray">Microservice Architecture</span>
+  </div>
+  <div class="slide-content">
+    <p class="section-label reveal">마이크로서비스 아키텍처란</p>
+    <h2 class="slide-heading reveal reveal-delay-1" style="margin-bottom:clamp(.6rem,1.5vh,1.1rem)">모놀리식 vs 마이크로서비스</h2>
+    <div class="msa-vs-grid reveal reveal-delay-2">
+      <div class="msa-vs-col mono">
+        <h3>모놀리식 (Monolithic)</h3>
+        <p>모든 기능이 하나의 코드베이스·서버에 통합된 전통적인 구조</p>
+        <ul class="msa-vs-list">
+          <li>초기 개발이 단순하고 빠름</li>
+          <li>작은 변경에도 <strong>전체 재배포</strong> 필요</li>
+          <li>하나의 서비스 장애 → 전체 시스템 영향</li>
+          <li>팀 규모 커질수록 <strong>배포 병목</strong> 발생</li>
+          <li>특정 기능만 집중 확장(Scale-out) 불가</li>
+        </ul>
+        <div class="key-point">
+          규모가 작을 때는 효율적이지만, 서비스가 성장할수록 유지보수 비용이 급격히 증가합니다.
+        </div>
+      </div>
+      <div class="msa-vs-col msa">
+        <h3>마이크로서비스 (MSA)</h3>
+        <p>기능별로 분리된 독립적인 소규모 서비스들이 API로 통신하는 구조</p>
+        <ul class="msa-vs-list">
+          <li>서비스별 <strong>독립 배포 · 독립 확장</strong> 가능</li>
+          <li>장애 격리 — 한 서비스 다운 시 타 서비스 정상 운영</li>
+          <li>팀별 기술 스택(언어·프레임워크) 자유롭게 선택</li>
+          <li>트래픽 몰리는 서비스만 <strong>선택적 스케일아웃</strong></li>
+          <li>각 서비스를 독립 팀이 소유 → 병렬 개발 가능</li>
+        </ul>
+        <div class="key-point">
+          <strong>핵심 원칙:</strong> 각 서비스는 단일 책임(Single Responsibility)을 가지며 REST / gRPC / 메시지 큐를 통해서만 통신합니다.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SLIDE 8 — MSA 실사례
+     ══════════════════════════════════ -->
+<section class="slide" id="slide-8">
+  <div class="slide-header">
+    <span class="header-topic">MSA · 실제 도입 사례</span>
+    <div class="header-divider"></div>
+  </div>
+  <div class="slide-content">
+    <p class="section-label reveal">글로벌 기업들의 선택</p>
+    <h2 class="slide-heading reveal reveal-delay-1" style="margin-bottom:clamp(.75rem,2vh,1.25rem)">MSA는 이미 산업 표준</h2>
+    <div class="usecase-grid reveal reveal-delay-2">
+      <div class="usecase-card">
+        <div class="usecase-company">Netflix</div>
+        <span class="pill">500+ 마이크로서비스</span>
+        <p>추천·스트리밍·결제·검색을 각각 독립 서비스로 운영. 특정 서비스 장애가 전체 플랫폼에 영향을 주지 않도록 격리. MSA 전환 이후 배포 횟수를 수십 배 늘리는 데 성공.</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-company">Amazon</div>
+        <span class="pill">연 수십만 회 배포</span>
+        <p>초대형 모놀리식에서 MSA로 전환해 팀별 독립 배포 사이클 확보. 이 경험이 AWS 클라우드 서비스의 기술 기반이 되었으며 Amazon Prime, Marketplace 등을 독립 운영.</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-company">Uber</div>
+        <span class="pill">지도 / 결제 / 매칭 분리</span>
+        <p>지도, 결제, 드라이버 매칭, 알림을 각각 독립 서비스로 운영. 글로벌 확장 시 특정 지역·기능만 집중 스케일아웃. 도시별 수요 패턴에 맞는 유연한 대응 가능.</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-company">Kakao</div>
+        <span class="pill">국내 대표 사례</span>
+        <p>카카오톡 메시지, 카카오페이, 카카오맵, 카카오게임 등을 서비스별 독립 팀이 각자 배포·운영. 하나의 서비스 점검이 다른 서비스에 영향을 미치지 않는 구조.</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-company">Airbnb</div>
+        <span class="pill">도메인별 팀 소유</span>
+        <p>숙소 검색, 예약, 결제, 메시지, 리뷰를 분리해 각 도메인 팀이 독립 소유. 검색 엔진 고도화나 결제 개편 시 다른 서비스에 영향 없이 독립 개발 가능.</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-company">Spotify</div>
+        <span class="pill">Squad 단위 독립 소유</span>
+        <p>음악 재생, 검색, 추천, 소셜 기능을 Squad(팀) 단위로 서비스 독립 소유. 추천 알고리즘 업데이트가 재생 서비스를 멈추지 않는 독립적인 릴리즈 사이클 유지.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SLIDE 9 — MSA 도입 이유 (ON-IT)
+     ══════════════════════════════════ -->
+<section class="slide" id="slide-9">
+  <div class="slide-header">
+    <span class="header-topic">MSA · ON-IT 도입 이유</span>
+    <div class="header-divider"></div>
+  </div>
+  <div class="slide-content">
+    <p class="section-label reveal">왜 ON-IT에 MSA인가</p>
+    <h2 class="slide-heading reveal reveal-delay-1" style="margin-bottom:clamp(.65rem,1.5vh,1.1rem)">우리 프로젝트에 딱 맞는 이유</h2>
+    <div class="benefit-grid reveal reveal-delay-2">
+      <div class="benefit-card">
+        <h4>기능별 독립 배포</h4>
+        <p>AI PRD 파이프라인을 업데이트할 때 음성 채팅이나 iOS API 서버를 멈출 필요 없이 해당 서비스만 재배포할 수 있습니다.</p>
+      </div>
+      <div class="benefit-card">
+        <h4>선택적 확장</h4>
+        <p>AI PRD 요청이 급증할 때 AI 서비스만 스케일아웃하고, WebRTC 시그널링은 별도 자원으로 운영해 비용을 최적화합니다.</p>
+      </div>
+      <div class="benefit-card">
+        <h4>장애 격리</h4>
+        <p>WebRTC TURN 서버에 문제가 생겨도 PRD 생성과 iOS 캔버스 기능은 정상 운영됩니다. 단일 장애점(SPOF)을 제거합니다.</p>
+      </div>
+      <div class="benefit-card">
+        <h4>팀 역할 분리</h4>
+        <p>프론트·백·AI 파트가 각자의 서비스를 독립 소유하므로 배포 사이클이 충돌하지 않아 병렬 개발 효율이 높아집니다.</p>
+      </div>
+      <div class="benefit-card">
+        <h4>기술 스택 유연성</h4>
+        <p>AI 파이프라인은 Python/FastAPI, WebRTC 시그널링은 Node.js/Socket.IO, 메인 API는 Spring Boot 등 각 도메인 최적 스택을 선택 가능합니다.</p>
+      </div>
+      <div class="benefit-card">
+        <h4>향후 확장 용이성</h4>
+        <p>Android, Windows, macOS 플랫폼 확장 시 모바일 API 서비스만 추가하면 됩니다. 기존 서비스에 영향 없이 새 서비스를 붙일 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SLIDE 10 — MSA 서비스 분리 설계
+     ══════════════════════════════════ -->
+<section class="slide" id="slide-10">
+  <div class="slide-header">
+    <span class="header-topic">MSA · ON-IT 서비스 분리 설계</span>
+    <div class="header-divider"></div>
+    <span class="tag-badge accent">Service Decomposition</span>
+  </div>
+  <div class="slide-content">
+    <p class="section-label reveal">ON-IT을 어떻게 나누나</p>
+    <h2 class="slide-heading reveal reveal-delay-1" style="margin-bottom:clamp(.6rem,1.4vh,1rem)">6개의 독립 서비스로 분리</h2>
+    <div class="service-grid reveal reveal-delay-2">
+      <div class="service-card hl">
+        <div class="service-name">API Gateway</div>
+        <h4>게이트웨이 서비스</h4>
+        <p>모든 클라이언트 요청을 수신해 JWT 인증 검증 후 적절한 마이크로서비스로 라우팅. 단일 진입점(Single Entry Point) 역할</p>
+      </div>
+      <div class="service-card">
+        <div class="service-name">Auth Service</div>
+        <h4>인증 서비스</h4>
+        <p>구글·애플 OAuth, JWT 발급/갱신 담당. iOS·Web 플랫폼별 redirect_uri 처리 로직 포함. 현재 백엔드(현준) 구현 완료 영역</p>
+      </div>
+      <div class="service-card">
+        <div class="service-name">Project Service</div>
+        <h4>프로젝트 / 캔버스 서비스</h4>
+        <p>프로젝트 CRUD, 노트 카드 관리, WebSocket 기반 실시간 캔버스 협업. iOS 앱이 주로 통신하는 핵심 서비스</p>
+      </div>
+      <div class="service-card hl">
+        <div class="service-name">AI · PRD Service</div>
+        <h4>AI PRD 생성 서비스</h4>
+        <p>Claude API 연동 PRD 자동 생성 파이프라인. 요청량 급증 시 이 서비스만 독립 스케일아웃. 현재 로컬 개발 완료 (수빈)</p>
+      </div>
+      <div class="service-card hl">
+        <div class="service-name">Voice · WebRTC</div>
+        <h4>음성 채팅 서비스</h4>
+        <p>Socket.IO 시그널링 서버 + coturn TURN 서버. 향후 mediasoup SFU를 별도 서비스로 분리해 미디어 중계 전담 (양효)</p>
+      </div>
+      <div class="service-card">
+        <div class="service-name">Notification</div>
+        <h4>알림 서비스</h4>
+        <p>푸시 알림, 실시간 이벤트 브로드캐스트. RabbitMQ / Kafka 메시지 큐를 통해 타 서비스와 비동기 통신으로 결합도 최소화</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SLIDE 11 — MSA 통신 구조 & 적용 로드맵
+     ══════════════════════════════════ -->
+<section class="slide" id="slide-11">
+  <div class="slide-header">
+    <span class="header-topic">MSA · 통신 구조 & 구현 로드맵</span>
+    <div class="header-divider"></div>
+  </div>
+  <div class="slide-content">
+    <p class="section-label reveal">어떻게 연결하고, 어떤 순서로 적용하나</p>
+    <h2 class="slide-heading reveal reveal-delay-1" style="margin-bottom:clamp(.6rem,1.5vh,1rem)">통신 방식 & 단계별 전환 계획</h2>
+    <div class="content-layout reveal reveal-delay-2" style="gap:clamp(1.25rem,3vw,2.5rem)">
+      <div>
+        <div class="arch-box" style="margin-bottom:clamp(.75rem,1.5vh,1.1rem)">
+          <div class="arch-box-title">서비스 간 통신 방식</div>
+          <div class="arch-row">
+            <span class="arch-tag be">Client (Web / iOS)</span>
+            <span class="arch-arrow">→</span>
+            <span class="arch-tag be">API Gateway</span>
+            <span class="arch-arrow">→</span>
+            <span class="arch-tag be">각 서비스</span>
+          </div>
+          <div class="arch-row" style="margin-top:.4em">
+            <span class="arch-tag gray">동기 (REST / gRPC)</span>
+            <span class="arch-desc" style="margin-left:.4em">인증·조회·생성 등 즉각 응답이 필요한 경우</span>
+          </div>
+          <div class="arch-row">
+            <span class="arch-tag gray">비동기 (Message Queue)</span>
+            <span class="arch-desc" style="margin-left:.4em">PRD 생성 완료 알림, 이벤트 전파 등</span>
+          </div>
+        </div>
+        <div class="arch-box">
+          <div class="arch-box-title">컨테이너 & 오케스트레이션</div>
+          <div class="arch-row">
+            <span class="arch-tag be">Docker</span>
+            <span class="arch-desc">각 서비스를 독립 컨테이너로 패키징</span>
+          </div>
+          <div class="arch-row">
+            <span class="arch-tag be">Kubernetes</span>
+            <span class="arch-desc">컨테이너 배포·스케일아웃·장애 복구 자동화 목표</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Archivo',sans-serif;font-size:var(--label-size);font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gray-mid);margin-bottom:.75em">단계별 전환 로드맵</div>
+        <ul class="phase-list">
+          <li>
+            <span class="phase-num">1</span>
+            <div>
+              <strong>현재 — 기능 완성 (모놀리식)</strong><br>
+              <span style="font-size:var(--small-size);color:var(--gray-mid)">모놀리식 구조에서 3가지 핵심 기능을 완성. 기능 간 경계를 명확히 정의해 MSA 전환 기반 마련</span>
+            </div>
+          </li>
+          <li>
+            <span class="phase-num">2</span>
+            <div>
+              <strong>서비스 경계 분리 & 인터페이스 정의</strong><br>
+              <span style="font-size:var(--small-size);color:var(--gray-mid)">AI PRD, 음성 채팅, 인증을 우선적으로 독립 서비스로 분리. REST API 명세 확정</span>
+            </div>
+          </li>
+          <li>
+            <span class="phase-num">3</span>
+            <div>
+              <strong>API Gateway 도입</strong><br>
+              <span style="font-size:var(--small-size);color:var(--gray-mid)">단일 진입점으로 라우팅 통일. JWT 검증 일원화, 트래픽 제어</span>
+            </div>
+          </li>
+          <li>
+            <span class="phase-num">4</span>
+            <div>
+              <strong>Docker 컨테이너화 & 독립 배포</strong><br>
+              <span style="font-size:var(--small-size);color:var(--gray-mid)">각 서비스를 Docker 이미지로 패키징. CI/CD 파이프라인에서 서비스별 독립 배포 구성</span>
+            </div>
+          </li>
+          <li>
+            <span class="phase-num">5</span>
+            <div>
+              <strong>Kubernetes 오케스트레이션 (목표)</strong><br>
+              <span style="font-size:var(--small-size);color:var(--gray-mid)">자동 스케일아웃, 롤링 업데이트, 장애 자동 복구까지 완성된 MSA 인프라 구축</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SLIDE 12 — CLOSING
+     ══════════════════════════════════ -->
+<section class="slide slide-closing" id="slide-12">
+  <div class="slide-content">
+    <div class="closing-line reveal"></div>
+    <h2 class="closing-title reveal reveal-delay-1">기능을 완성하고,<br>구조를 설계한다</h2>
+    <p class="closing-body reveal reveal-delay-2">
+      세 가지 기능을 각자의 역할에서 모듈식으로 완성하고,<br>MSA 아키텍처로 확장 가능한 플랫폼을 만들겠습니다.
+    </p>
+    <div style="display:flex;gap:.75rem;margin-top:clamp(.75rem,2vh,1.5rem);justify-content:center;flex-wrap:wrap" class="reveal reveal-delay-3">
+      <span class="tag-badge accent">1-on-musk</span>
+      <span class="tag-badge gray">캡스톤디자인(2) 2026</span>
+      <span class="tag-badge green">중간 발표</span>
+    </div>
+  </div>
+</section>
+
+<script>
+class PresentationController {
+  constructor() {
+    this.slides = Array.from(document.querySelectorAll('.slide'));
+    this.total = this.slides.length;
+    this.current = 0;
+    this.progressBar  = document.getElementById('progressBar');
+    this.currentSlideEl = document.getElementById('currentSlide');
+    this.totalSlidesEl  = document.getElementById('totalSlides');
+    this.navDotsEl = document.getElementById('navDots');
+    this.totalSlidesEl.textContent = this.total;
+    this.buildNavDots();
+    this.bindEvents();
+    this.setupIntersectionObserver();
+    this.update(0);
+  }
+  buildNavDots() {
+    this.slides.forEach((_,i) => {
+      const btn = document.createElement('button');
+      btn.className = 'nav-dot' + (i===0?' active':'');
+      btn.setAttribute('aria-label', `슬라이드 ${i+1}`);
+      btn.addEventListener('click', () => this.goTo(i));
+      this.navDotsEl.appendChild(btn);
+    });
+  }
+  goTo(index) {
+    if (index<0 || index>=this.total) return;
+    this.slides[index].scrollIntoView({behavior:'smooth'});
+  }
+  update(index) {
+    this.current = index;
+    const pct = this.total>1 ? (index/(this.total-1))*100 : 100;
+    this.progressBar.style.width = pct+'%';
+    this.currentSlideEl.textContent = index+1;
+    document.querySelectorAll('.nav-dot').forEach((dot,i) => dot.classList.toggle('active',i===index));
+  }
+  setupIntersectionObserver() {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const idx = this.slides.indexOf(entry.target);
+          if (idx !== -1) this.update(idx);
+          entry.target.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+        }
+      });
+    }, {threshold:0.5});
+    this.slides.forEach(slide => io.observe(slide));
+  }
+  bindEvents() {
+    document.addEventListener('keydown', e => {
+      if (['ArrowDown','ArrowRight','PageDown',' '].includes(e.key)) { e.preventDefault(); this.goTo(this.current+1); }
+      else if (['ArrowUp','ArrowLeft','PageUp'].includes(e.key)) { e.preventDefault(); this.goTo(this.current-1); }
+      else if (e.key==='Home') { e.preventDefault(); this.goTo(0); }
+      else if (e.key==='End')  { e.preventDefault(); this.goTo(this.total-1); }
+    });
+    let touchStartY = 0;
+    document.addEventListener('touchstart', e => { touchStartY=e.touches[0].clientY; },{passive:true});
+    document.addEventListener('touchend',   e => {
+      const delta = touchStartY - e.changedTouches[0].clientY;
+      if (Math.abs(delta)>50) this.goTo(delta>0?this.current+1:this.current-1);
+    },{passive:true});
+    let wheelTimeout;
+    document.addEventListener('wheel', e => {
+      clearTimeout(wheelTimeout);
+      wheelTimeout = setTimeout(() => { this.goTo(e.deltaY>0?this.current+1:this.current-1); }, 80);
+    },{passive:true});
+  }
+}
+document.addEventListener('DOMContentLoaded', () => { new PresentationController(); });
+</script>
+
+<script>
+(function(){
+  const REPEL_R=140, MAX_F=32, SPRING=0.07, DAMP=0.68;
+  const SPLIT_SEL=[
+    'h1','h2','h3','h4','p','li',
+    '.title-main','.title-sub','.title-label',
+    '.section-label','.slide-heading','.slide-body',
+    '.progress-card h3','.progress-card p','.progress-card-num',
+    '.dev-name','.dev-items li',
+    '.week-date','.week-items li',
+    '.msa-vs-col h3','.msa-vs-col p','.msa-vs-list li','.msa-vs-col .key-point',
+    '.usecase-company','.usecase-card p',
+    '.benefit-card h4','.benefit-card p',
+    '.service-card h4','.service-card p',
+    '.arch-desc','.phase-list li',
+    '.closing-title','.closing-body',
+    '.header-topic','.tag-badge','.status-badge',
+  ].join(',');
+  const particles=[];
+  function splitEl(el){
+    if(el.dataset.ws)return; el.dataset.ws='1';
+    const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
+    const tns=[]; let n;
+    while((n=walker.nextNode()))if(n.textContent.trim())tns.push(n);
+    tns.forEach(tn=>{
+      const parts=tn.textContent.split(/(\s+)/);
+      const frag=document.createDocumentFragment();
+      parts.forEach(w=>{
+        if(!w)return;
+        if(/^\s+$/.test(w)){frag.appendChild(document.createTextNode(w));}
+        else{
+          const sp=document.createElement('span');
+          sp.textContent=w; sp.style.cssText='display:inline-block;will-change:transform;';
+          particles.push({el:sp,x:0,y:0,vx:0,vy:0,dcx:0,dcy:0});
+          frag.appendChild(sp);
+        }
+      });
+      tn.parentNode.replaceChild(frag,tn);
+    });
+  }
+  document.querySelectorAll(SPLIT_SEL).forEach(el=>splitEl(el));
+  function cacheAll(){
+    const sx=window.scrollX,sy=window.scrollY;
+    particles.forEach(s=>{
+      const r=s.el.getBoundingClientRect();
+      if(r.width===0)return;
+      s.dcx=r.left+sx+r.width/2-s.x; s.dcy=r.top+sy+r.height/2-s.y;
+    });
+  }
+  let mx=-9999,my=-9999;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  document.addEventListener('mouseleave',()=>{mx=-9999;my=-9999;});
+  let rt; const reCache=()=>{clearTimeout(rt);rt=setTimeout(cacheAll,60);};
+  window.addEventListener('resize',reCache); window.addEventListener('scroll',reCache);
+  function tick(){
+    requestAnimationFrame(tick);
+    const sx=window.scrollX,sy=window.scrollY;
+    particles.forEach(s=>{
+      if(s.dcx===0&&s.dcy===0){
+        const r=s.el.getBoundingClientRect();
+        if(r.width>0){s.dcx=r.left+sx+r.width/2;s.dcy=r.top+sy+r.height/2;}
+        return;
+      }
+      const ex=s.dcx-sx+s.x,ey=s.dcy-sy+s.y;
+      const dx=ex-mx,dy=ey-my,dist=Math.sqrt(dx*dx+dy*dy);
+      let tx=0,ty=0;
+      if(dist<REPEL_R&&dist>0.5){
+        const f=Math.pow((REPEL_R-dist)/REPEL_R,1.6)*MAX_F;
+        tx=dx/dist*f; ty=dy/dist*f;
+      }
+      s.vx+=(tx-s.x)*SPRING; s.vy+=(ty-s.y)*SPRING;
+      s.vx*=DAMP; s.vy*=DAMP; s.x+=s.vx; s.y+=s.vy;
+      s.el.style.transform=(Math.abs(s.x)>0.05||Math.abs(s.y)>0.05)
+        ?`translate(${s.x.toFixed(2)}px,${s.y.toFixed(2)}px)`:'';
+    });
+  }
+  document.fonts.ready.then(()=>{setTimeout(()=>{cacheAll();tick();},150);});
+})();
+</script>
+</body>
+</html>
