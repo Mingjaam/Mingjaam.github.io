@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React — Props & State</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0c0c0e;
+      --card:    #141416;
+      --code-bg: #0f0f11;
+      --border:  #222226;
+      --accent:  #6366f1;
+      --state:   #60a5fa;
+      --props:   #34d399;
+      --warn:    #f59e0b;
+      --danger:  #f87171;
+      --text:    #e8e8ec;
+      --muted:   #888;
+      --dim:     #444;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    /* ======================== HEADER ======================== */
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 40px;
+      text-align: center;
+    }
+
+    header .kicker {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    header h1 {
+      font-size: 4.5rem;
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1.05;
+    }
+
+    header h1 span { color: var(--accent); }
+
+    header p {
+      font-size: 1.35rem;
+      color: var(--muted);
+      margin-top: 18px;
+    }
+
+    /* ======================== NAV ======================== */
+    nav {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    }
+
+    nav a {
+      display: block;
+      padding: 16px 20px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+
+    nav a:hover { color: var(--text); border-bottom-color: var(--accent); }
+
+    /* ======================== MAIN ======================== */
+    main {
+      max-width: 1700px;
+      margin: 0 auto;
+      padding: 80px 40px;
+    }
+
+    section {
+      margin-bottom: 100px;
+      scroll-margin-top: 60px;
+    }
+
+    .section-head {
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-head .kicker {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .kicker.state  { color: var(--state); }
+    .kicker.props  { color: var(--props); }
+    .kicker.ex     { color: var(--accent); }
+    .kicker.prac   { color: var(--warn); }
+    .kicker.quiz   { color: var(--danger); }
+    .kicker.intro  { color: var(--muted); }
+
+    .section-head h2 {
+      font-size: 2.6rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .section-head p {
+      font-size: 1.2rem;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.8;
+    }
+
+    /* ======================== CONCEPT CARDS ======================== */
+    .concept-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .concept-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 36px;
+    }
+
+    .concept-card.state-card { border-top: 2px solid var(--state); }
+    .concept-card.props-card { border-top: 2px solid var(--props); }
+
+    .concept-card h3 {
+      font-size: 1.7rem;
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+
+    .concept-card.state-card h3 { color: var(--state); }
+    .concept-card.props-card h3 { color: var(--props); }
+
+    .concept-card p {
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: #aaa;
+    }
+
+    .concept-card p strong { color: var(--text); }
+
+    /* ======================== COMPARE TABLE ======================== */
+    .ctbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1.05rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .ctbl th {
+      padding: 14px 22px;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: #1a1a1e;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ctbl th:first-child { color: var(--muted); }
+    .ctbl th:nth-child(2) { color: var(--state); }
+    .ctbl th:nth-child(3) { color: var(--props); }
+
+    .ctbl td {
+      padding: 13px 22px;
+      border-bottom: 1px solid var(--border);
+      color: #999;
+      line-height: 1.6;
+    }
+
+    .ctbl tr:last-child td { border-bottom: none; }
+    .ctbl td:first-child { color: var(--text); font-weight: 700; }
+
+    /* ======================== INFO / WARN ======================== */
+    .infobox {
+      background: rgba(99,102,241,0.05);
+      border-left: 2px solid var(--accent);
+      padding: 16px 22px;
+      border-radius: 0 6px 6px 0;
+      font-size: 1.15rem;
+      line-height: 1.85;
+      color: #bbb;
+      margin: 20px 0;
+    }
+
+    .infobox strong { color: var(--text); }
+
+    .warnbox {
+      background: rgba(245,158,11,0.05);
+      border-left: 2px solid var(--warn);
+      padding: 16px 22px;
+      border-radius: 0 6px 6px 0;
+      font-size: 1.15rem;
+      line-height: 1.85;
+      color: #bbb;
+      margin: 20px 0;
+    }
+
+    .warnbox strong { color: var(--warn); }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88em;
+      background: #1e1e22;
+      padding: 2px 7px;
+      border-radius: 4px;
+      color: #9cdcfe;
+      border: 1px solid var(--border);
+    }
+
+    /* ======================== EXAMPLE 3-PANEL ======================== */
+    .example-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .example-header {
+      background: #1a1a1e;
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .example-header .badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 3px;
+    }
+
+    .badge.state-badge   { background: rgba(96,165,250,0.1);  color: var(--state);  border: 1px solid rgba(96,165,250,0.2); }
+    .badge.props-badge   { background: rgba(52,211,153,0.1);  color: var(--props);  border: 1px solid rgba(52,211,153,0.2); }
+    .badge.result-badge  { background: rgba(99,102,241,0.1);  color: var(--accent); border: 1px solid rgba(99,102,241,0.2); }
+
+    .example-header h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--muted);
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* 3-column grid */
+    .panels-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 0.55fr;
+      min-height: 440px;
+    }
+
+    .panel {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+    }
+
+    .panel:last-child { border-right: none; }
+
+    .panel-head {
+      background: #181820;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .pdots { display: flex; gap: 5px; }
+    .pd { width: 10px; height: 10px; border-radius: 50%; }
+    .pd-r { background: #ff5f57; }
+    .pd-y { background: #febc2e; }
+    .pd-g { background: #28c840; }
+
+    .panel-head .pfname {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+
+    .panel-head .plabel {
+      margin-left: auto;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .pl-state  { color: var(--state); }
+    .pl-props  { color: var(--props); }
+    .pl-result { color: var(--accent); }
+
+    .panel pre {
+      margin: 0;
+      flex: 1;
+      overflow-x: auto;
+    }
+
+    .panel pre code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      padding: 18px 20px !important;
+      background: transparent !important;
+      border: none;
+      display: block;
+    }
+
+    .panel .preview-inner {
+      flex: 1;
+      padding: 14px;
+      background: var(--code-bg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel .preview-iframe {
+      flex: 1;
+      width: 100%;
+      min-height: 240px;
+      border: none;
+      background: white;
+      border-radius: 6px;
+    }
+
+    /* ======================== EXPLANATION LIST ======================== */
+    .exp-list {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    .exp-list li {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      color: #aaa;
+    }
+
+    .exp-list li:last-child { border-bottom: none; }
+
+    .exp-list .en {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      min-width: 18px;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .exp-list strong { color: var(--text); }
+
+    /* ======================== LIVE EDITOR — 3 COLUMN ======================== */
+    .editor-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .editor-header {
+      background: #1a1a1e;
+      padding: 14px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .editor-header .badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 3px;
+      background: rgba(245,158,11,0.1);
+      color: var(--warn);
+      border: 1px solid rgba(245,158,11,0.2);
+    }
+
+    .editor-header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* 3-column editor: comp | app | preview */
+    .editor-3col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 0.48fr;
+      min-height: 580px;
+    }
+
+    .ed-col {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+    }
+
+    .ed-col:last-child { border-right: none; }
+
+    .ed-col-head {
+      background: #181820;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .ed-col-head .pfname {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+
+    .ed-col-head .plabel {
+      margin-left: auto;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    textarea.ed-ta {
+      flex: 1;
+      background: var(--code-bg);
+      color: #c9d1d9;
+      border: none;
+      padding: 16px 18px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      resize: none;
+      outline: none;
+      tab-size: 2;
+      min-height: 0;
+    }
+
+    .ed-toolbar {
+      background: #1a1a1e;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .ed-toolbar .hint {
+      font-size: 0.78rem;
+      color: var(--dim);
+      font-family: 'Fira Code', monospace;
+    }
+
+    .btn-reset {
+      margin-left: auto;
+      background: transparent;
+      color: var(--dim);
+      border: 1px solid var(--border);
+      padding: 7px 16px;
+      border-radius: 5px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .btn-reset:hover { border-color: var(--muted); color: var(--muted); }
+
+    .btn-run {
+      background: var(--props);
+      color: #000;
+      border: none;
+      padding: 7px 20px;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: opacity 0.15s;
+    }
+
+    .btn-run:hover { opacity: 0.85; }
+
+    .ed-col-preview { background: var(--code-bg); }
+
+    .ed-result-head {
+      background: #181820;
+      padding: 10px 16px;
+      font-size: 0.78rem;
+      color: var(--dim);
+      font-family: 'Fira Code', monospace;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .ed-result-head span { color: var(--props); }
+
+    .ed-iframe-wrap {
+      flex: 1;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ed-iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+      background: white;
+      border-radius: 6px;
+      min-height: 0;
+    }
+
+    /* placeholder to maintain structure */
+    .script-placeholder {
+      font-size: 0.9rem;
+      background: #1e1e22;
+      color: #9cdcfe;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    /* ======================== QUIZ ======================== */
+    .quiz-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 36px;
+      margin-bottom: 20px;
+    }
+
+    .quiz-block .qn {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--danger);
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .quiz-block .qtext {
+      font-size: 1.3rem;
+      font-weight: 700;
+      line-height: 1.65;
+      margin-bottom: 24px;
+      max-width: 860px;
+    }
+
+    .qopts {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 860px;
+    }
+
+    .qopt {
+      background: #1a1a1e;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 14px 20px;
+      font-size: 1.1rem;
+      font-family: 'Noto Sans KR', sans-serif;
+      text-align: left;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.15s;
+      line-height: 1.6;
+    }
+
+    .qopt:hover:not([disabled]) { border-color: var(--accent); }
+    .qopt.correct { border-color: var(--props);  background: rgba(52,211,153,0.06);  color: var(--props); }
+    .qopt.wrong   { border-color: var(--danger); background: rgba(248,113,113,0.06); color: var(--danger); }
+
+    .qfeed { margin-top: 16px; font-size: 1.05rem; font-weight: 700; display: none; }
+    .qfeed.show.ok { display: block; color: var(--props); }
+    .qfeed.show.no { display: block; color: var(--danger); }
+
+    /* ======================== FOOTER ======================== */
+    footer {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 50px 40px;
+    }
+
+    footer p { color: var(--muted); font-size: 1rem; line-height: 2; }
+
+    /* ======================== SCROLLBAR ======================== */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="kicker">React 강의</span>
+  <h1>Props &amp; <span>State</span></h1>
+  <p>처음 배우는 사람을 위한 React 핵심 두 가지 개념</p>
+</header>
+
+<nav>
+  <a href="#intro">개념 이해</a>
+  <a href="#counter">예제 1 — 카운터</a>
+  <a href="#like">예제 2 — 좋아요</a>
+  <a href="#practice1">직접 써보기 1</a>
+  <a href="#practice2">직접 써보기 2</a>
+  <a href="#quiz">퀴즈</a>
+</nav>
+
+<main>
+
+  <!-- ================================================================
+       SECTION 1: 개념 이해
+  ================================================================ -->
+  <section id="intro">
+    <div class="section-head">
+      <span class="kicker intro">Intro</span>
+      <h2>State와 Props</h2>
+      <p>React 컴포넌트에서 데이터를 다루는 두 가지 핵심 개념입니다.</p>
+    </div>
+
+    <div class="concept-grid">
+      <div class="concept-card state-card">
+        <h3>State</h3>
+        <p>
+          <strong>컴포넌트가 스스로 기억하는 값입니다.</strong><br>
+          State가 바뀌면 React가 화면을 자동으로 다시 그립니다.<br><br>
+          예: 카운터 숫자, 좋아요 눌렸는지 여부, 입력창에 타이핑한 내용
+        </p>
+      </div>
+      <div class="concept-card props-card">
+        <h3>Props</h3>
+        <p>
+          <strong>부모가 자식 컴포넌트에 전달하는 값입니다.</strong><br>
+          자식은 props를 읽기만 할 수 있고, 직접 변경할 수 없습니다.<br><br>
+          예: 부모가 자식에게 숫자, 문자열, 함수를 내려보냄
+        </p>
+      </div>
+    </div>
+
+    <table class="ctbl">
+      <thead>
+        <tr>
+          <th>항목</th>
+          <th>State</th>
+          <th>Props</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>누가 만드나</td>
+          <td>컴포넌트 자신이 <code>useState</code>로 생성</td>
+          <td>부모가 만들어서 자식에게 전달</td>
+        </tr>
+        <tr>
+          <td>변경 가능?</td>
+          <td>가능 — setter 함수로만 변경</td>
+          <td>불가능 — 자식은 읽기만 가능</td>
+        </tr>
+        <tr>
+          <td>바뀌면?</td>
+          <td>컴포넌트가 다시 렌더링됨</td>
+          <td>부모 state가 바뀌면 새 값이 내려옴</td>
+        </tr>
+        <tr>
+          <td>선언 위치</td>
+          <td>컴포넌트 함수 내부</td>
+          <td>컴포넌트 함수의 매개변수</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warnbox" style="margin-top:24px;">
+      <strong>State 변경 주의:</strong>
+      <code>count = count + 1</code> 처럼 직접 대입하면 화면이 바뀌지 않습니다.
+      반드시 <code>setCount(count + 1)</code> 처럼 setter 함수를 사용해야 합니다.
+    </div>
+  </section>
+
+  <!-- ================================================================
+       SECTION 2: 예제 1 — 카운터
+  ================================================================ -->
+  <section id="counter">
+    <div class="section-head">
+      <span class="kicker ex">Example 1</span>
+      <h2>카운터</h2>
+      <p>버튼을 클릭하면 숫자가 1씩 올라갑니다. State만 사용하는 기본 예제입니다.</p>
+    </div>
+
+    <div class="example-card">
+      <div class="example-header">
+        <span class="badge state-badge">State</span>
+        <h3>Counter.jsx &nbsp;+&nbsp; App.jsx</h3>
+      </div>
+      <div class="panels-3">
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="pdots"><div class="pd pd-r"></div><div class="pd pd-y"></div><div class="pd pd-g"></div></div>
+            <span class="pfname">Counter.jsx</span>
+            <span class="plabel pl-state">컴포넌트</span>
+          </div>
+          <pre><code class="language-jsx">import { useState } from 'react';
+
+function Counter() {
+  // 현재값      변경함수        초기값
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;현재 숫자: {count}&lt;/h2&gt;
+
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+        +1 증가
+      &lt;/button&gt;
+
+      &lt;button onClick={() =&gt; setCount(0)}&gt;
+        초기화
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Counter;</code></pre>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="pdots"><div class="pd pd-r"></div><div class="pd pd-y"></div><div class="pd pd-g"></div></div>
+            <span class="pfname">App.jsx</span>
+            <span class="plabel pl-props">메인 앱</span>
+          </div>
+          <pre><code class="language-jsx">import Counter from './Counter';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;카운터 앱&lt;/h1&gt;
+
+      {/* props 없이 그냥 가져다 씁니다 */}
+      &lt;Counter /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;</code></pre>
+        </div>
+
+        <div class="panel" style="border-right:none;">
+          <div class="panel-head">
+            <div class="pdots"><div class="pd pd-r"></div><div class="pd pd-y"></div><div class="pd pd-g"></div></div>
+            <span class="pfname">실행 결과</span>
+            <span class="plabel pl-result">미리보기</span>
+          </div>
+          <div class="preview-inner">
+            <iframe class="preview-iframe" id="counter-preview" title="카운터 미리보기"></iframe>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <ul class="exp-list">
+      <li>
+        <span class="en">01</span>
+        <span><code>useState(0)</code> — 초기값 0으로 state 생성. <strong>count</strong>는 현재 값, <strong>setCount</strong>는 값을 바꾸는 함수</span>
+      </li>
+      <li>
+        <span class="en">02</span>
+        <span><code>{"{count}"}</code> — JSX에서 중괄호로 변수를 출력. count가 바뀌면 이 부분도 자동으로 업데이트됨</span>
+      </li>
+      <li>
+        <span class="en">03</span>
+        <span><code>onClick={() => setCount(count + 1)}</code> — 버튼 클릭 시 setCount 호출. 화살표 함수로 감싸야 클릭할 때만 실행됨</span>
+      </li>
+      <li>
+        <span class="en">04</span>
+        <span>App.jsx에서 <code>&lt;Counter /&gt;</code>만 가져다 씁니다. Counter 내부의 state는 Counter 스스로 관리하기 때문에 props 전달 불필요</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ================================================================
+       SECTION 3: 예제 2 — 좋아요 버튼
+  ================================================================ -->
+  <section id="like">
+    <div class="section-head">
+      <span class="kicker ex">Example 2</span>
+      <h2>좋아요 버튼</h2>
+      <p>좋아요 버튼을 누르면 흰 하트(🤍)가 빨간 하트(❤️)로 바뀝니다. Boolean state와 조건부 렌더링을 Props로 전달하는 예제입니다.</p>
+    </div>
+
+    <div class="example-card">
+      <div class="example-header">
+        <span class="badge state-badge">State</span>
+        <span class="badge props-badge">Props</span>
+        <h3>LikeButton.jsx &nbsp;+&nbsp; App.jsx</h3>
+      </div>
+      <div class="panels-3">
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="pdots"><div class="pd pd-r"></div><div class="pd pd-y"></div><div class="pd pd-g"></div></div>
+            <span class="pfname">LikeButton.jsx</span>
+            <span class="plabel pl-state">컴포넌트</span>
+          </div>
+          <pre><code class="language-jsx">// props: liked(boolean), onLike(함수)
+function LikeButton({ liked, onLike }) {
+  return (
+    &lt;div&gt;
+      {/* liked 값에 따라 하트 이모지가 바뀜 */}
+      &lt;div style={{ fontSize: '2.5rem' }}&gt;
+        {liked ? '❤️' : '🤍'}
+      &lt;/div&gt;
+
+      {/* 아래 버튼을 누르면 토글됨 */}
+      &lt;button onClick={onLike}&gt;
+        좋아요
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+// state 없음 — liked props 값에 따라
+// 어떤 하트를 보여줄지 결정함
+export default LikeButton;</code></pre>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="pdots"><div class="pd pd-r"></div><div class="pd pd-y"></div><div class="pd pd-g"></div></div>
+            <span class="pfname">App.jsx</span>
+            <span class="plabel pl-props">메인 앱</span>
+          </div>
+          <pre><code class="language-jsx">import { useState } from 'react';
+import LikeButton from './LikeButton';
+
+function App() {
+  // false = 아직 좋아요 안 누름
+  // true  = 좋아요 누름
+  const [liked, setLiked] = useState(false);
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;오늘의 게시물&lt;/h1&gt;
+      &lt;p&gt;React는 재미있어요!&lt;/p&gt;
+
+      &lt;LikeButton
+        liked={liked}
+        onLike={() =&gt; setLiked(!liked)}
+      /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;</code></pre>
+        </div>
+
+        <div class="panel" style="border-right:none;">
+          <div class="panel-head">
+            <div class="pdots"><div class="pd pd-r"></div><div class="pd pd-y"></div><div class="pd pd-g"></div></div>
+            <span class="pfname">실행 결과</span>
+            <span class="plabel pl-result">미리보기</span>
+          </div>
+          <div class="preview-inner">
+            <iframe class="preview-iframe" id="like-preview" title="좋아요 미리보기"></iframe>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <ul class="exp-list">
+      <li>
+        <span class="en">01</span>
+        <span><code>useState(false)</code> — 숫자 대신 <strong>boolean(true/false)</strong>으로 state 생성. false = 좋아요 안 누름, true = 좋아요 누름</span>
+      </li>
+      <li>
+        <span class="en">02</span>
+        <span><code>setLiked(!liked)</code> — <strong>!liked</strong>는 현재 값의 반대. true면 false, false면 true. 이것이 토글(toggle) 패턴</span>
+      </li>
+      <li>
+        <span class="en">03</span>
+        <span><code>{liked ? '❤️' : '🤍'}</code> — liked가 true면 빨간 하트, false면 흰 하트. props 값에 따라 다른 내용을 보여주는 <strong>조건부 렌더링</strong></span>
+      </li>
+      <li>
+        <span class="en">04</span>
+        <span>하트(표시)와 버튼(클릭)을 분리. 버튼의 <code>onClick={"{onLike}"}</code>는 부모에서 받은 함수를 그대로 연결</span>
+      </li>
+    </ul>
+
+    <div class="infobox">
+      <strong>왜 state를 부모(App)에 둘까요?</strong><br>
+      LikeButton은 화면 표시만 담당합니다. 상태 관리는 App이 합니다. 이렇게 역할을 분리하면 LikeButton을 다른 곳에서도 재사용하기 쉬워집니다.
+      이것을 <strong>State 끌어올리기(Lifting State Up)</strong>라고 합니다.
+    </div>
+  </section>
+
+  <!-- ================================================================
+       SECTION 4: 직접 써보기 1 — 카운터
+  ================================================================ -->
+  <section id="practice1">
+    <div class="section-head">
+      <span class="kicker prac">Practice 1</span>
+      <h2>직접 써보기 — 카운터</h2>
+      <p>Counter.jsx와 App.jsx를 각각 수정하고 실행 버튼을 누르면 결과가 오른쪽에 나타납니다.</p>
+    </div>
+
+    <div class="editor-card">
+      <div class="editor-header">
+        <span class="badge">Live Editor</span>
+        <p>import / export 구문 그대로 작성하세요. 실행 버튼을 누를 때마다 결과가 업데이트됩니다.</p>
+      </div>
+      <div class="editor-3col">
+
+        <!-- Counter.jsx -->
+        <div class="ed-col">
+          <div class="ed-col-head">
+            <div class="pdots"><div class="pd pd-r"></div><div class="pd pd-y"></div><div class="pd pd-g"></div></div>
+            <span class="pfname">Counter.jsx</span>
+            <span class="plabel pl-state">컴포넌트</span>
+          </div>
+          <textarea class="ed-ta" id="c1-comp" spellcheck="false"></textarea>
+        </div>
+
+        <!-- App.jsx -->
+        <div class="ed-col">
+          <div class="ed-col-head">
+            <div class="pdots"><div class="pd pd-r"></div><div class="pd pd-y"></div><div class="pd pd-g"></div></div>
+            <span class="pfname">App.jsx</span>
+            <span class="plabel pl-props">메인 앱</span>
+          </div>
+          <textarea class="ed-ta" id="c1-app" spellcheck="false"></textarea>
+          <div class="ed-toolbar">
+            <span class="hint">Tab = 들여쓰기</span>
+            <button class="btn-reset" onclick="resetEditor('c1')">초기화</button>
+            <button class="btn-run" onclick="runEditor('c1')">실행</button>
+          </div>
+        </div>
+
+        <!-- 실행 결과 -->
+        <div class="ed-col ed-col-preview">
+          <div class="ed-result-head"><span>실행 결과</span></div>
+          <div class="ed-iframe-wrap">
+            <iframe class="ed-iframe" id="c1-result" title="카운터 실행 결과"></iframe>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       SECTION 5: 직접 써보기 2 — 좋아요
+  ================================================================ -->
+  <section id="practice2">
+    <div class="section-head">
+      <span class="kicker prac">Practice 2</span>
+      <h2>직접 써보기 — 좋아요 버튼</h2>
+      <p>LikeButton.jsx와 App.jsx를 각각 수정해보세요.</p>
+    </div>
+
+    <div class="editor-card">
+      <div class="editor-header">
+        <span class="badge">Live Editor</span>
+        <p>import / export 구문 그대로 작성하세요. 실행 버튼을 누를 때마다 결과가 업데이트됩니다.</p>
+      </div>
+      <div class="editor-3col">
+
+        <!-- LikeButton.jsx -->
+        <div class="ed-col">
+          <div class="ed-col-head">
+            <div class="pdots"><div class="pd pd-r"></div><div class="pd pd-y"></div><div class="pd pd-g"></div></div>
+            <span class="pfname">LikeButton.jsx</span>
+            <span class="plabel pl-state">컴포넌트</span>
+          </div>
+          <textarea class="ed-ta" id="l1-comp" spellcheck="false"></textarea>
+        </div>
+
+        <!-- App.jsx -->
+        <div class="ed-col">
+          <div class="ed-col-head">
+            <div class="pdots"><div class="pd pd-r"></div><div class="pd pd-y"></div><div class="pd pd-g"></div></div>
+            <span class="pfname">App.jsx</span>
+            <span class="plabel pl-props">메인 앱</span>
+          </div>
+          <textarea class="ed-ta" id="l1-app" spellcheck="false"></textarea>
+          <div class="ed-toolbar">
+            <span class="hint">Tab = 들여쓰기</span>
+            <button class="btn-reset" onclick="resetEditor('l1')">초기화</button>
+            <button class="btn-run" onclick="runEditor('l1')">실행</button>
+          </div>
+        </div>
+
+        <!-- 실행 결과 -->
+        <div class="ed-col ed-col-preview">
+          <div class="ed-result-head"><span>실행 결과</span></div>
+          <div class="ed-iframe-wrap">
+            <iframe class="ed-iframe" id="l1-result" title="좋아요 실행 결과"></iframe>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       SECTION 6: 퀴즈
+  ================================================================ -->
+  <section id="quiz">
+    <div class="section-head">
+      <span class="kicker quiz">Quiz</span>
+      <h2>이해도 확인</h2>
+      <p>배운 내용을 확인해봅시다. 답을 클릭하면 바로 결과를 알 수 있습니다.</p>
+    </div>
+
+    <div class="quiz-block">
+      <span class="qn">Q 1 / 4</span>
+      <div class="qtext">다음 중 State를 올바르게 설명한 것은?</div>
+      <div class="qopts">
+        <button class="qopt" onclick="checkQ(this, false, 'qf1')">① 부모 컴포넌트가 자식에게 전달하는 값이다</button>
+        <button class="qopt" onclick="checkQ(this, true,  'qf1')">② 컴포넌트가 스스로 관리하는 값이며, 바뀌면 화면이 다시 그려진다</button>
+        <button class="qopt" onclick="checkQ(this, false, 'qf1')">③ 변수에 직접 대입해서 변경할 수 있다</button>
+        <button class="qopt" onclick="checkQ(this, false, 'qf1')">④ 컴포넌트 함수 밖에서 선언해야 한다</button>
+      </div>
+      <div class="qfeed" id="qf1"></div>
+    </div>
+
+    <div class="quiz-block">
+      <span class="qn">Q 2 / 4</span>
+      <div class="qtext">
+        <code>const [count, setCount] = useState(0)</code><br>
+        여기서 setCount의 역할은?
+      </div>
+      <div class="qopts">
+        <button class="qopt" onclick="checkQ(this, false, 'qf2')">① count의 현재 값을 읽어오는 함수</button>
+        <button class="qopt" onclick="checkQ(this, false, 'qf2')">② useState의 초기값을 지정하는 함수</button>
+        <button class="qopt" onclick="checkQ(this, true,  'qf2')">③ count 값을 변경하고 화면을 다시 그리게 하는 함수</button>
+        <button class="qopt" onclick="checkQ(this, false, 'qf2')">④ 컴포넌트를 삭제하는 함수</button>
+      </div>
+      <div class="qfeed" id="qf2"></div>
+    </div>
+
+    <div class="quiz-block">
+      <span class="qn">Q 3 / 4</span>
+      <div class="qtext">Props에 대한 설명으로 <strong>틀린</strong> 것은?</div>
+      <div class="qopts">
+        <button class="qopt" onclick="checkQ(this, false, 'qf3')">① 부모에서 자식으로 데이터를 전달할 때 사용한다</button>
+        <button class="qopt" onclick="checkQ(this, false, 'qf3')">② 숫자, 문자열, 함수 모두 props로 전달할 수 있다</button>
+        <button class="qopt" onclick="checkQ(this, true,  'qf3')">③ 자식 컴포넌트 안에서 props 값을 직접 변경할 수 있다</button>
+        <button class="qopt" onclick="checkQ(this, false, 'qf3')">④ 자식은 JSX에서 {"{props이름}"}으로 props 값을 표시한다</button>
+      </div>
+      <div class="qfeed" id="qf3"></div>
+    </div>
+
+    <div class="quiz-block">
+      <span class="qn">Q 4 / 4</span>
+      <div class="qtext">
+        LikeButton에서 하트 색상이 빨간색으로 바뀌는 이유는?<br>
+        <span style="font-size:0.95rem; color:var(--muted); font-weight:400;">
+          (부모에서 <code>liked={"{liked}"}</code>를 props로 전달받은 상황)
+        </span>
+      </div>
+      <div class="qopts">
+        <button class="qopt" onclick="checkQ(this, false, 'qf4')">① LikeButton 내부의 state가 바뀌었기 때문이다</button>
+        <button class="qopt" onclick="checkQ(this, true,  'qf4')">② 부모의 liked state가 true로 바뀌고 그 값이 props로 전달되어 조건부 스타일이 적용되었기 때문이다</button>
+        <button class="qopt" onclick="checkQ(this, false, 'qf4')">③ CSS 파일을 직접 수정했기 때문이다</button>
+        <button class="qopt" onclick="checkQ(this, false, 'qf4')">④ LikeButton이 props를 직접 변경했기 때문이다</button>
+      </div>
+      <div class="qfeed" id="qf4"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>React Props &amp; State 강의</p>
+  <p>예제를 직접 타이핑해보는 것이 가장 빠른 학습 방법입니다.</p>
+  <p style="margin-top:8px; font-size:0.85rem;">다음 단원: useEffect, 조건부 렌더링</p>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/jsx.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  hljs.highlightAll();
+  initPreviews();
+  initEditors();
+});
+
+// ======================== IFRAME TEMPLATE ========================
+function makeDoc(code) {
+  return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"><\/script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"><\/script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"><\/script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 28px; font-size: 17px; color: #111; }
+  h1 { font-size: 1.5rem; margin-bottom: 10px; }
+  h2 { font-size: 1.3rem; margin: 8px 0; }
+  p  { margin: 6px 0; color: #444; }
+  button {
+    cursor: pointer; font-size: 0.95rem;
+    padding: 8px 18px; margin: 5px 4px;
+    border: 1px solid #d0d0d0; border-radius: 5px;
+    background: #f8f8f8; font-family: inherit;
+    transition: background 0.12s;
+  }
+  button:hover { background: #ebebeb; }
+<\/style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+${code}
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+<\/script>
+</body>
+</html>`;
+}
+
+// import / export 제거 후 두 파일 합치기
+function combineFiles(compCode, appCode) {
+  const clean = src => src
+    .replace(/^import\s+\{[^}]*\}\s+from\s+['"][^'"]+['"]\s*;?\s*/gm, '')
+    .replace(/^import\s+\w+\s+from\s+['"][^'"]+['"]\s*;?\s*/gm, '')
+    .replace(/^export\s+default\s+/gm, '')
+    .trim();
+  return clean(compCode) + '\n\n' + clean(appCode);
+}
+
+// ======================== STATIC PREVIEWS ========================
+const counterPreviewCode = `
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <h2>현재 숫자: {count}</h2>
+      <button onClick={() => setCount(count + 1)}>+1 증가</button>
+      <button onClick={() => setCount(0)}>초기화</button>
+    </div>
+  );
+}
+function App() {
+  return (
+    <div>
+      <h1>카운터 앱</h1>
+      <Counter />
+    </div>
+  );
+}`;
+
+const likePreviewCode = `
+function LikeButton({ liked, onLike }) {
+  return (
+    <div>
+      <div style={{ fontSize: '2.8rem', lineHeight: '1.3' }}>
+        {liked ? '❤️' : '🤍'}
+      </div>
+      <button onClick={onLike}>좋아요</button>
+    </div>
+  );
+}
+function App() {
+  const [liked, setLiked] = useState(false);
+  return (
+    <div>
+      <h1>오늘의 게시물</h1>
+      <p>React는 재미있어요!</p>
+      <LikeButton liked={liked} onLike={() => setLiked(!liked)} />
+    </div>
+  );
+}`;
+
+function initPreviews() {
+  document.getElementById('counter-preview').srcdoc = makeDoc(counterPreviewCode);
+  document.getElementById('like-preview').srcdoc    = makeDoc(likePreviewCode);
+}
+
+// ======================== LIVE EDITOR DEFAULTS ========================
+const defaults = {
+  c1: {
+    comp:
+`function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <h2>현재 숫자: {count}</h2>
+      <button onClick={() => setCount(count + 1)}>
+        +1 증가
+      </button>
+      <button onClick={() => setCount(count - 1)}>
+        -1 감소
+      </button>
+      <button onClick={() => setCount(0)}>
+        초기화
+      </button>
+    </div>
+  );
+}
+
+export default Counter;`,
+
+    app:
+`import Counter from './Counter';
+
+function App() {
+  return (
+    <div>
+      <h1>카운터 앱</h1>
+      <Counter />
+    </div>
+  );
+}
+
+export default App;`,
+  },
+
+  l1: {
+    comp:
+`function LikeButton({ liked, onLike }) {
+  return (
+    <div>
+      <div style={{ fontSize: '2.5rem', lineHeight: '1.3' }}>
+        {liked ? '❤️' : '🤍'}
+      </div>
+      <button onClick={onLike}>
+        좋아요
+      </button>
+    </div>
+  );
+}
+
+export default LikeButton;`,
+
+    app:
+`import { useState } from 'react';
+import LikeButton from './LikeButton';
+
+function App() {
+  const [liked, setLiked] = useState(false);
+
+  return (
+    <div>
+      <h1>오늘의 게시물</h1>
+      <p>React는 재미있어요!</p>
+      <LikeButton
+        liked={liked}
+        onLike={() => setLiked(!liked)}
+      />
+    </div>
+  );
+}
+
+export default App;`,
+  },
+};
+
+function initEditors() {
+  for (const id of ['c1', 'l1']) {
+    const compTa = document.getElementById(`${id}-comp`);
+    const appTa  = document.getElementById(`${id}-app`);
+    compTa.value = defaults[id].comp;
+    appTa.value  = defaults[id].app;
+
+    [compTa, appTa].forEach(ta => {
+      ta.addEventListener('keydown', e => {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const s = ta.selectionStart, end = ta.selectionEnd;
+          ta.value = ta.value.substring(0, s) + '  ' + ta.value.substring(end);
+          ta.selectionStart = ta.selectionEnd = s + 2;
+        }
+      });
+    });
+
+    runEditor(id);
+  }
+}
+
+function runEditor(id) {
+  const combined = combineFiles(
+    document.getElementById(`${id}-comp`).value,
+    document.getElementById(`${id}-app`).value
+  );
+  document.getElementById(`${id}-result`).srcdoc = makeDoc(combined);
+}
+
+function resetEditor(id) {
+  document.getElementById(`${id}-comp`).value = defaults[id].comp;
+  document.getElementById(`${id}-app`).value  = defaults[id].app;
+  runEditor(id);
+}
+
+// ======================== QUIZ ========================
+function checkQ(btn, correct, feedId) {
+  const opts = btn.parentElement.querySelectorAll('.qopt');
+  opts.forEach(b => { b.disabled = true; b.style.cursor = 'default'; });
+
+  const feed = document.getElementById(feedId);
+  if (correct) {
+    btn.classList.add('correct');
+    feed.textContent = '정답입니다.';
+    feed.className   = 'qfeed show ok';
+  } else {
+    btn.classList.add('wrong');
+    feed.textContent = '틀렸습니다. 다시 생각해보세요.';
+    feed.className   = 'qfeed show no';
+    opts.forEach(b => {
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes('true'))
+        b.classList.add('correct');
+    });
+  }
+}
+</script>
+</body>
+</html>
