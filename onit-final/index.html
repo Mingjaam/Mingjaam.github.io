@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ONit — 프로젝트 발표</title>
+<link rel="stylesheet" href="onit.css">
+<style>
+/* ============ slide-specific layout ============ */
+
+/* ---------- COVER ---------- */
+.cover{background:var(--canvas);}
+.cover .canvas-grid{background-image:radial-gradient(circle, rgba(2,189,17,.10) 1.5px, transparent 1.6px);}
+.cover-wrap{position:relative;z-index:2;flex:1;display:grid;grid-template-columns:1.15fr .85fr;}
+.cover-left{padding:104px 0 0 104px;display:flex;flex-direction:column;}
+.cover-brand{display:flex;align-items:center;gap:18px;}
+.cover-brand img{width:64px;height:64px;}
+.cover-brand .wordmark{font-size:40px;font-weight:800;letter-spacing:-.03em;color:var(--ink);}
+.cover-left h1{font-size:128px;line-height:.94;font-weight:800;letter-spacing:-.045em;margin:auto 0 0;color:var(--ink);}
+.cover-left h1 .g{color:var(--green);}
+.cover-sub{margin-top:34px;font-size:33px;font-weight:500;color:var(--ink-2);letter-spacing:-.015em;line-height:1.45;max-width:760px;}
+.cover-meta{margin-top:54px;margin-bottom:96px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.cover-right{position:relative;overflow:hidden;}
+.cover-logo-big{position:absolute;right:-150px;top:50%;transform:translateY(-50%);width:760px;height:760px;opacity:.10;}
+.cover-card{
+  position:absolute;width:320px;background:#fff;border:1.5px solid var(--line);border-radius:22px;
+  box-shadow:var(--shadow-lg);padding:22px 26px;display:flex;flex-direction:column;gap:6px;
+}
+.cover-card .ct{font-size:21px;font-weight:700;color:var(--ink);letter-spacing:-.01em;white-space:nowrap;}
+.cover-card .cs{font-size:17px;color:var(--muted);font-weight:500;}
+.cover-card .fold{position:absolute;right:0;bottom:0;width:34px;height:34px;background:var(--green-tint);
+  border-top-left-radius:12px;border-left:1.5px solid var(--line);border-top:1.5px solid var(--line);
+  border-bottom-right-radius:22px;}
+.cc1{top:170px;right:120px;}
+.cc2{top:430px;right:300px;border-color:var(--green-tint2);}
+.cc2 .ct{color:var(--green-ink);}
+.cc3{top:660px;right:160px;}
+.cover-conn{position:absolute;inset:0;z-index:0;pointer-events:none;}
+
+/* ---------- generic content header ---------- */
+.s-head{padding:74px 84px 0;position:relative;z-index:2;}
+.s-head .row{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-top:18px;}
+.s-body{flex:1;min-height:0;padding:0 84px 96px;position:relative;z-index:2;display:flex;}
+.s-body--center{align-items:center;}
+
+/* ---------- OVERVIEW (slide 2) ---------- */
+.ov-grid{display:grid;grid-template-columns:1fr;gap:30px;width:100%;padding-top:40px;align-content:start;}
+.ov-lead{
+  background:linear-gradient(180deg,#fff, #fbfdfb);
+  border:1.5px solid var(--line);border-left:6px solid var(--green);
+  border-radius:18px;padding:34px 40px;display:flex;gap:26px;align-items:flex-start;
+}
+.ov-lead .lead-ko{font-size:33px;line-height:1.5;font-weight:600;color:var(--ink);letter-spacing:-.02em;}
+.ov-lead .lead-ko b{color:var(--green-deep);font-weight:800;}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+.feat{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:34px 32px;
+  display:flex;flex-direction:column;gap:18px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.feat .ficon{width:66px;height:66px;border-radius:16px;background:var(--green-tint);
+  display:flex;align-items:center;justify-content:center;color:var(--green-deep);}
+.feat .ficon svg{width:34px;height:34px;}
+.feat h3{font-size:31px;font-weight:800;letter-spacing:-.02em;margin:0;color:var(--ink);}
+.feat p{font-size:22.5px;line-height:1.52;color:var(--ink-2);margin:0;font-weight:500;letter-spacing:-.01em;}
+.feat .ftag{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;}
+.feat .ftag .t{font-size:18px;font-weight:700;color:var(--green-deep);background:var(--green-tint);
+  padding:6px 14px;border-radius:999px;}
+.feat .fnum{position:absolute;top:24px;right:30px;font-size:80px;font-weight:800;color:#f0f4f0;line-height:1;z-index:0;}
+.feat>*{position:relative;z-index:1;}
+
+/* ---------- DIFFERENTIATORS (slide 3) ---------- */
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;width:100%;align-items:stretch;}
+.diff{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:30px 32px 26px;
+  display:flex;flex-direction:column;box-shadow:var(--shadow);position:relative;}
+.diff .dnum{width:54px;height:54px;border-radius:14px;background:var(--ink);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;}
+.diff .vs{margin-left:auto;font-size:19px;font-weight:800;letter-spacing:.02em;color:#b23b3b;
+  background:#fdecec;border:1.5px solid #f7d6d6;padding:7px 15px;border-radius:999px;}
+.diff .dtop{display:flex;align-items:center;gap:16px;}
+.diff h3{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:20px 0 12px;color:var(--ink);line-height:1.18;}
+.diff p{font-size:21.5px;line-height:1.48;color:var(--ink-2);margin:0 0 12px;font-weight:500;letter-spacing:-.01em;}
+.diff p b{color:var(--green-deep);font-weight:800;}
+.diff .flow{margin-top:auto;display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding-top:18px;border-top:1.5px dashed var(--line-2);}
+.diff .flow .tool{font-size:16.5px;font-weight:700;color:var(--muted);background:#f4f6f4;border:1.5px solid var(--line);
+  padding:5px 12px;border-radius:8px;white-space:nowrap;}
+.diff .flow .arr{color:var(--line-2);font-weight:800;font-size:16px;}
+.diff .flow .onit{font-size:16.5px;font-weight:800;color:#fff;background:var(--green);padding:6px 14px;border-radius:8px;white-space:nowrap;
+  box-shadow:0 6px 14px -5px rgba(2,189,17,.6);}
+
+/* ---------- TEAM (slide 4) ---------- */
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,auto);gap:24px;width:100%;}
+.member{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:26px 28px;
+  display:flex;flex-direction:column;box-shadow:var(--shadow);position:relative;}
+.member .m-top{display:flex;align-items:center;justify-content:space-between;gap:14px;}
+.member .m-name{font-size:29px;font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1;display:flex;align-items:baseline;gap:11px;}
+.member .m-id{font-size:18px;font-weight:600;color:var(--muted);font-family:var(--mono);letter-spacing:0;}
+.member .m-pos{flex:none;font-size:16px;font-weight:800;letter-spacing:-.01em;padding:6px 13px;border-radius:999px;}
+.member .m-pos--fe{color:var(--green-ink);background:var(--green-tint);border:1.5px solid var(--green-tint2);}
+.member .m-pos--be{color:#33404a;background:#eef1f4;border:1.5px solid #dde3e9;}
+.member .m-rr{margin-top:18px;padding-top:16px;border-top:1.5px solid var(--line);}
+.member .m-tag{display:block;font-size:16px;font-weight:800;color:var(--green-deep);margin-bottom:8px;letter-spacing:.02em;}
+.member .m-desc{display:block;font-size:20px;line-height:1.45;color:var(--ink-2);font-weight:600;letter-spacing:-.01em;}
+
+/* ---------- SCORE (slide 5) ---------- */
+.score-body{flex:1;min-height:0;padding:30px 84px 0;display:grid;grid-template-columns:340px 1fr;gap:46px;align-items:center;position:relative;z-index:2;}
+.score-left{display:flex;flex-direction:column;gap:26px;}
+.score-big{font-size:200px;font-weight:800;line-height:.86;letter-spacing:-.05em;color:var(--green);}
+.score-big small{font-size:64px;font-weight:800;color:var(--ink);letter-spacing:-.03em;}
+.score-stats{display:flex;flex-direction:column;gap:14px;}
+.score-stat{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#fff;border:1.5px solid var(--line);
+  border-radius:14px;padding:16px 22px;}
+.score-stat .sl{font-size:22px;font-weight:600;color:var(--ink-2);}
+.score-stat .sv{font-size:26px;font-weight:800;color:var(--green-deep);font-family:var(--mono);}
+.score-img-wrap{background:#fff;border:1.5px solid var(--line);border-radius:18px;box-shadow:var(--shadow-lg);
+  padding:20px;height:100%;max-height:880px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.score-img-wrap img{max-width:100%;max-height:840px;object-fit:contain;border-radius:6px;}
+
+/* ---------- FEATURE IMPL (slide 6) ---------- */
+.impl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;width:100%;align-items:stretch;}
+.impl{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:30px 30px;
+  display:flex;flex-direction:column;box-shadow:var(--shadow);}
+.impl .ihead{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+.impl .iicon{width:60px;height:60px;border-radius:15px;background:var(--green);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 18px -6px rgba(2,189,17,.55);}
+.impl .iicon svg{width:32px;height:32px;color:#fff;}
+.impl h3{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0;color:var(--ink);line-height:1.16;}
+.impl ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:15px;}
+.impl li{position:relative;padding-left:32px;font-size:22px;line-height:1.46;color:var(--ink-2);font-weight:500;letter-spacing:-.01em;}
+.impl li::before{content:"";position:absolute;left:6px;top:11px;width:9px;height:9px;border-radius:3px;background:var(--green);transform:rotate(45deg);}
+.impl li b{color:var(--ink);font-weight:800;}
+.impl .status{display:inline-flex;align-items:center;gap:8px;font-size:17px;font-weight:800;color:var(--green-deep);
+  background:var(--green-tint);padding:5px 13px;border-radius:999px;margin-left:8px;vertical-align:middle;}
+
+/* ---------- GITSTAT (slide 7) ---------- */
+.git-body{flex:1;min-height:0;padding:24px 84px 92px;display:flex;flex-direction:column;gap:24px;position:relative;z-index:2;}
+.git-stats{display:flex;gap:18px;}
+.git-kpi{flex:1;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:20px 26px;display:flex;flex-direction:column;gap:4px;}
+.git-kpi .kv{font-size:42px;font-weight:800;color:var(--green-deep);letter-spacing:-.02em;line-height:1;}
+.git-kpi .kl{font-size:20px;font-weight:600;color:var(--muted);}
+.git-shots{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.term{background:#171a17;border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;border:1px solid #000;}
+.term .bar{height:42px;background:#21251f;display:flex;align-items:center;gap:9px;padding:0 18px;flex:none;border-bottom:1px solid #000;}
+.term .bar i{width:13px;height:13px;border-radius:50%;display:block;}
+.term .bar .t{margin-left:14px;font-family:var(--mono);font-size:16px;color:#8a948a;}
+.term .shot{flex:1;min-height:0;display:flex;align-items:flex-start;justify-content:center;overflow:hidden;padding:10px;background:#171a17;}
+.term .shot img{max-width:100%;max-height:100%;object-fit:contain;}
+
+/* ---------- PDF pages (full-bleed) ---------- */
+.pdf-slide{background:#fff;}
+.pdf-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;overflow:hidden;}
+.pdf-stage .frame{max-width:100%;max-height:100%;background:#fff;overflow:hidden;display:flex;}
+.pdf-stage canvas{display:block;width:auto;height:auto;max-width:1920px;max-height:1080px;}
+.pdf-tag{position:absolute;right:24px;bottom:20px;z-index:4;display:flex;align-items:center;gap:9px;
+  font-size:16px;font-weight:600;color:#3a463b;background:rgba(255,255,255,.86);backdrop-filter:blur(6px);
+  border:1px solid rgba(0,0,0,.06);padding:8px 14px;border-radius:999px;box-shadow:0 6px 18px -8px rgba(0,0,0,.3);}
+.pdf-tag img{width:18px;height:18px;}
+.pdf-tag b{color:var(--green-deep);font-weight:800;}
+.pdf-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);
+  font-size:24px;font-weight:600;gap:14px;z-index:3;}
+.spin{width:26px;height:26px;border:3px solid var(--line-2);border-top-color:var(--green);border-radius:50%;animation:sp 1s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+
+/* ---------- DEMO / 시연 영상 (last slide) ---------- */
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;width:100%;}
+.demo-card{display:flex;flex-direction:column;background:#fff;border:1.5px solid var(--line);border-radius:24px;
+  overflow:hidden;box-shadow:var(--shadow);text-decoration:none;transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;}
+.demo-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--green-tint2);}
+.demo-thumb{position:relative;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 120% at 30% 20%, #0d2a12 0%, #06170a 60%, #021106 100%);}
+.demo-thumb::after{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(circle, rgba(2,189,17,.16) 1.5px, transparent 1.6px);background-size:34px 34px;}
+.demo-play{position:relative;z-index:1;width:108px;height:108px;border-radius:50%;background:var(--green);
+  display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 16px 40px -10px rgba(2,189,17,.7);}
+.demo-play svg{width:50px;height:50px;margin-left:6px;}
+.demo-badge{position:absolute;top:22px;left:22px;z-index:1;font-size:16px;font-weight:800;letter-spacing:.1em;
+  color:#bff7c3;background:rgba(2,189,17,.16);border:1.5px solid rgba(2,189,17,.4);padding:7px 15px;border-radius:999px;}
+.demo-meta{padding:30px 34px;display:flex;flex-direction:column;gap:12px;}
+.demo-title{font-size:34px;font-weight:800;letter-spacing:-.02em;color:var(--ink);}
+.demo-url{font-size:21px;font-weight:600;color:var(--green-deep);font-family:var(--mono);letter-spacing:-.01em;
+  display:inline-flex;align-items:center;gap:10px;}
+.demo-url::before{content:"↗";font-weight:800;}
+</style>
+</head>
+<body>
+<deck-stage width="1920" height="1080">
+
+  <!-- ========== 1. COVER ========== -->
+  <section class="slide cover" data-label="Cover" data-screen-label="Cover">
+    <div class="canvas-grid"></div>
+    <svg class="cover-conn" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+      <path d="M1180 300 C1320 360, 1360 470, 1500 500" fill="none" stroke="rgba(2,189,17,.28)" stroke-width="2.5" stroke-dasharray="7 8"/>
+      <path d="M1500 500 C1360 560, 1340 680, 1180 720" fill="none" stroke="rgba(2,189,17,.28)" stroke-width="2.5" stroke-dasharray="7 8"/>
+    </svg>
+    <div class="cover-wrap">
+      <div class="cover-left">
+        <div class="cover-brand anim">
+          <img src="assets/logo.png" alt="ONit logo">
+          <span class="wordmark">ONit</span>
+        </div>
+        <h1 class="anim d1">대화가<br>곧 <span class="g">결과물</span>.</h1>
+        <p class="cover-sub anim d2">실시간 협업 캔버스 위에서 나눈 음성 대화를<br>AI가 클러스터링·분석해 <b style="color:var(--green-deep);font-weight:800;">PRD와 프로토타입</b>까지 자동으로.</p>
+        <div class="cover-meta anim d3">
+          <span class="chip chip--green">팀 프로젝트 · 1론머스크</span>
+          <span class="chip">ON-IT 프로젝트 발표</span>
+          <span class="chip">2026</span>
+        </div>
+      </div>
+      <div class="cover-right">
+        <img class="cover-logo-big" src="assets/logo.png" alt="">
+        <div class="cover-card cc1 anim d2"><span class="ct">🎙 다자간 음성 회의</span><span class="cs">Web · iOS 동시 접속</span><span class="fold"></span></div>
+        <div class="cover-card cc2 anim d3"><span class="ct">✦ AI 아이디어 클러스터링</span><span class="cs">캔버스 위 자동 정리</span><span class="fold"></span></div>
+        <div class="cover-card cc3 anim d4"><span class="ct">⚡ PRD → 프로토타입 배포</span><span class="cs">클릭 한 번</span><span class="fold"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 2. OVERVIEW + 특징 ========== -->
+  <section class="slide" data-label="개요" data-screen-label="개요">
+    <div class="canvas-grid"></div>
+    <div class="s-head">
+      <span class="eyebrow anim">PROJECT OVERVIEW</span>
+      <div class="row"><h2 class="title anim d1">기획부터 배포까지,<br>한 캔버스에서</h2></div>
+    </div>
+    <div class="s-body" style="flex-direction:column;">
+      <div class="ov-grid">
+        <div class="ov-lead anim d2">
+          <div class="numbadge" style="background:var(--green);border-radius:16px;width:58px;height:58px;font-size:30px;">O</div>
+          <p class="lead-ko"><b>ONit</b>은 자유로운 캔버스 위에서 <b>실시간 협업</b>을 지원하며, 브레인스토밍 텍스트를 <b>AI가 클러스터링</b>해 아이디어를 효과적으로 정리하는 웹 애플리케이션입니다.</p>
+        </div>
+        <div class="feat-grid">
+          <div class="feat anim d3">
+            <span class="fnum">01</span>
+            <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></div>
+            <h3>다자간 실시간<br>음성 대화</h3>
+            <p>장소에 구애받지 않고 팀원 전원이 동시 접속해 음성으로 회의하는 <b>입력창(Input)</b> 역할</p>
+            <div class="ftag"><span class="t">WebRTC</span><span class="t">전원 동시 접속</span></div>
+          </div>
+          <div class="feat anim d4">
+            <span class="fnum">02</span>
+            <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><rect x="15" y="9" width="6" height="11" rx="1.4" fill="#fff"/></svg></div>
+            <h3>멀티 플랫폼<br>크로스 지원</h3>
+            <p>하나의 서비스를 여러 환경에서 끊김 없이. <b>Web · iOS</b> 구현 완료</p>
+            <div class="ftag"><span class="t">Web ✓</span><span class="t">iOS ✓</span></div>
+          </div>
+          <div class="feat anim d5">
+            <span class="fnum">03</span>
+            <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div>
+            <h3>자동 PRD 작성<br>& 프로토타이핑</h3>
+            <p>음성 대화를 AI가 분석해 <b>PRD를 자동 생성</b>하고, 클릭 한 번으로 프로토타입 배포까지</p>
+            <div class="ftag"><span class="t">AI 분석</span><span class="t">원클릭 배포</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot"><span class="wm"><img src="assets/logo.png" alt="">ONit</span><span>01 / 개요</span></div>
+  </section>
+
+  <!-- ========== 3. 차별점 ========== -->
+  <section class="slide" data-label="차별점" data-screen-label="차별점">
+    <div class="canvas-grid"></div>
+    <div class="s-head">
+      <span class="eyebrow anim">WHY ONit</span>
+      <div class="row"><h2 class="title anim d1">기존 툴이 못 한 <span style="color:var(--green-deep);">세 가지</span></h2></div>
+    </div>
+    <div class="s-body s-body--center">
+      <div class="diff-grid">
+        <div class="diff anim d2">
+          <div class="dtop"><div class="dnum">1</div><span class="vs">vs. Zoom</span></div>
+          <h3>대화가 곧 결과물</h3>
+          <p>단순한 소통 도구를 넘어, <b>음성 대화 자체를 제품 개발의 입력 데이터</b>로 활용합니다.</p>
+          <p>회의 내용을 바탕으로 PRD와 프로토타입 뼈대를 자동 생성해 회의와 실무 사이의 간극을 없앱니다.</p>
+          <div class="flow"><span class="tool">🎙 음성 회의</span><span class="arr">→</span><span class="tool">PRD</span><span class="arr">→</span><span class="onit">프로토타입</span></div>
+        </div>
+        <div class="diff anim d3">
+          <div class="dtop"><div class="dnum">2</div><span class="vs">vs. Notion</span></div>
+          <h3>시각적 브레인스토밍<br>+ 실행 가능성</h3>
+          <p>평면적인 텍스트 입력을 벗어나, <b>자유로운 캔버스 위에서 AI가 아이디어를 묶어주는</b> 직관적 환경을 제공합니다.</p>
+          <p>문서(PRD)에서 끝나지 않고, 클릭 한 번으로 배포되는 프로토타입까지 시각화합니다.</p>
+          <div class="flow"><span class="tool">캔버스</span><span class="arr">→</span><span class="tool">AI 클러스터링</span><span class="arr">→</span><span class="onit">배포</span></div>
+        </div>
+        <div class="diff anim d4">
+          <div class="dtop"><div class="dnum">3</div><span class="vs">All-in-One</span></div>
+          <h3>파편화된 기획<br>프로세스의 완벽한 통합</h3>
+          <p>회의·기획·디자인·배포로 <b>나뉘어 있던 업무 단계를 하나의 플랫폼</b>으로 연결합니다.</p>
+          <p>툴 전환 과정의 맥락 단절(Context Switching)과 시간 낭비를 획기적으로 해결합니다.</p>
+          <div class="flow"><span class="tool">Zoom</span><span class="arr">·</span><span class="tool">Notion</span><span class="arr">·</span><span class="tool">Figma</span><span class="arr">·</span><span class="tool">Vercel</span><span class="arr">→</span><span class="onit">ONit</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot"><span class="wm"><img src="assets/logo.png" alt="">ONit</span><span>02 / 차별점</span></div>
+  </section>
+
+  <!-- ========== 4. 팀원 / R&R ========== -->
+  <section class="slide" data-label="팀원" data-screen-label="팀원">
+    <div class="canvas-grid"></div>
+    <div class="s-head">
+      <span class="eyebrow anim">TEAM &amp; R&amp;R · 6인 균등 기여</span>
+      <div class="row"><h2 class="title anim d1">1론머스크</h2></div>
+    </div>
+    <div class="s-body s-body--center">
+      <div class="team-grid">
+        <div class="member anim d2"><div class="m-top"><div class="m-name">김민재 <span class="m-id">5701576</span></div><span class="m-pos m-pos--fe">프론트엔드</span></div><div class="m-rr"><span class="m-tag">MOBILE · 빌드</span><span class="m-desc">모바일 대응 UI, 앱 변환 및 빌드</span></div></div>
+        <div class="member anim d2"><div class="m-top"><div class="m-name">김수빈 <span class="m-id">5715955</span></div><span class="m-pos m-pos--be">백엔드</span></div><div class="m-rr"><span class="m-tag">AI · 파이프라인</span><span class="m-desc">아이디어 → PRD 변환 로직, AI 연동</span></div></div>
+        <div class="member anim d3"><div class="m-top"><div class="m-name">김영서 <span class="m-id">5819647</span></div><span class="m-pos m-pos--fe">프론트엔드</span></div><div class="m-rr"><span class="m-tag">PRODUCT · UI</span><span class="m-desc">PRD 결과 화면, 프로토타입 UI</span></div></div>
+        <div class="member anim d3"><div class="m-top"><div class="m-name">박은서 <span class="m-id">5716001</span></div><span class="m-pos m-pos--fe">프론트엔드</span></div><div class="m-rr"><span class="m-tag">CLIENT · 오디오</span><span class="m-desc">마이크 / 스피커 UI, WebRTC 클라이언트 연결</span></div></div>
+        <div class="member anim d4"><div class="m-top"><div class="m-name">이현준 <span class="m-id">5702952</span></div><span class="m-pos m-pos--be">백엔드</span></div><div class="m-rr"><span class="m-tag">MOBILE · 네트워크</span><span class="m-desc">모바일 대응 API 설계, 인증 &amp; 네트워크 최적화</span></div></div>
+        <div class="member anim d4"><div class="m-top"><div class="m-name">정양효 <span class="m-id">5716199</span></div><span class="m-pos m-pos--be">백엔드</span></div><div class="m-rr"><span class="m-tag">SIGNALING · 서버</span><span class="m-desc">WebRTC 시그널링 서버, Socket.IO 연결 · 방(room) 관리</span></div></div>
+      </div>
+    </div>
+    <div class="slide-foot"><span class="wm"><img src="assets/logo.png" alt="">ONit</span><span>03 / 팀원</span></div>
+  </section>
+
+  <!-- ========== 5. 팀 점수 ========== -->
+  <section class="slide" data-label="팀 점수" data-screen-label="팀 점수">
+    <div class="canvas-grid"></div>
+    <div class="s-head" style="padding-bottom:0;">
+      <span class="eyebrow anim">TEAM SCORE</span>
+      <div class="row"><h2 class="title anim d1">팀 점수 · 세부 항목</h2></div>
+    </div>
+    <div class="score-body">
+      <div class="score-left">
+        <div class="anim d2">
+          <div class="kicker-ko" style="margin-bottom:6px;">총 합계</div>
+          <div class="score-big">190</div>
+        </div>
+        <div class="score-stats anim d3">
+          <div class="score-stat"><span class="sl">기초점수 (8항목)</span><span class="sv">110</span></div>
+          <div class="score-stat"><span class="sl">공모전 · 논문 제출</span><span class="sv">60</span></div>
+          <div class="score-stat"><span class="sl">채택 · 수상</span><span class="sv">20</span></div>
+        </div>
+        <p class="anim d3" style="font-size:20px;line-height:1.55;color:var(--muted);font-weight:500;margin:0;">MSA 구현(팀서비스 적용) 30점 만점 달성 · 공모전/논문 제출 MAX 60점 충족</p>
+      </div>
+      <div class="score-img-wrap anim d2">
+        <img src="assets/excel.png" alt="팀 점수 세부 엑셀 시트 — 총점 190점">
+      </div>
+    </div>
+    <div class="slide-foot"><span class="wm"><img src="assets/logo.png" alt="">ONit</span><span>04 / 팀 점수</span></div>
+  </section>
+
+  <!-- ========== 6. 핵심 기능 구현 내역 ========== -->
+  <section class="slide" data-label="기능 구현" data-screen-label="기능 구현">
+    <div class="canvas-grid"></div>
+    <div class="s-head">
+      <span class="eyebrow anim">KEY IMPLEMENTATION</span>
+      <div class="row"><h2 class="title anim d1">핵심 3기능 구현 내역</h2></div>
+    </div>
+    <div class="s-body s-body--center">
+      <div class="impl-grid">
+        <div class="impl anim d2">
+          <div class="ihead"><div class="iicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></div><h3>다자간 실시간<br>음성 대화</h3></div>
+          <ul>
+            <li><b>WebRTC 기반</b> 저지연 다자간 실시간 음성 통신</li>
+            <li><b>Socket.IO 시그널링</b>으로 안정적 연결 유지</li>
+            <li>방(room) 단위 회의 관리 및 참여자 제어</li>
+            <li>음성 입력이 <b>AI 파이프라인으로 실시간 전달</b></li>
+          </ul>
+        </div>
+        <div class="impl anim d3">
+          <div class="ihead"><div class="iicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><rect x="15" y="9" width="6" height="11" rx="1.4" fill="#fff"/></svg></div><h3>멀티 플랫폼<br>크로스 지원</h3></div>
+          <ul>
+            <li><b>Web</b> <span class="status">구현 완료 ✓</span></li>
+            <li><b>iOS</b> <span class="status">앱 출시 완료 ✓</span></li>
+            <li>플랫폼별 UI 최적화 및 모바일 대응 API 설계</li>
+          </ul>
+        </div>
+        <div class="impl anim d4">
+          <div class="ihead"><div class="iicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div><h3>자동 PRD 작성<br>& 프로토타이핑</h3></div>
+          <ul>
+            <li><b>STT 파이프라인</b>으로 음성을 텍스트로 실시간 변환</li>
+            <li>AI가 아이디어를 분석해 <b>PRD 자동 생성</b></li>
+            <li>PRD 기반 앱 <b>프로토타입 뼈대 자동 구성</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot"><span class="wm"><img src="assets/logo.png" alt="">ONit</span><span>05 / 기능 구현</span></div>
+  </section>
+
+  <!-- ========== 7. gitstat ========== -->
+  <section class="slide" data-label="Git 기여" data-screen-label="Git 기여">
+    <div class="canvas-grid"></div>
+    <div class="s-head" style="padding-bottom:0;">
+      <span class="eyebrow anim">CONTRIBUTION</span>
+      <div class="row"><h2 class="title anim d1">Git 기여 현황 <span style="font-size:34px;font-weight:700;color:var(--muted);letter-spacing:-.01em;">— gitstat</span></h2></div>
+    </div>
+    <div class="git-body">
+      <div class="git-stats anim d2">
+        <div class="git-kpi"><span class="kv">6명</span><span class="kl">기여자</span></div>
+        <div class="git-kpi"><span class="kv">각 16.7%</span><span class="kl">균등 기여율</span></div>
+        <div class="git-kpi"><span class="kv">41</span><span class="kl">인당 커밋</span></div>
+        <div class="git-kpi"><span class="kv">133K+</span><span class="kl">총 변경 라인</span></div>
+      </div>
+      <div class="git-shots anim d3">
+        <div class="term">
+          <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="t">git-fame · members 1–3</span></div>
+          <div class="shot"><img src="assets/gitstat1.png" alt="gitstat 기여자 1-3"></div>
+        </div>
+        <div class="term">
+          <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="t">git-fame · members 4–6</span></div>
+          <div class="shot"><img src="assets/gitstat2.png" alt="gitstat 기여자 4-6"></div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot"><span class="wm"><img src="assets/logo.png" alt="">ONit</span><span>06 / Git 기여</span></div>
+  </section>
+
+  <!-- ========== 8–17. PDF 증빙자료 (live render, inserted before video slide) ========== -->
+
+  <!-- ========== LAST. 시연 영상 ========== -->
+  <section class="slide demo-slide" id="video-slide" data-label="시연 영상" data-screen-label="시연 영상">
+    <div class="canvas-grid"></div>
+    <div class="s-head">
+      <span class="eyebrow anim">DEMO</span>
+      <div class="row"><h2 class="title anim d1">시연 영상</h2></div>
+    </div>
+    <div class="s-body s-body--center">
+      <div class="demo-grid">
+        <a class="demo-card anim d2" href="https://www.youtube.com/watch?v=LvEId7UFFKM" target="_blank" rel="noopener">
+          <div class="demo-thumb">
+            <span class="demo-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+            <span class="demo-badge">MSA</span>
+          </div>
+          <div class="demo-meta">
+            <div class="demo-title">MSA 시연 영상</div>
+            <div class="demo-url">https://www.youtube.com/watch?v=LvEId7UFFKM</div>
+          </div>
+        </a>
+        <a class="demo-card anim d3" href="https://www.youtube.com/watch?v=UBNTBCScjKU" target="_blank" rel="noopener">
+          <div class="demo-thumb">
+            <span class="demo-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+            <span class="demo-badge">PROJECT</span>
+          </div>
+          <div class="demo-meta">
+            <div class="demo-title">프로젝트 시연 영상</div>
+            <div class="demo-url">https://www.youtube.com/watch?v=UBNTBCScjKU</div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="slide-foot"><span class="wm"><img src="assets/logo.png" alt="">ONit</span><span>시연 영상</span></div>
+  </section>
+
+</deck-stage>
+
+<script src="deck-stage.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+/* rAF shim so pdf.js render() resolves in background/throttled iframes */
+window.requestAnimationFrame = function(cb){ return setTimeout(function(){ cb(performance.now()); }, 0); };
+window.cancelAnimationFrame = function(id){ clearTimeout(id); };
+
+(function(){
+  var TOTAL = 10;
+  var deck = document.querySelector('deck-stage');
+  var videoSlide = document.getElementById('video-slide');
+
+  // build the 10 evidence slides and insert BEFORE the video slide
+  var frag = document.createDocumentFragment();
+  for (var i = 1; i <= TOTAL; i++){
+    var s = document.createElement('section');
+    s.className = 'slide pdf-slide';
+    s.setAttribute('data-label', '증빙 ' + i);
+    s.setAttribute('data-screen-label', '증빙자료 ' + i);
+    s.innerHTML =
+      '<div class="pdf-stage"><div class="frame"><canvas class="pdfpage" data-page="' + i + '"></canvas></div>' +
+      '<div class="pdf-loading" data-for="' + i + '"><span class="spin"></span>페이지 불러오는 중…</div></div>' +
+      '<div class="pdf-tag"><img src="assets/logo.png" alt="">증빙자료 · 공모전 / 논문 <b>' + i + ' / ' + TOTAL + '</b></div>';
+    frag.appendChild(s);
+  }
+  deck.insertBefore(frag, videoSlide);
+
+  // render each PDF page into its canvas
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  pdfjsLib.getDocument('assets/evidence.pdf').promise.then(function(pdf){
+    var n = Math.min(pdf.numPages, TOTAL);
+    var chain = Promise.resolve();
+    for (var p = 1; p <= n; p++){
+      (function(p){
+        chain = chain.then(function(){
+          return pdf.getPage(p).then(function(page){
+            var canvas = document.querySelector('canvas.pdfpage[data-page="' + p + '"]');
+            if (!canvas) return;
+            var scale = 3;
+            var vp = page.getViewport({ scale: scale });
+            var tmp = document.createElement('canvas');
+            tmp.width = vp.width; tmp.height = vp.height;
+            var tctx = tmp.getContext('2d');
+            tctx.fillStyle = '#fff'; tctx.fillRect(0, 0, tmp.width, tmp.height);
+            return page.render({ canvasContext: tctx, viewport: vp }).promise.then(function(){
+              // auto-crop empty (near-white) margins so content fills the slide
+              var W = tmp.width, H = tmp.height, step = 3, thr = 244;
+              var data = tctx.getImageData(0, 0, W, H).data;
+              var minX = W, minY = H, maxX = 0, maxY = 0, found = false;
+              for (var y = 0; y < H; y += step){
+                for (var x = 0; x < W; x += step){
+                  var i = (y * W + x) * 4;
+                  if (data[i] < thr || data[i+1] < thr || data[i+2] < thr){
+                    found = true;
+                    if (x < minX) minX = x; if (x > maxX) maxX = x;
+                    if (y < minY) minY = y; if (y > maxY) maxY = y;
+                  }
+                }
+              }
+              if (!found){ minX = 0; minY = 0; maxX = W; maxY = H; }
+              var padX = W * 0.018, padY = H * 0.018;
+              minX = Math.max(0, minX - padX); minY = Math.max(0, minY - padY);
+              maxX = Math.min(W, maxX + padX); maxY = Math.min(H, maxY + padY);
+              var bw = Math.round(maxX - minX), bh = Math.round(maxY - minY);
+              canvas.width = bw; canvas.height = bh;
+              var cx = canvas.getContext('2d');
+              cx.fillStyle = '#fff'; cx.fillRect(0, 0, bw, bh);
+              cx.drawImage(tmp, Math.round(minX), Math.round(minY), bw, bh, 0, 0, bw, bh);
+              var ld = document.querySelector('.pdf-loading[data-for="' + p + '"]');
+              if (ld) ld.remove();
+            });
+          });
+        });
+      })(p);
+    }
+    return chain;
+  }).catch(function(e){
+    document.querySelectorAll('.pdf-loading').forEach(function(ld){ ld.textContent = 'PDF 로드 실패: ' + e.message; });
+  });
+})();
+</script>
+</body>
+</html>

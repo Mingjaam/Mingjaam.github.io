@@ -1,0 +1,110 @@
+/* ===== ONit brand system ===== */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css');
+
+:root{
+  --green:#02BD11;          /* ONit brand green */
+  --green-deep:#08930F;     /* readable green on light */
+  --green-ink:#063B0A;      /* darkest green for text */
+  --green-tint:#EAFBEB;     /* pale green surface */
+  --green-tint2:#D6F5D9;    /* slightly stronger tint */
+  --ink:#0B130C;            /* near-black text */
+  --ink-2:#334034;          /* secondary text */
+  --muted:#697A6B;          /* muted text */
+  --canvas:#FBFCFB;         /* off-white page */
+  --paper:#FFFFFF;
+  --line:#E4EAE4;           /* hairline */
+  --line-2:#D2DBD2;
+  --shadow:0 1px 2px rgba(8,20,9,.04), 0 12px 32px -12px rgba(8,20,9,.14);
+  --shadow-lg:0 2px 6px rgba(8,20,9,.05), 0 30px 60px -20px rgba(8,20,9,.22);
+  --r:18px;
+  --font:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo',sans-serif;
+  --mono:'SFMono-Regular',ui-monospace,'JetBrains Mono',Menlo,Consolas,monospace;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:#0c130c;font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+
+deck-stage:not(:defined){visibility:hidden;}
+deck-stage{--w:1920px;}
+
+/* ---- slide base ---- */
+section.slide{
+  width:1920px;height:1080px;overflow:hidden;
+  background:var(--canvas);
+  color:var(--ink);
+  display:flex;flex-direction:column;
+  position:relative;
+}
+/* dot-grid canvas motif */
+.canvas-grid{
+  position:absolute;inset:0;
+  background-image:radial-gradient(circle, rgba(11,19,12,.055) 1.4px, transparent 1.5px);
+  background-size:46px 46px;
+  background-position:-2px -2px;
+  pointer-events:none;
+}
+
+/* ---- shared bits ---- */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:12px;
+  font-size:23px;font-weight:700;letter-spacing:.14em;
+  color:var(--green-deep);text-transform:uppercase;
+}
+.eyebrow::before{content:"";width:30px;height:3px;border-radius:2px;background:var(--green);}
+
+.kicker-ko{font-size:24px;font-weight:600;color:var(--muted);letter-spacing:-.01em;}
+
+h1.title{font-size:104px;line-height:.98;font-weight:800;letter-spacing:-.035em;margin:0;color:var(--ink);}
+h2.title{font-size:74px;line-height:1.02;font-weight:800;letter-spacing:-.03em;margin:0;color:var(--ink);}
+
+.brand-dot{color:var(--green);}
+
+/* footer chrome on content slides */
+.slide-foot{
+  position:absolute;left:84px;right:84px;bottom:46px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:21px;color:var(--muted);font-weight:500;
+  z-index:3;
+}
+.slide-foot .wm{display:flex;align-items:center;gap:12px;font-weight:700;color:var(--ink-2);letter-spacing:-.01em;}
+.slide-foot .wm img{width:26px;height:26px;}
+
+/* sticky-note card (folded corner like the logo) */
+.note{
+  position:relative;background:var(--paper);
+  border:1.5px solid var(--line);
+  border-radius:20px;
+  box-shadow:var(--shadow);
+}
+.note--accent{border-color:var(--green-tint2);}
+
+/* pill / chip */
+.chip{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:10px 18px;border-radius:999px;
+  font-size:22px;font-weight:600;
+  background:#fff;border:1.5px solid var(--line-2);color:var(--ink-2);
+}
+.chip--green{background:var(--green-tint);border-color:var(--green-tint2);color:var(--green-ink);}
+
+/* numbered badge */
+.numbadge{
+  flex:none;width:62px;height:62px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;font-weight:800;color:#fff;background:var(--green);
+  box-shadow:0 8px 18px -6px rgba(2,189,17,.55);
+}
+
+/* entrance animation */
+@media (prefers-reduced-motion:no-preference){
+  [data-deck-active] .anim{opacity:0;transform:translateY(16px);animation:rise .62s cubic-bezier(.2,.7,.2,1) forwards;}
+  [data-deck-active] .anim.d1{animation-delay:.06s;}
+  [data-deck-active] .anim.d2{animation-delay:.13s;}
+  [data-deck-active] .anim.d3{animation-delay:.2s;}
+  [data-deck-active] .anim.d4{animation-delay:.27s;}
+  [data-deck-active] .anim.d5{animation-delay:.34s;}
+  [data-deck-active] .anim.d6{animation-delay:.41s;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+}
