@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ON-IT 앱버전 개발일기 6일차: 노트 CRUD와 낙관적 업데이트 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">ON-IT 앱버전 개발일기 6일차: 노트 CRUD와 낙관적 업데이트</h1>
+                    <div class="post-meta">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i>
+                            <span>2026년 6월 5일</span>
+                        </div>
+                        <div class="post-categories">
+                            <span class="category-tag frontend">프론트엔드</span>
+                            <span class="category-tag backend">백엔드</span>
+                            <span class="category-tag project">프로젝트</span>
+                        </div>
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag">CRUD</span>
+                        <span class="tag">Optimistic Update</span>
+                        <span class="tag">REST API</span>
+                        <span class="tag">WebSocket</span>
+                        <span class="tag">Swift Concurrency</span>
+                    </div>
+                </header>
+
+                <div class="post-body">
+                    <p class="lead">6일차에는 캔버스가 보기만 하는 공간이 아니라 실제로 편집되는 공간이 되도록 만들었습니다. 노트 생성, 이동, 내용 수정, 삭제를 서버 API와 연결하고, 사용자가 기다리지 않도록 낙관적 업데이트를 넣었습니다.</p>
+
+                    <h2>생성은 먼저 화면에 보이게 했다</h2>
+
+<p>노트를 만들 때 서버 응답을 기다린 뒤 화면에 추가하면 안정적이지만, 모바일에서는 반응이 늦게 느껴집니다. 그래서 임시 ID를 가진 노트를 먼저 추가하고, 서버 응답이 오면 실제 ID로 바꾸는 방식을 택했습니다.</p>
+
+<pre><code>func addNote(content: String, x: Double, y: Double) async {
+    let tempId = -Int(Date().timeIntervalSince1970 * 1000)
+    let tempNote = Note(
+        id: tempId,
+        workspaceId: workspaceId,
+        content: content,
+        positionX: x,
+        positionY: y,
+        patchSizeX: 500,
+        patchSizeY: 400
+    )
+
+    notes.append(tempNote)
+
+    do {
+        let created = try await APIService.shared.createNote(
+            workspaceId: workspaceId,
+            content: content,
+            positionX: x,
+            positionY: y
+        )
+
+        if let index = notes.firstIndex(where: { $0.id == tempId }) {
+            notes[index] = created
+        }
+
+        socketService.sendIdeaUpdate(workspaceId: workspaceId, note: created)
+    } catch {
+        notes.removeAll { $0.id == tempId }
+        errorMessage = error.localizedDescription
+    }
+}</code></pre>
+
+<p>임시 ID를 음수로 만든 건 서버에서 내려오는 실제 ID와 충돌하지 않게 하기 위해서입니다. 사용자는 탭하자마자 노트가 생겼다고 느끼고, 실패했을 때만 다시 제거하면 됩니다. 협업 도구에서는 이런 작은 즉시성이 꽤 중요하다고 생각했습니다.</p>
+
+                    <h2>수정 API는 서버가 기대하는 형태에 맞췄다</h2>
+
+<p>노트 수정은 단순히 content만 바꾸는 기능이 아닙니다. 위치와 크기도 함께 서버에 남아야 다른 사용자가 같은 캔버스를 볼 수 있습니다. 그래서 수정 요청에는 workspaceId, content, position, patch size를 함께 담았습니다.</p>
+
+<pre><code>func updateNote(_ note: Note) async throws -&gt; Note {
+    let url = URL(string: &quot;(baseURL)/v1/ideas/(note.id)&quot;)!
+    var request = authorizedRequest(url: url)
+    request.httpMethod = &quot;PUT&quot;
+    request.setValue(&quot;application/json&quot;, forHTTPHeaderField: &quot;Content-Type&quot;)
+
+    let body: [String: Any] = [
+        &quot;workspaceId&quot;: note.workspaceId ?? 0,
+        &quot;content&quot;: note.content,
+        &quot;positionX&quot;: note.positionX,
+        &quot;positionY&quot;: note.positionY,
+        &quot;patchSizeX&quot;: note.patchSizeX ?? 500,
+        &quot;patchSizeY&quot;: note.patchSizeY ?? 400
+    ]
+
+    request.httpBody = try JSONSerialization.data(withJSONObject: body)
+    return try await send(request)
+}</code></pre>
+
+<p>처음에는 PATCH가 더 자연스러워 보였지만, 실제 서버 계약과 맞추는 것이 더 중요했습니다. 앱 쪽에서 “REST 원칙상 이게 더 예쁘다”라고 버티는 것보다, 지금 백엔드가 안정적으로 처리하는 방식에 맞춰 사용자 기능을 완성하는 게 맞다고 판단했습니다.</p>
+
+                    <h2>편집 결과는 웹소켓으로도 알려야 했다</h2>
+
+<p>REST API는 서버 저장을 위한 통로이고, 웹소켓은 다른 참여자에게 변화가 있었다고 알려주는 통로입니다. 그래서 노트를 수정하거나 이동한 뒤에는 REST 요청만 끝내지 않고, 아이디어 업데이트 메시지도 보냈습니다.</p>
+
+<pre><code>func moveNote(_ note: Note, to point: CGPoint) async {
+    guard let index = notes.firstIndex(where: { $0.id == note.id }) else { return }
+
+    notes[index].positionX = point.x
+    notes[index].positionY = point.y
+
+    do {
+        let updated = try await APIService.shared.updateNote(notes[index])
+        notes[index] = updated
+        socketService.sendIdeaUpdate(workspaceId: workspaceId, note: updated)
+    } catch {
+        errorMessage = error.localizedDescription
+    }
+}</code></pre>
+
+
+                    <div class="highlight-box">
+                        <h4>내 생각</h4>
+                        <p>협업 앱에서 저장과 동기화는 같은 기능처럼 보이지만 실제로는 역할이 다릅니다. 서버에 저장만 하면 내 화면은 맞지만 다른 사람 화면은 늦고, 웹소켓만 보내면 새로 들어온 사용자가 상태를 잃습니다. 두 길을 같이 가져가야 했습니다.</p>
+                    </div>
+
+                    <h2>마무리 생각</h2>
+
+                    <p>6일차에는 ON-IT 캔버스가 “움직이는 화면”에서 “함께 편집되는 작업 공간”으로 바뀌었습니다. 특히 낙관적 업데이트를 넣으면서, 앱 개발은 서버의 정확성과 사용자의 체감 속도 사이에서 계속 균형을 잡는 일이라는 걸 느꼈습니다.</p>
+                </div>
+            </article>
+        </div>
+    </main>
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                        <li><a href="https://linkedin.com/in/민재-김-209b0533b" target="_blank">LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../post-script.js"></script>
+</body>
+</html>

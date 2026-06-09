@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ON-IT 앱버전 개발일기 3일차: 프로젝트 목록을 모바일 첫 화면으로 만들기 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">ON-IT 앱버전 개발일기 3일차: 프로젝트 목록을 모바일 첫 화면으로 만들기</h1>
+                    <div class="post-meta">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i>
+                            <span>2026년 6월 2일</span>
+                        </div>
+                        <div class="post-categories">
+                            <span class="category-tag frontend">프론트엔드</span>
+                            <span class="category-tag project">프로젝트</span>
+                        </div>
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag">SwiftUI</span>
+                        <span class="tag">ProjectList</span>
+                        <span class="tag">TaskGroup</span>
+                        <span class="tag">검색</span>
+                        <span class="tag">즐겨찾기</span>
+                    </div>
+                </header>
+
+                <div class="post-body">
+                    <p class="lead">로그인 다음에 사용자가 보는 화면은 프로젝트 목록입니다. 그래서 3일차에는 ON-IT 앱의 첫인상을 결정하는 프로젝트 리스트를 모바일에 맞게 다시 설계했습니다.</p>
+
+                    <h2>탭은 기능 설명이 아니라 사용자의 질문으로 나눴다</h2>
+
+<p>처음에는 단순히 워크스페이스 배열을 보여주면 된다고 생각했습니다. 하지만 앱에서 프로젝트가 늘어나면 사용자는 “내가 만든 것만 보고 싶다”, “공유받은 것만 보고 싶다”, “자주 쓰는 걸 다시 열고 싶다” 같은 질문을 하게 됩니다. 그래서 목록 상태를 탭과 검색어로 나눴습니다.</p>
+
+<pre><code>final class ProjectListViewModel: ObservableObject {
+    @Published var projects: [Project] = []
+    @Published var searchQuery = &quot;&quot;
+    @Published var activeTab: ProjectTab = .all
+    @Published var favoriteIds: Set&lt;Int&gt; = []
+
+    var filteredProjects: [Project] {
+        projects
+            .filter { activeTab.matches($0, currentUserId: currentUserId) }
+            .filter { project in
+                searchQuery.isEmpty ||
+                project.name.localizedCaseInsensitiveContains(searchQuery)
+            }
+            .sorted { lhs, rhs in
+                favoriteIds.contains(lhs.id) &amp;&amp; !favoriteIds.contains(rhs.id)
+            }
+    }
+}</code></pre>
+
+<p>이렇게 ViewModel에서 정렬과 필터링을 처리하면 View는 훨씬 단순해집니다. 화면은 “어떻게 보여줄지”에 집중하고, 어떤 프로젝트가 보여야 하는지는 ViewModel이 책임지는 쪽이 앱 구조상 더 깔끔하다고 판단했습니다.</p>
+
+                    <h2>워크스페이스 상세 정보는 병렬로 가져왔다</h2>
+
+<p>프로젝트 목록 API만으로는 카드에 필요한 정보가 부족했습니다. 각 워크스페이스의 상세 정보와 참여자 정보를 추가로 가져와야 했는데, 이를 순차로 처리하면 프로젝트가 많아질수록 첫 화면이 느려집니다. 그래서 Swift Concurrency의 `withTaskGroup`을 사용했습니다.</p>
+
+<pre><code>let workspaces = try await APIService.shared.fetchWorkspaces()
+
+let projects = try await withThrowingTaskGroup(of: Project.self) { group in
+    for workspace in workspaces {
+        group.addTask {
+            let detail = try await APIService.shared.fetchWorkspaceDetail(id: workspace.id)
+            let users = try await APIService.shared.fetchWorkspaceUsers(id: workspace.id)
+            return Project(workspace: detail, users: users)
+        }
+    }
+
+    var result: [Project] = []
+    for try await project in group {
+        result.append(project)
+    }
+    return result
+}</code></pre>
+
+<p>이 코드를 넣은 이유는 앱에서 “기다리는 느낌”을 줄이고 싶었기 때문입니다. 웹에서는 로딩 중에도 화면 공간이 넓어서 skeleton이나 여러 영역을 나눠 보여주기 쉽지만, 모바일은 첫 화면이 작습니다. 목록이 늦게 뜨면 앱 전체가 느려 보입니다.</p>
+
+
+                    <div class="highlight-box">
+                        <h4>내가 중요하게 본 지점</h4>
+                        <p>프로젝트 목록은 복잡한 기술을 보여주는 화면이 아니지만, 사용자가 앱을 계속 쓸지 판단하는 첫 화면입니다. 그래서 API 호출도 “작동한다”에서 끝내지 않고, 체감 속도를 신경 쓰는 방식으로 짰습니다.</p>
+                    </div>
+
+                    <h2>생성, 즐겨찾기, 새로고침까지 한 흐름으로</h2>
+
+<p>프로젝트 목록은 읽기 전용 화면이면 금방 한계가 옵니다. 바로 프로젝트를 만들고, 자주 쓰는 프로젝트를 고정하고, 서버 상태가 바뀌면 다시 가져올 수 있어야 했습니다.</p>
+
+<pre><code>func createProject(name: String, description: String?) async {
+    do {
+        let workspace = try await APIService.shared.createWorkspace(
+            name: name,
+            description: description
+        )
+        await MainActor.run {
+            projects.insert(Project(workspace: workspace), at: 0)
+        }
+    } catch {
+        await MainActor.run { self.errorMessage = error.localizedDescription }
+    }
+}
+
+func toggleFavorite(_ project: Project) {
+    if favoriteIds.contains(project.id) {
+        favoriteIds.remove(project.id)
+    } else {
+        favoriteIds.insert(project.id)
+    }
+    UserDefaults.standard.set(Array(favoriteIds), forKey: &quot;favoriteProjectIds&quot;)
+}</code></pre>
+
+<p>즐겨찾기는 서버 기능으로 만들 수도 있지만, 우선 앱 사용성에 가까운 개인 설정이라고 보고 로컬에 저장했습니다. 협업 데이터는 서버가 기준이어야 하지만, 사용자의 정렬 취향까지 서버에 보내는 건 아직 과하다고 판단했습니다.</p>
+
+                    <h2>마무리 생각</h2>
+
+                    <p>3일차는 앱의 “문 앞”을 다듬은 날이었습니다. 프로젝트 목록은 화려한 기능보다 빠르게 찾고, 바로 들어가고, 자주 쓰는 것을 놓치지 않는 게 중요했습니다. 모바일 앱에서는 작은 흐름 하나가 전체 사용감을 결정한다는 걸 다시 느꼈습니다.</p>
+                </div>
+            </article>
+        </div>
+    </main>
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                        <li><a href="https://linkedin.com/in/민재-김-209b0533b" target="_blank">LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../post-script.js"></script>
+</body>
+</html>

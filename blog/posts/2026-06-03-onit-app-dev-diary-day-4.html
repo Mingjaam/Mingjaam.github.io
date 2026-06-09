@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ON-IT 앱버전 개발일기 4일차: 백엔드 응답 차이를 견디는 모델 만들기 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">ON-IT 앱버전 개발일기 4일차: 백엔드 응답 차이를 견디는 모델 만들기</h1>
+                    <div class="post-meta">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i>
+                            <span>2026년 6월 3일</span>
+                        </div>
+                        <div class="post-categories">
+                            <span class="category-tag frontend">프론트엔드</span>
+                            <span class="category-tag backend">백엔드</span>
+                            <span class="category-tag learning">학습</span>
+                        </div>
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag">Decodable</span>
+                        <span class="tag">API</span>
+                        <span class="tag">데이터모델</span>
+                        <span class="tag">Swift</span>
+                        <span class="tag">호환성</span>
+                    </div>
+                </header>
+
+                <div class="post-body">
+                    <p class="lead">4일차에는 화면보다 모델을 많이 손봤습니다. 앱과 백엔드가 같은 도메인을 말하고 있어도 실제 JSON 키 이름은 조금씩 다를 수 있고, iOS의 `Decodable`은 이런 차이에 꽤 엄격하게 반응합니다.</p>
+
+                    <h2>문제는 기능이 아니라 이름 차이였다</h2>
+
+<p>노트는 서버에서 `ideaId`로 오기도 하고, 다른 흐름에서는 `id`처럼 보이기도 했습니다. 유저도 `userId`와 `id`가 섞일 수 있었습니다. 웹에서는 중간 변환 로직으로 넘길 수 있지만, Swift 모델은 디코딩 단계에서 실패하면 화면까지 도달하지 못합니다.</p>
+
+<pre><code>struct Note: Identifiable, Codable, Equatable {
+    let id: Int
+    let workspaceId: Int?
+    var content: String
+    var positionX: Double
+    var positionY: Double
+    var patchSizeX: Double?
+    var patchSizeY: Double?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case ideaId
+        case workspaceId
+        case content
+        case positionX
+        case positionY
+        case patchSizeX
+        case patchSizeY
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(Int.self, forKey: .ideaId)
+            ?? container.decode(Int.self, forKey: .id)
+        workspaceId = try container.decodeIfPresent(Int.self, forKey: .workspaceId)
+        content = try container.decodeIfPresent(String.self, forKey: .content) ?? &quot;&quot;
+        positionX = try container.decodeIfPresent(Double.self, forKey: .positionX) ?? 0
+        positionY = try container.decodeIfPresent(Double.self, forKey: .positionY) ?? 0
+        patchSizeX = try container.decodeIfPresent(Double.self, forKey: .patchSizeX)
+        patchSizeY = try container.decodeIfPresent(Double.self, forKey: .patchSizeY)
+    }
+}</code></pre>
+
+<p>이 코드는 서버를 대충 믿지 않겠다는 의미가 아니라, 프론트 앱이 서버 변화에 너무 쉽게 깨지지 않게 만드는 장치입니다. 특히 캔버스처럼 실시간 데이터가 섞이는 화면에서는 하나의 노트 디코딩 실패가 전체 로딩 실패로 이어질 수 있습니다.</p>
+
+                    <h2>사용자와 채팅 모델도 같은 방식으로 방어했다</h2>
+
+<p>참여자 목록과 채팅 히스토리도 비슷했습니다. 어떤 응답은 `userId`, 어떤 응답은 `id`를 사용했고, 메시지도 `messageId`가 오거나 `id`가 올 수 있었습니다.</p>
+
+<pre><code>struct User: Identifiable, Codable {
+    let userId: Int
+    let name: String
+    let email: String?
+
+    var id: Int { userId }
+
+    enum CodingKeys: String, CodingKey {
+        case userId
+        case id
+        case name
+        case email
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        userId = try container.decodeIfPresent(Int.self, forKey: .userId)
+            ?? container.decode(Int.self, forKey: .id)
+        name = try container.decodeIfPresent(String.self, forKey: .name) ?? &quot;알 수 없음&quot;
+        email = try container.decodeIfPresent(String.self, forKey: .email)
+    }
+}</code></pre>
+
+<p>채팅에서도 같은 판단을 했습니다. 사용자에게 중요한 건 메시지가 자연스럽게 이어지는 것이지, 서버가 내부적으로 어떤 이름을 쓰는지가 아닙니다. 앱은 그 차이를 흡수하는 쪽에 있어야 한다고 생각했습니다.</p>
+
+                    <h2>초대 링크도 실패보다 fallback을 택했다</h2>
+
+<p>초대 링크 응답도 `inviteUrl`, `token`, `link`처럼 여러 가능성이 있었습니다. 이럴 때 앱이 바로 터지는 것보다, 가능한 값을 최대한 찾아서 사용자에게 보여주는 쪽이 낫다고 봤습니다.</p>
+
+<pre><code>struct InviteLinkResponse: Decodable {
+    let link: String
+
+    enum CodingKeys: String, CodingKey {
+        case link
+        case inviteUrl
+        case token
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        link = try container.decodeIfPresent(String.self, forKey: .link)
+            ?? container.decodeIfPresent(String.self, forKey: .inviteUrl)
+            ?? container.decodeIfPresent(String.self, forKey: .token)
+            ?? &quot;&quot;
+    }
+}</code></pre>
+
+
+                    <div class="highlight-box">
+                        <h4>내 생각</h4>
+                        <p>앱을 만들면서 “정확한 모델”과 “잘 버티는 모델” 사이에서 고민했습니다. 이상적으로는 서버와 앱이 완벽히 같은 계약을 가져야 하지만, 개발 중에는 계약이 흔들릴 수 있습니다. 그래서 사용자 화면까지 깨지지 않게 한 번 더 완충하는 모델이 필요했습니다.</p>
+                    </div>
+
+                    <h2>마무리 생각</h2>
+
+                    <p>4일차에 배운 건, 앱 개발에서 모델은 단순한 데이터 상자가 아니라는 점입니다. 모델이 서버의 작은 변화에 적응해주면 View와 ViewModel은 훨씬 안정적으로 움직입니다. 결국 좋은 앱 구조는 화려한 화면보다 이런 보이지 않는 방어선에서 시작된다고 느꼈습니다.</p>
+                </div>
+            </article>
+        </div>
+    </main>
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                        <li><a href="https://linkedin.com/in/민재-김-209b0533b" target="_blank">LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../post-script.js"></script>
+</body>
+</html>

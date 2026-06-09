@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ON-IT 앱버전 개발일기 8일차: 채팅, 멤버, 초대 링크 UX 정리하기 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">ON-IT 앱버전 개발일기 8일차: 채팅, 멤버, 초대 링크 UX 정리하기</h1>
+                    <div class="post-meta">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i>
+                            <span>2026년 6월 7일</span>
+                        </div>
+                        <div class="post-categories">
+                            <span class="category-tag frontend">프론트엔드</span>
+                            <span class="category-tag project">프로젝트</span>
+                        </div>
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag">채팅</span>
+                        <span class="tag">멤버관리</span>
+                        <span class="tag">초대링크</span>
+                        <span class="tag">SwiftUI</span>
+                        <span class="tag">협업UX</span>
+                    </div>
+                </header>
+
+                <div class="post-body">
+                    <p class="lead">8일차에는 실시간 연결 위에 실제 사용자가 만지는 협업 UX를 올렸습니다. 캔버스만 있어서는 협업이 완성되지 않고, 누가 들어와 있는지 보고 바로 대화하고 초대할 수 있어야 했습니다.</p>
+
+                    <h2>채팅과 멤버를 하나의 패널로 묶었다</h2>
+
+<p>모바일 화면은 좁기 때문에 채팅과 멤버 목록을 별도 화면으로 계속 밀어내면 캔버스 흐름이 끊깁니다. 그래서 캔버스 위에서 열리는 패널 안에 Chat/Members 탭을 두었습니다.</p>
+
+<pre><code>struct ChatPanelView: View {
+    @ObservedObject var vm: CanvasViewModel
+    @State private var selectedTab: PanelTab = .chat
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Picker(&quot;&quot;, selection: $selectedTab) {
+                Text(&quot;채팅&quot;).tag(PanelTab.chat)
+                Text(&quot;멤버&quot;).tag(PanelTab.members)
+            }
+            .pickerStyle(.segmented)
+            .padding()
+
+            if selectedTab == .chat {
+                ChatTab(vm: vm)
+            } else {
+                MembersTab(vm: vm)
+            }
+        }
+    }
+}</code></pre>
+
+<p>이렇게 한 이유는 사용자가 캔버스 작업 중에 “대화하기”와 “누가 있는지 보기”를 같은 맥락에서 하기 때문입니다. 협업 기능을 메뉴 깊숙이 넣으면 기능은 있어도 잘 쓰이지 않을 것 같았습니다.</p>
+
+                    <h2>채팅 히스토리는 이름 매핑까지 같이 처리했다</h2>
+
+<p>채팅 메시지는 단순히 텍스트만 보여주면 부족합니다. 누가 보냈는지, 내가 보낸 메시지인지, 시간은 언제인지가 함께 보여야 대화가 자연스럽습니다. 그래서 히스토리를 불러올 때 워크스페이스 멤버 목록과 매핑했습니다.</p>
+
+<pre><code>func loadChatHistory() async {
+    do {
+        let history = try await APIService.shared.fetchChatHistory(workspaceId: workspaceId)
+        let nameMap = Dictionary(uniqueKeysWithValues: workspaceMembersList.map {
+            ($0.userId, $0.name)
+        })
+
+        chatMessages = history.map { item in
+            ChatMessage(
+                id: item.id,
+                senderId: item.senderId,
+                senderName: item.senderId == currentUser?.userId ? &quot;나&quot; : (nameMap[item.senderId] ?? &quot;알 수 없음&quot;),
+                message: item.message,
+                createdAt: item.createdAt
+            )
+        }
+    } catch {
+        errorMessage = error.localizedDescription
+    }
+}</code></pre>
+
+<p>내 메시지를 “나”로 바꾼 것도 작은 UX입니다. 이름을 그대로 보여줘도 기능적으로는 맞지만, 채팅 앱에서 내 메시지를 바로 구분하는 게 훨씬 자연스럽습니다.</p>
+
+
+                    <div class="highlight-box">
+                        <h4>내 생각</h4>
+                        <p>협업 도구에서는 데이터가 정확한 것도 중요하지만, 사람이 빨리 이해할 수 있게 바꾸는 과정도 중요합니다. senderId는 서버에는 좋은 값이지만 사용자에게는 이름과 방향성이 더 좋은 정보였습니다.</p>
+                    </div>
+
+                    <h2>초대 링크는 생성 후 바로 복사되게 했다</h2>
+
+<p>워크스페이스는 혼자 쓰는 공간이 아니기 때문에 초대가 쉬워야 합니다. 멤버 탭에서 초대 링크를 만들고 바로 복사할 수 있게 했습니다.</p>
+
+<pre><code>func generateInviteLink() async {
+    do {
+        inviteLink = try await APIService.shared.generateInviteLink(workspaceId: workspaceId).link
+    } catch {
+        errorMessage = error.localizedDescription
+    }
+}
+
+Button {
+    if let inviteLink {
+        UIPasteboard.general.string = inviteLink
+    }
+} label: {
+    Label(&quot;복사&quot;, systemImage: &quot;doc.on.doc&quot;)
+}</code></pre>
+
+<p>초대 링크를 보여주기만 하면 사용자는 다시 길게 누르거나 선택해야 합니다. 앱에서는 링크 생성의 다음 행동이 거의 항상 공유이기 때문에, 복사 버튼을 바로 붙이는 것이 맞다고 봤습니다.</p>
+
+                    <h2>마무리 생각</h2>
+
+                    <p>8일차에는 기능을 만드는 것보다 기능 사이의 거리를 줄이는 데 집중했습니다. 채팅, 멤버, 초대는 각각 따로 보면 작은 기능이지만, 캔버스와 붙어 있을 때 협업 도구다운 느낌을 만듭니다.</p>
+                </div>
+            </article>
+        </div>
+    </main>
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                        <li><a href="https://linkedin.com/in/민재-김-209b0533b" target="_blank">LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../post-script.js"></script>
+</body>
+</html>

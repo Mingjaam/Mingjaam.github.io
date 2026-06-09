@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ON-IT 앱버전 개발일기 10일차: App Store 배포와 최종 정리 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">ON-IT 앱버전 개발일기 10일차: App Store 배포와 최종 정리</h1>
+                    <div class="post-meta">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i>
+                            <span>2026년 6월 9일</span>
+                        </div>
+                        <div class="post-categories">
+                            <span class="category-tag frontend">프론트엔드</span>
+                            <span class="category-tag project">프로젝트</span>
+                            <span class="category-tag learning">학습</span>
+                        </div>
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag">App Store</span>
+                        <span class="tag">Xcode</span>
+                        <span class="tag">배포</span>
+                        <span class="tag">TestFlight</span>
+                        <span class="tag">ON-IT</span>
+                    </div>
+                </header>
+
+                <div class="post-body">
+                    <p class="lead">10일차에는 기능 구현보다 배포 준비에 집중했습니다. 앱은 시뮬레이터에서 잘 돌아가는 것과 App Store에 올라가는 것이 완전히 다른 단계라는 걸 다시 느꼈습니다.</p>
+
+                    <h2>프로젝트 설정을 배포 기준으로 정리했다</h2>
+
+<p>배포를 위해 가장 먼저 확인한 것은 Bundle Identifier, Signing Team, 버전, 빌드 번호였습니다. 개발 중에는 대충 지나갈 수 있지만, App Store Connect에서는 이 값들이 앱을 식별하는 기준이 됩니다.</p>
+
+<pre><code>DEVELOPMENT_TEAM = 89KZLFUW5B;
+PRODUCT_BUNDLE_IDENTIFIER = &quot;com.mingjam.on-it&quot;;
+INFOPLIST_KEY_CFBundleDisplayName = &quot;ON-IT&quot;;
+INFOPLIST_KEY_LSApplicationCategoryType = &quot;public.app-category.utilities&quot;;
+MARKETING_VERSION = 1.0.5;
+CURRENT_PROJECT_VERSION = 5;</code></pre>
+
+<p>버전은 사용자가 보는 앱 버전이고, 빌드 번호는 업로드마다 증가해야 하는 내부 번호입니다. 처음에는 둘을 비슷하게 생각했지만, 배포 과정에서는 역할이 다릅니다. 그래서 `1.0.5`와 build `5`를 명확히 맞춰두었습니다.</p>
+
+                    <h2>앱 아이콘과 로그인 첫인상도 같이 손봤다</h2>
+
+<p>App Store에 올릴 앱은 기능만 있어서는 부족합니다. 홈 화면에 보이는 아이콘, 로그인 화면의 첫 인상, 앱 이름이 모두 같은 제품처럼 보여야 합니다. 그래서 AppIcon asset과 앱 메인 아이콘 이미지를 프로젝트에 추가했습니다.</p>
+
+<pre><code>VStack(spacing: 18) {
+    Image(&quot;ic_appmain&quot;)
+        .resizable()
+        .scaledToFit()
+        .frame(width: 96, height: 96)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+
+    Text(&quot;on-it&quot;)
+        .font(.largeTitle.bold())
+
+    Text(&quot;생각을 캔버스에 모으고, 팀과 바로 나누세요.&quot;)
+        .font(.subheadline)
+        .foregroundStyle(.secondary)
+}</code></pre>
+
+<p>개발 중에는 로그인 화면을 기능 확인용으로만 봤는데, 배포를 앞두니 이 화면이 사용자가 처음 만나는 ON-IT이라는 생각이 들었습니다. 그래서 앱 아이콘과 브랜드 이름을 분명히 보이게 했습니다.</p>
+
+
+                    <div class="highlight-box">
+                        <h4>내 생각</h4>
+                        <p>제품을 배포한다는 건 코드를 완성하는 것과 조금 달랐습니다. 코드가 맞는지뿐 아니라, 사용자가 설치했을 때 “이게 어떤 앱인지” 바로 알아볼 수 있는지도 중요했습니다.</p>
+                    </div>
+
+                    <h2>Archive부터 App Store Connect까지</h2>
+
+<p>최종 빌드는 Xcode에서 실제 디바이스 타깃을 기준으로 Archive를 만들고, 자동 signing이 올바른 팀으로 잡혔는지 확인한 뒤 App Store Connect로 업로드했습니다. 업로드 후에는 TestFlight에서 빌드가 처리되는지 확인하고, 앱 정보와 스크린샷, 설명, 개인정보 처리 항목을 맞춰 심사 제출 흐름까지 진행했습니다.</p>
+
+<pre><code>배포 체크리스트
+1. Bundle ID: com.mingjam.on-it
+2. Signing Team: 89KZLFUW5B
+3. Version / Build: 1.0.5 / 5
+4. App Icon asset 확인
+5. Xcode Archive 생성
+6. App Store Connect 업로드
+7. TestFlight 빌드 처리 확인
+8. 앱 정보, 스크린샷, 개인정보 항목 입력
+9. 심사 제출 및 배포 완료</code></pre>
+
+<p>마지막에는 홍보 영상 쪽에서도 App Store QR과 웹사이트 QR이 보이도록 엔딩 구성을 맞췄습니다. 앱을 만들고 끝내는 것이 아니라, 사용자가 실제로 설치할 수 있는 길까지 이어줘야 한다고 생각했습니다.</p>
+
+<p>그리고 2026년 6월 9일 기준으로 ON-IT 앱 버전 배포를 완료했습니다. 웹으로 시작했던 ON-IT이 iOS 앱으로도 설치 가능한 형태가 되었다는 점에서, 이번 10일 작업의 목표가 분명히 마무리된 날이었습니다.</p>
+
+                    <h2>마무리 생각</h2>
+
+                    <p>10일 동안 ON-IT을 앱으로 옮기면서 인증, 프로젝트 목록, 무한 캔버스, 실시간 채팅, 설정, 배포까지 한 번에 이어 보았습니다. 가장 크게 느낀 건 앱 개발은 기능을 “옮기는 일”이 아니라, 사용자가 손에 들고 쓰는 환경에 맞게 제품의 흐름을 다시 설계하는 일이라는 점입니다.</p>
+                </div>
+            </article>
+        </div>
+    </main>
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                        <li><a href="https://linkedin.com/in/민재-김-209b0533b" target="_blank">LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../post-script.js"></script>
+</body>
+</html>

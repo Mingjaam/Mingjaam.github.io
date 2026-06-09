@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ON-IT 앱버전 개발일기 2일차: Google과 Apple 로그인 붙이기 - 김민재의 개발 블로그</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../post-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../portfolio/index.html">
+                    <i class="fas fa-code"></i>
+                    <span>김민재</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html" class="nav-link">포트폴리오</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link active">블로그</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../portfolio/index.html#contact" class="nav-link">연락처</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <a href="../index.html" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i>
+                블로그로 돌아가기
+            </a>
+            <article class="post-content">
+                <header class="post-header">
+                    <h1 class="post-title">ON-IT 앱버전 개발일기 2일차: Google과 Apple 로그인 붙이기</h1>
+                    <div class="post-meta">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i>
+                            <span>2026년 6월 1일</span>
+                        </div>
+                        <div class="post-categories">
+                            <span class="category-tag frontend">프론트엔드</span>
+                            <span class="category-tag backend">백엔드</span>
+                            <span class="category-tag project">프로젝트</span>
+                        </div>
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag">OAuth</span>
+                        <span class="tag">Apple Login</span>
+                        <span class="tag">Google Login</span>
+                        <span class="tag">ASWebAuthenticationSession</span>
+                        <span class="tag">JWT</span>
+                    </div>
+                </header>
+
+                <div class="post-body">
+                    <p class="lead">2일차에는 앱의 진짜 입구인 로그인을 붙였습니다. ON-IT은 협업 도구라서 누가 어느 워크스페이스에 들어왔는지가 중요하고, 그래서 로그인 흐름이 흔들리면 뒤의 모든 기능도 흔들립니다.</p>
+
+                    <h2>Google OAuth는 앱 안의 브라우저 세션으로 처리했다</h2>
+
+<p>iOS에서 Google 로그인을 직접 구현할 때 가장 신경 쓴 부분은 사용자가 안전하게 인증 페이지를 거치고, 앱으로 돌아왔을 때 code를 안정적으로 받는 것이었습니다. 그래서 `ASWebAuthenticationSession`을 사용했습니다.</p>
+
+<pre><code>func loginWithGoogle() {
+    Task {
+        let loginURL = try await APIService.shared.getGoogleLoginURL(
+            redirectURI: Constants.googleRedirectURI
+        )
+
+        authSession = ASWebAuthenticationSession(
+            url: loginURL,
+            callbackURLScheme: Constants.googleRedirectScheme
+        ) { callbackURL, error in
+            guard let callbackURL,
+                  let code = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)?
+                    .queryItems?
+                    .first(where: { $0.name == &quot;code&quot; })?
+                    .value else { return }
+
+            Task {
+                let response = try await APIService.shared.exchangeGoogleCode(code: code)
+                KeychainService.shared.save(
+                    accessToken: response.accessToken,
+                    refreshToken: response.refreshToken
+                )
+                self.isLoggedIn = true
+            }
+        }
+
+        authSession?.presentationContextProvider = self
+        authSession?.start()
+    }
+}</code></pre>
+
+<p>여기서 내가 중요하게 본 건 “로그인 성공”이라는 결과보다 <strong>성공 이후 앱 상태가 자연스럽게 바뀌는가</strong>였습니다. 토큰 저장, 사용자 이름 파싱, 로그인 방식 저장, 화면 전환이 한 흐름 안에서 끝나야 사용자는 로그인 버튼을 누른 뒤 끊김 없이 프로젝트 목록으로 넘어갈 수 있습니다.</p>
+
+                    <h2>백엔드와 맞추기 위해 파라미터 위치를 명확히 했다</h2>
+
+<p>Google code 교환 과정에서는 백엔드 쪽에서 redirect URI와 platform 파라미터가 중복되는 문제가 생길 수 있었습니다. 그래서 앱에서는 POST 요청이지만 body에 한 번 더 넣지 않고, 백엔드가 기대하는 query parameter로만 보냈습니다.</p>
+
+<pre><code>func exchangeGoogleCode(code: String) async throws -&gt; AuthResponse {
+    var components = URLComponents(string: &quot;(baseURL)/v1/auth-google/code&quot;)!
+    components.queryItems = [
+        URLQueryItem(name: &quot;code&quot;, value: code),
+        URLQueryItem(name: &quot;platform&quot;, value: &quot;ios&quot;),
+        URLQueryItem(name: &quot;redirect_uri&quot;, value: Constants.googleRedirectURI)
+    ]
+
+    var request = URLRequest(url: components.url!)
+    request.httpMethod = &quot;POST&quot;
+    request.setValue(&quot;application/json&quot;, forHTTPHeaderField: &quot;Accept&quot;)
+    request.setValue(&quot;ON-IT-iOS&quot;, forHTTPHeaderField: &quot;User-Agent&quot;)
+
+    return try await send(request)
+}</code></pre>
+
+<p>이 코드는 겉으로 보면 평범한 API 호출이지만, 실제로는 프론트와 백엔드 사이의 약속을 정리한 코드였습니다. 웹에서는 잘 되던 OAuth가 앱에서는 redirect scheme 때문에 조금만 달라도 실패합니다. 그래서 “어디에 어떤 파라미터를 넣는지”를 코드에서 분명하게 드러내는 게 중요했습니다.</p>
+
+
+                    <div class="highlight-box">
+                        <h4>내 생각</h4>
+                        <p>OAuth 문제는 화면만 보고는 원인을 알기 어렵습니다. 그래서 나는 로그인 코드를 짤 때 예쁘게 추상화하는 것보다, 요청 URL과 파라미터가 눈에 보이게 남는 쪽을 선택했습니다. 나중에 백엔드 로그와 맞춰 볼 때 훨씬 빨랐습니다.</p>
+                    </div>
+
+                    <h2>Apple 로그인과 숨겨진 게스트 모드</h2>
+
+<p>앱스토어 배포를 생각하면 Apple 로그인도 필요했습니다. Google 로그인만 있으면 iOS 사용자의 기대와도 맞지 않고, 심사 과정에서도 로그인 선택지가 제한적으로 보일 수 있다고 생각했습니다.</p>
+
+<pre><code>func loginWithApple() {
+    let provider = ASAuthorizationAppleIDProvider()
+    let request = provider.createRequest()
+    request.requestedScopes = [.fullName, .email]
+
+    let controller = ASAuthorizationController(authorizationRequests: [request])
+    controller.delegate = self
+    controller.presentationContextProvider = self
+    controller.performRequests()
+}</code></pre>
+
+<p>동시에 개발 중에는 서버 계정 없이 화면을 빠르게 확인할 방법도 필요했습니다. 그래서 로그인 화면의 타이틀을 여러 번 누르면 게스트 모드가 열리도록 했습니다. 일반 사용자의 흐름은 해치지 않으면서, 개발 중에는 프로젝트 목록과 캔버스 UI를 빠르게 볼 수 있는 작은 장치였습니다.</p>
+
+                    <h2>마무리 생각</h2>
+
+                    <p>2일차를 지나면서 앱 버전의 로그인은 단순히 “토큰을 받아오는 기능”이 아니라는 걸 느꼈습니다. 백엔드 OAuth 정책, iOS 콜백 스킴, 앱스토어 로그인 요구사항, 개발 중 테스트 편의성까지 한 번에 맞물리는 지점이라서 초반에 시간을 쓰는 게 맞았습니다.</p>
+                </div>
+            </article>
+        </div>
+    </main>
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>김민재</h4>
+                    <p>문제를 해결하는 걸 즐기는 프론트엔드 개발자</p>
+                </div>
+                <div class="footer-section">
+                    <h4>링크</h4>
+                    <ul>
+                        <li><a href="../../portfolio/index.html">포트폴리오</a></li>
+                        <li><a href="https://github.com/Mingjaam" target="_blank">GitHub</a></li>
+                        <li><a href="https://linkedin.com/in/민재-김-209b0533b" target="_blank">LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-envelope"></i> kimminje0627@naver.com</p>
+                    <p><i class="fas fa-phone"></i> 010-3717-7644</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 김민재. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../post-script.js"></script>
+</body>
+</html>
